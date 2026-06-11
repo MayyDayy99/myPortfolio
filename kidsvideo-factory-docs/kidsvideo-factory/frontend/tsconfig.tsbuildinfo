@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/types.ts","./src/components/imagetriptych.tsx","./src/components/itemeditor.tsx","./src/components/itemlist.tsx","./src/components/jobprogress.tsx","./src/components/narrationrecorder.tsx","./src/components/sfxpicker.tsx","./src/components/topiceditor.tsx","./src/components/topiclist.tsx"],"version":"5.9.3"}

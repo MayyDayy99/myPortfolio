@@ -1,0 +1,22 @@
+# Tests and dev tooling are not needed in the runtime image.
+tests/
+requirements-dev.txt
+pyproject.toml
+
+# Python caches and artifacts.
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local data must never be baked into the image (runtime volume only).
+data/
+
+# Editor / OS noise.
+.env
+.venv/
+venv/
+.DS_Store

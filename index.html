@@ -119,6 +119,7 @@ p{margin:0}
 .proj:hover{transform:translateY(-3px);box-shadow:0 20px 38px -26px rgba(18,35,31,.35)}
 .proj-img{aspect-ratio:16/9;background:var(--ink);border-bottom:1px solid var(--paper-3);position:relative}
 .proj-img img{width:100%;height:100%;object-fit:contain;background:var(--ink)}
+.proj-img video{width:100%;height:100%;object-fit:cover;background:var(--ink);display:block}
 .proj--demo .proj-img{aspect-ratio:auto;height:300px}
 .proj--demo .badge{position:absolute;top:10px;left:10px;z-index:2;font-family:"Space Mono",monospace;font-size:.66rem;letter-spacing:.06em;color:var(--ink);background:var(--amber);padding:4px 9px;border-radius:7px;display:flex;align-items:center;gap:.4em}
 .proj--demo .badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
@@ -268,13 +269,13 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
       <div class="track" id="track">
         <!-- ═══ WEBOLDALAK ═══ -->
         <article class="proj" data-cat="web">
-          <div class="proj-img"><img src="https://raw.githubusercontent.com/LoricatusGroup/loricatus_honlap/HEAD/DJI-Zenmuse-L1-scaled.webp" alt="Loricatus céges weboldal"></div>
+          <div class="proj-img"><img src="images/loricatus.jpg" alt="Loricatus céges weboldal — kezdőképernyő"></div>
           <div class="proj-body"><div class="meta"><span>Céges weboldal</span><span>HTML/CSS/JS</span></div><h3>Loricatus — céges weboldal</h3><p>Statikus bemutatkozó weboldal egy vállalkozásnak, saját kézzel írt HTML/CSS/JavaScript alapon.</p><div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="plinks"><a href="https://github.com/LoricatusGroup/loricatus_honlap">GitHub ↗</a><a href="https://loricatusgroup.github.io/loricatus_honlap/">Élő oldal ↗</a></div></div>
         </article>
 
         <!-- ═══ WEBALKALMAZÁSOK ═══ -->
         <article class="proj" data-cat="app">
-          <div class="proj-img"><img src="https://raw.githubusercontent.com/LoricatusGroup/museum_2/HEAD/assets/og-image.png" alt="Pixel Art Múzeum 3D kiállítótér"></div>
+          <div class="proj-img"><video src="videos/museum_walkthrough.webm" poster="images/museum.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Séta a Pixel Art Múzeum 3D kiállítóterében"></video></div>
           <div class="proj-body"><div class="meta"><span>3D web</span><span>Three.js</span></div><h3>Pixel Art Múzeum — 3D kiállítótér</h3><p>Böngészőben járható 3D múzeum négy szárnnyal, pixel-art festményekkel és betölthető GLB-modellekkel; háromnyelvű felület (HU / EN / IT).</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>GLB</span></div><div class="plinks"><a href="https://github.com/LoricatusGroup/museum_2">GitHub ↗</a><a href="https://loricatusgroup.github.io/museum_2/">Élő oldal ↗</a></div></div>
         </article>
         <article class="proj" data-cat="app">
@@ -300,7 +301,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 
         <!-- ═══ LOKÁLIS AI ═══ -->
         <article class="proj" data-cat="local">
-          <div class="proj-img"><img data-ph alt="EDTI Studio videófeldolgozó AI"></div>
+          <div class="proj-img"><img src="images/ai_studio.jpg" alt="EDTI Studio videófeldolgozó AI — vezérlőpult"></div>
           <div class="proj-body"><div class="meta"><span>AI-pipeline</span><span>lokális · GPU</span></div><h3>EDTI Studio — videófeldolgozó AI</h3><p>Egyetemi oktatóvideó-feldolgozó platform: magyar előadás → angol szinkron az ASR → fordítás → hangklónozott TTS láncon. Backend: Whisper, NLLB, XTTS-v2, Demucs, FastAPI + GPU. A linken bebarangolható statikus demó.</p><div class="tags"><span>Whisper</span><span>NLLB</span><span>XTTS-v2</span><span>Demucs</span><span>FastAPI</span></div><div class="plinks"><a href="https://github.com/MayyDayy99/AI_workstation">GitHub ↗</a><a href="https://mayydayy99.github.io/AI_workstation/">Élő demó ↗</a></div></div>
         </article>
 
@@ -330,7 +331,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     <div class="proof-shot" data-reveal>
       <div class="bar"><i></i><i></i><i></i><span>a futó lokális AI felülete</span></div>
       <!-- Cseréld a data-ph-t valódi képernyőképre, vagy <img> helyett tegyél be <video>-t -->
-      <div class="shot"><img data-ph alt="A futó lokális AI (pl. Open WebUI) felülete"></div>
+      <div class="shot"><img src="images/ai_proof.jpg" alt="A futó lokális AI felülete — élő szerverterheléssel (CPU / VRAM / RAM)"></div>
     </div>
 
     <div class="stack" data-reveal>

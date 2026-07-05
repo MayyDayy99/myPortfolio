@@ -138,6 +138,28 @@ p{margin:0}
 .proj .priv{font-family:"Space Mono",monospace;font-size:.72rem;color:var(--muted);margin-top:16px;padding-top:13px;border-top:1px solid var(--paper-2)}
 .allwork{margin-top:34px}
 
+/* ── kiemelt (flagship) munka ── */
+.featured{margin-bottom:32px}
+.feat-card{display:grid;grid-template-columns:1.1fr .9fr;background:var(--ink);color:var(--paper);border:1px solid var(--ink-line);border-radius:calc(var(--r) + 4px);overflow:hidden;box-shadow:0 30px 60px -42px rgba(18,35,31,.6)}
+.feat-media{position:relative;background:var(--ink-deep);min-height:300px}
+.feat-media img,.feat-media video{width:100%;height:100%;object-fit:cover;display:block}
+.feat-badge{position:absolute;top:14px;left:14px;font-family:"Space Mono",monospace;font-size:.66rem;letter-spacing:.08em;color:var(--ink);background:var(--amber);padding:5px 10px;border-radius:7px;font-weight:700;display:flex;align-items:center;gap:.45em}
+.feat-badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.feat-body{padding:clamp(24px,3.2vw,42px);display:flex;flex-direction:column;justify-content:center}
+.feat-body .label{color:var(--amber)}
+.feat-body h3{font-family:"Bricolage Grotesque",sans-serif;font-size:clamp(1.4rem,2.6vw,2rem);font-weight:600;line-height:1.1;margin:12px 0 0}
+.feat-body .lead{color:var(--paper-dim);font-size:1.02rem;margin-top:14px}
+.feat-body .tags{margin-top:20px}
+.feat-body .tags span{font-family:"Space Mono",monospace;font-size:.72rem;color:var(--paper-dim);background:var(--ink-soft);border:1px solid var(--ink-line);padding:6px 11px;border-radius:7px}
+.feat-links{display:flex;flex-wrap:wrap;gap:12px 16px;margin-top:24px;align-items:center}
+.feat-links .btn-primary{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.feat-links .btn-primary:hover{background:#b8741f;border-color:#b8741f}
+.feat-links .priv{font-family:"Space Mono",monospace;font-size:.72rem;color:var(--paper-dim)}
+@media (max-width:760px){
+  .feat-card{grid-template-columns:1fr}
+  .feat-media{min-height:0;aspect-ratio:16/9}
+}
+
 /* ── lokális AI (kiemelt) ── */
 .lab{background:var(--ink);color:var(--paper)}
 .lab .label{color:var(--paper-dim)}
@@ -252,6 +274,33 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   <div class="wrap">
     <div class="shead" data-reveal><h2>Munkák</h2><span class="meta">lapozz a projektek között</span></div>
     <p class="sintro" data-reveal>Válaszd ki a típust, ami érdekel, és lapozz végig a projekteken — mobilon húzd, asztali gépen a nyilakkal.</p>
+
+    <!-- ══════════ KIEMELT MUNKA (flagship / DIMOP ERP) ══════════
+         Aktiváláshoz, amikor kész a mock frontend:
+           1) az <img data-ph>-t cseréld valódi képre:  <img src="images/erp.jpg" alt="…">
+              (vagy videóra, mint a múzeumnál: <video src="videos/erp.webm" poster="images/erp.jpg" autoplay muted loop playsinline></video>)
+           2) a .feat-badge szövege legyen:  <span class="live"></span>DEMÓ — szimulált adatok
+           3) a .feat-links-ben cseréld a "hamarosan" sort erre az élő gombra:
+              <a class="btn btn-primary" href="https://erp.maydayprod.app">Élő demó →</a>
+           4) töltsd ki a [ ] helyőrzőket (rendszer neve, modulok, backend)
+    -->
+    <div class="featured" data-reveal>
+      <article class="feat-card">
+        <div class="feat-media">
+          <span class="feat-badge">ELŐKÉSZÜLETBEN</span>
+          <img data-ph alt="[Rendszer neve] — vállalatirányítási rendszer irányítópultja">
+        </div>
+        <div class="feat-body">
+          <span class="label label--accent">Kiemelt munka · DIMOP-pályázat</span>
+          <h3>[Rendszer neve] — vállalatirányítási rendszer (ERP)</h3>
+          <p class="lead">DIMOP-pályázat keretében megvalósított, teljes vállalatirányítási rendszer: [irányítópult · számlázás · készlet- és raktárkezelés · CRM · HR · riportok]. Hamarosan interaktív, szimulált adatokkal működő demóval — közvetlenül az oldalon.</p>
+          <div class="tags"><span>ERP</span><span>DIMOP</span><span>React</span><span>TypeScript</span><span>[backend]</span></div>
+          <div class="feat-links">
+            <span class="priv">Interaktív demó hamarosan · ügyfél-/pályázati projekt</span>
+          </div>
+        </div>
+      </article>
+    </div>
 
     <div class="cat-wrap" data-reveal>
       <span class="cat-hint" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>Mutasd</span>

@@ -164,6 +164,10 @@ p{margin:0}
 .proj-img img{width:100%;height:100%;object-fit:contain;background:var(--ink)}
 .proj-img video{width:100%;height:100%;object-fit:cover;background:var(--ink);display:block}
 .proj--demo .proj-img{aspect-ratio:auto;height:300px}
+/* portrait (telefonos) teaser — pl. CinePair PWA: a 9:16 videó levágás nélkül */
+.proj--portrait .proj-img{aspect-ratio:9/16}
+.proj--portrait .proj-img video,.proj--portrait .proj-img img{object-fit:cover}
+.track{align-items:flex-start}
 .proj--demo .badge{position:absolute;top:10px;left:10px;z-index:2;font-family:"Space Mono",monospace;font-size:.66rem;letter-spacing:.06em;color:var(--ink);background:var(--amber);padding:4px 9px;border-radius:7px;display:flex;align-items:center;gap:.4em}
 .proj--demo .badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
 .demo-frame{width:100%;height:100%;border:0;display:block;background:var(--ink)}
@@ -500,13 +504,13 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
         <!-- ═══ WEBALKALMAZÁSOK ═══ -->
         <article class="proj" data-cat="app">
           <div class="proj-img"><video src="videos/museum_walkthrough.webm" poster="images/museum.jpg" autoplay muted loop playsinline preload="metadata" aria-label="Séta a Pixel Art Múzeum 3D kiállítóterében"></video></div>
-          <div class="proj-body"><div class="meta"><span>3D web</span><span>Three.js</span></div><h3>Pixel Art Múzeum — 3D kiállítótér</h3><p>Böngészőben járható 3D múzeum négy szárnnyal, pixel-art festményekkel és betölthető GLB-modellekkel; háromnyelvű felület (HU / EN / IT).</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>GLB</span></div><div class="plinks"><a href="https://github.com/LoricatusGroup/museum_2">GitHub ↗</a><a href="https://loricatusgroup.github.io/museum_2/">Élő oldal ↗</a></div></div>
+          <div class="proj-body"><div class="meta"><span>3D web</span><span>Three.js</span><span>GIMOP-pályázat</span></div><h3>Pixel Art Múzeum — 3D kiállítótér</h3><p>Böngészőben járható 3D múzeum négy szárnnyal, pixel-art festményekkel és betölthető GLB-modellekkel; háromnyelvű felület (HU / EN / IT). A <b>Loricatus Groupnak</b> készült, GIMOP-pályázat keretében.</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>GLB</span><span>GIMOP</span></div><div class="plinks"><a href="https://github.com/LoricatusGroup/museum_2">GitHub ↗</a><a href="https://loricatusgroup.github.io/museum_2/">Élő oldal ↗</a></div></div>
         </article>
         <article class="proj" data-cat="app">
           <div class="proj-img"><img data-ph alt="Mohás Roham 3D íjászjáték"></div>
           <div class="proj-body"><div class="meta"><span>3D játék</span><span>Three.js</span></div><h3>Mohás Roham — 3D íjászjáték</h3><p>First-person íjász wave-survival játék egyetlen HTML-fájlban (Three.js), elemi nyíl-rendszerrel és 2–4 fős co-op móddal.</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>Co-op</span></div><div class="plinks"><a href="https://github.com/MayyDayy99/Trollhunting">GitHub ↗</a><a href="https://trollhunting.maydayprod.app">▶ Játék ↗</a></div></div>
         </article>
-        <article class="proj" data-cat="app">
+        <article class="proj proj--portrait" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/cinepair_teaser.mp4" poster="images/cinepair_poster.jpg" muted loop playsinline preload="none" aria-label="CinePair — filmválasztó pároknak, teaser videó"></video></div>
           <div class="proj-body"><div class="meta"><span>PWA</span><span>valós idejű</span></div><h3>CinePair — filmválasztó pároknak</h3><p>Swipe-alapú, Tinder-szerű filmválasztó PWA pároknak és társaságoknak: közös gyűjtők, valós idejű egyezés és push-értesítés.</p><div class="tags"><span>PWA</span><span>Valós idejű</span><span>Push</span></div><div class="plinks"><a href="https://github.com/MayyDayy99/cinepair">GitHub ↗</a><a href="https://cinepair.maydayprod.app/">Élő oldal ↗</a></div></div>
         </article>

@@ -256,7 +256,40 @@ p{margin:0}
 @keyframes aiSpin{to{transform:rotate(360deg)}}
 .ai-widget .ebar{transform-box:fill-box;transform-origin:bottom;animation:aiEq .95s ease-in-out infinite}
 @keyframes aiEq{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(1)}}
-@media (prefers-reduced-motion:reduce){.ai-widget .spark,.ai-widget .qdot,.ai-widget .adot,.ai-widget .tbar,.ai-widget .caret,.ai-widget .wbar,.ai-widget .pcell,.ai-widget .cube,.ai-widget .ebar{animation:none}}
+.ai-widget .film{transform-box:fill-box;transform-origin:center;animation:aiFilm 2.2s linear infinite}
+@keyframes aiFilm{from{transform:translateX(0)}to{transform:translateX(-52px)}}
+@media (prefers-reduced-motion:reduce){.ai-widget .spark,.ai-widget .qdot,.ai-widget .adot,.ai-widget .tbar,.ai-widget .caret,.ai-widget .wbar,.ai-widget .pcell,.ai-widget .cube,.ai-widget .ebar,.ai-widget .film{animation:none}}
+/* ── Privát AI-műhely játék ── */
+.lg{border:1px solid #2a443c;border-radius:14px;background:#1b302a;padding:clamp(15px,2.4vw,24px)}
+.lg-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:13px}
+.lg-title{font-family:"Space Mono",monospace;font-size:.8rem;font-weight:700;letter-spacing:.06em;color:#eff1ec}
+.lg-priv{font-family:"Space Mono",monospace;font-size:.68rem;color:var(--amber);border:1px solid rgba(201,130,42,.5);border-radius:999px;padding:3px 11px;white-space:nowrap}
+.lg-screen{position:relative;background:#0f1c18;border:1px solid #2a443c;border-radius:10px;overflow:hidden}
+.lg-screen.busy{animation:lgBusy .55s ease}
+@keyframes lgBusy{0%,100%{box-shadow:inset 0 0 0 0 rgba(201,130,42,0)}50%{box-shadow:inset 0 0 0 2px var(--amber)}}
+.lg-anim{width:100%;height:auto;display:block}
+.lg-badge{position:absolute;top:10px;left:10px;font-family:"Space Mono",monospace;font-size:.66rem;font-weight:700;letter-spacing:.05em;color:#0f1c18;background:var(--amber);padding:3px 9px;border-radius:6px;text-transform:uppercase}
+.lg-status{position:absolute;top:11px;right:12px;font-family:"Space Mono",monospace;font-size:.64rem;color:#c3cbc2}
+.lg-out{font-family:"Space Mono",monospace;font-size:.82rem;line-height:1.5;color:#c3cbc2;margin:13px 0 0;min-height:2.4em}
+.lg-out b{color:#eff1ec;font-weight:700}
+.lg-chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px;font-family:"Space Mono",monospace;font-size:.72rem;color:#c3cbc2}
+.lg-node{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid #2a443c;border-radius:999px;background:#15201c}
+.lg-node .d{width:6px;height:6px;border-radius:50%;background:#5a7a6f}
+.lg-node.cur{border-color:var(--amber);color:#eff1ec}
+.lg-node.cur .d{background:var(--amber)}
+.lg-arrow{color:#5a7a6f}
+.lg-models{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}
+.lg-mod{display:flex;flex-direction:column;gap:2px;align-items:center;padding:11px 8px;border:1px solid #2a443c;border-radius:10px;background:#15201c;color:#eff1ec;font-family:"Space Mono",monospace;cursor:pointer;transition:border-color .18s,background .18s,transform .08s}
+.lg-mod:hover,.lg-mod:focus-visible{border-color:var(--amber);background:#1e2c26;outline:none}
+.lg-mod:active{transform:translateY(1px)}
+.lg-mod b{font-size:.82rem}
+.lg-mod span{font-size:.6rem;color:#8fa39b}
+.lg-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px}
+.lg-reset{font-family:"Space Mono",monospace;font-size:.72rem;color:var(--amber);background:none;border:1px solid rgba(201,130,42,.5);border-radius:999px;padding:7px 15px;cursor:pointer;transition:background .18s}
+.lg-reset:hover{background:rgba(201,130,42,.12)}
+.lg-hint{font-family:"Space Mono",monospace;font-size:.64rem;color:#7d8f88;flex:1;text-align:right;min-width:150px}
+@media(max-width:620px){.lg-models{grid-template-columns:repeat(3,1fr)}.lg-hint{display:none}}
+@media(max-width:400px){.lg-models{grid-template-columns:repeat(2,1fr)}}
 .lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,52px);margin-top:42px;align-items:start}
 .models{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .model{border:1px solid var(--ink-line);border-radius:11px;padding:15px 16px;background:var(--ink-soft)}
@@ -549,58 +582,33 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     <p class="proof-cap" data-reveal>Ez a videófeldolgozó rendszer önmagában <b>4 AI-modellt</b> fűz egy láncba: Whisper (beszédfelismerés) → NLLB (fordítás) → XTTS-v2 (hangklónozás) → Demucs (hangszétválasztás). A felület pedig <b>teljesen egyedi</b> — lehet chat, irányítópult vagy egy konkrét eszköz, mint ez; olyat építek, amilyet a te feladatod kíván.</p>
 
     <div class="stack ai-widget" data-reveal>
-      <svg viewBox="0 0 720 340" role="img" aria-label="A saját, privát AI a te eszközödön fut: te kérdezel, a válasz helyben születik, és az adataid nem lépnek ki. Kattints egy képességre lent a mintaválaszért.">
-        <defs>
-          <marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#c9822a" stroke-width="1.5"/></marker>
-        </defs>
-        <!-- Te (a felhasználó) -->
-        <circle cx="64" cy="128" r="15" fill="none" stroke="#c9822a" stroke-width="1.6"/>
-        <path d="M40 176 q24 -30 48 0" fill="none" stroke="#c9822a" stroke-width="1.6"/>
-        <text x="64" y="204" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" fill="#eff1ec">Te</text>
-        <!-- kérdés / válasz -->
-        <line x1="100" y1="120" x2="192" y2="120" stroke="#c9822a" stroke-width="1.5" marker-end="url(#arw)"/>
-        <text x="146" y="111" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">kérdés</text>
-        <circle class="qdot" cx="104" cy="120" r="3" fill="#c9822a"/>
-        <line x1="192" y1="148" x2="100" y2="148" stroke="#c9822a" stroke-width="1.5" marker-end="url(#arw)"/>
-        <text x="146" y="165" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">válasz</text>
-        <circle class="adot" cx="188" cy="148" r="3" fill="#c9822a"/>
-        <!-- A te eszközöd (minden ezen belül történik) -->
-        <rect x="200" y="24" width="496" height="292" rx="18" fill="#1b302a" stroke="#2a443c"/>
-        <text x="226" y="58" font-family="'Space Mono',monospace" font-size="13" font-weight="700" letter-spacing="1.2" fill="#eff1ec">A TE ESZKÖZÖD</text>
-        <text x="226" y="80" font-family="'Space Mono',monospace" font-size="11" fill="#c3cbc2">gép · saját szerver · saját felhő</text>
-        <g transform="translate(566,42)">
-          <rect x="0" y="0" width="106" height="26" rx="13" fill="none" stroke="#c9822a" stroke-width="1.2"/>
-          <path d="M9 12v-3a4 4 0 0 1 8 0v3M7 12h12v9H7z" fill="none" stroke="#c9822a" stroke-width="1.3" transform="translate(3,1) scale(0.72)"/>
-          <text x="40" y="17" font-family="'Space Mono',monospace" font-size="11" fill="#c9822a">privát</text>
-        </g>
-        <!-- Privát AI mag -->
-        <rect class="core" x="286" y="100" width="324" height="60" rx="14" fill="#0f1c18" stroke="#c9822a" stroke-width="1.3"/>
-        <g class="spark"><path d="M378 119 L382 129 L392 133 L382 137 L378 147 L374 137 L364 133 L374 129 Z" fill="none" stroke="#c9822a" stroke-width="1.4"/></g>
-        <text x="468" y="126" text-anchor="middle" font-family="'Bricolage Grotesque',sans-serif" font-size="19" font-weight="600" fill="#eff1ec">Privát AI</text>
-        <text x="452" y="147" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">helyben fut — nincs külső szolgáltató</text>
-        <!-- amit kérhetsz tőle (interaktív gombok) -->
-        <text x="226" y="192" font-family="'Space Mono',monospace" font-size="11" fill="#c3cbc2">amit kérhetsz tőle — <tspan fill="#c9822a">kattints</tspan> egy gombra:</text>
-        <g class="cap-btns" font-family="'Space Mono',monospace" font-size="11.5" fill="#eff1ec" text-anchor="middle">
-          <g class="cap" data-cap="szoveg" data-cx="262" tabindex="0" role="button" aria-label="szöveg mintaválasz"><rect x="221" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="262" y="224">szöveg</text></g>
-          <g class="cap" data-cap="beszed" data-cx="355" tabindex="0" role="button" aria-label="beszéd mintaválasz"><rect x="314" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="355" y="224">beszéd</text></g>
-          <g class="cap" data-cap="kep" data-cx="448" tabindex="0" role="button" aria-label="kép mintaválasz"><rect x="407" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="448" y="224">kép</text></g>
-          <g class="cap" data-cap="3d" data-cx="541" tabindex="0" role="button" aria-label="3D mintaválasz"><rect x="500" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="541" y="224">3D</text></g>
-          <g class="cap" data-cap="zene" data-cx="634" tabindex="0" role="button" aria-label="zene mintaválasz"><rect x="593" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="634" y="224">zene</text></g>
-        </g>
-        <!-- kimenet / preview panel -->
-        <rect x="221" y="252" width="454" height="52" rx="10" fill="#12211d" stroke="#2a443c"/>
-        <text id="aiPrevTitle" x="237" y="273" font-family="'Space Mono',monospace" font-size="11" font-weight="700" fill="#c9822a">szöveg</text>
-        <text id="aiPrevStatus" x="237" y="290" font-family="'Space Mono',monospace" font-size="9.5" fill="#c3cbc2">válasz generálása…</text>
-        <line x1="342" y1="260" x2="342" y2="296" stroke="#2a443c" stroke-width="1"/>
-        <g class="prev" id="prev-szoveg"></g>
-        <g class="prev" id="prev-beszed"></g>
-        <g class="prev" id="prev-kep"></g>
-        <g class="prev" id="prev-3d"></g>
-        <g class="prev" id="prev-zene"></g>
-        <!-- kérés-csomag (kattintáskor) -->
-        <circle class="pkt" id="aiPkt" r="3.6" fill="#c9822a" opacity="0"/>
-      </svg>
-      <div class="scap">Te kérdezel, a válasz helyben születik — az adataid soha nem lépnek ki a te eszközödről. <span style="color:var(--amber)">Próbáld ki: kattints egy képességre.</span></div>
+      <div class="lg">
+        <div class="lg-head">
+          <span class="lg-title">Privát AI-műhely — kombináld a modelleket</span>
+          <span class="lg-priv">privát · helyben fut</span>
+        </div>
+        <div class="lg-screen" id="lgScreen">
+          <svg class="lg-anim" viewBox="0 0 520 160" role="img" aria-label="Az aktuális AI-kimenet vizualizációja">
+            <g id="lgStage"></g>
+          </svg>
+          <span class="lg-badge" id="lgType">ötlet</span>
+          <span class="lg-status" id="lgStatus">készen áll</span>
+        </div>
+        <p class="lg-out" id="lgOut"></p>
+        <div class="lg-chain" id="lgChain" aria-label="A felépített modell-lánc"></div>
+        <div class="lg-models" id="lgModels">
+          <button class="lg-mod" type="button" data-model="llm"><b>LLM</b><span>→ szöveg</span></button>
+          <button class="lg-mod" type="button" data-model="kep"><b>Kép</b><span>→ kép</span></button>
+          <button class="lg-mod" type="button" data-model="hang"><b>Hang</b><span>→ hang</span></button>
+          <button class="lg-mod" type="button" data-model="video"><b>Videó</b><span>→ videó</span></button>
+          <button class="lg-mod" type="button" data-model="3d"><b>3D</b><span>→ 3D</span></button>
+        </div>
+        <div class="lg-foot">
+          <button class="lg-reset" type="button" id="lgReset">↻ Új ötlet</button>
+          <span class="lg-hint">Fűzz össze bármennyi modellt — mindegyik az előző kimenetét alakítja tovább.</span>
+        </div>
+      </div>
+      <div class="scap">Minden lépés a te eszközödön fut — az adataid nem lépnek ki. <span style="color:var(--amber)">Játssz: kombinálj modelleket.</span></div>
     </div>
 
     <div class="lab-cols">
@@ -891,94 +899,125 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 })();
 </script>
 
-<!-- Interaktív Lokális AI ábra -->
+<!-- Privát AI-műhely: modell-kombináló játék -->
 <script>
 (function(){
-  var w=document.querySelector('.ai-widget'); if(!w) return;
+  var root=document.querySelector('.ai-widget .lg'); if(!root) return;
   var NS='http://www.w3.org/2000/svg';
-  function mk(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
-  var META={
-    szoveg:{title:'szöveg',status:'válasz generálása…'},
-    beszed:{title:'beszéd',status:'hang szintézise…'},
-    kep:{title:'kép',status:'kép festése…'},
-    '3d':{title:'3D',status:'modell forgatása…'},
-    zene:{title:'zene',status:'zene generálása…'}
-  };
-  var CAPS=['szoveg','beszed','kep','3d','zene'];
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function mk(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var stage=document.getElementById('lgStage'),
+      screenEl=document.getElementById('lgScreen'),
+      typeEl=document.getElementById('lgType'),
+      statusEl=document.getElementById('lgStatus'),
+      outEl=document.getElementById('lgOut'),
+      chainEl=document.getElementById('lgChain');
 
-  // --- preview tartalmak felépítése ---
-  var pS=document.getElementById('prev-szoveg');
-  [{y:266,ww:250},{y:279,ww:288},{y:292,ww:168}].forEach(function(r,i){
-    var b=mk('rect',{x:376,y:r.y-4,width:r.ww,height:5,rx:2.5,fill:'#aeb8b2','class':'tbar'});
-    b.style.animationDelay=(i*0.28)+'s'; pS.appendChild(b);
-    if(i===2){var c=mk('rect',{x:376+r.ww+5,y:r.y-6,width:6,height:11,fill:'#c9822a','class':'caret'});pS.appendChild(c);}
+  var DISP={szoveg:'szöveg',kep:'kép',hang:'hang',video:'videó',haromd:'3D'};
+  var MODELS={
+    llm:{name:'LLM',out:'szoveg',run:'nyelvi modell fut…'},
+    kep:{name:'Kép',out:'kep',run:'kép-modell fest…'},
+    hang:{name:'Hang',out:'hang',run:'hang-modell szintetizál…'},
+    video:{name:'Videó',out:'video',run:'videó-modell renderel…'},
+    '3d':{name:'3D',out:'haromd',run:'3D-modell farag…'}
+  };
+  // bemeneti típus -> modell -> eredmény felirata (minden kombó ki van találva)
+  var OUT={
+    szoveg:{llm:'kibővített forgatókönyv',kep:'generált illusztráció',hang:'felolvasott narráció',video:'szövegből formált klip','3d':'szövegből mintázott modell'},
+    kep:{llm:'részletes képleírás',kep:'átstílusozott változat',hang:'a kép hangulatzenéje',video:'megmozgatott kép (klip)','3d':'képből kiemelt 3D tárgy'},
+    hang:{llm:'pontos leirat (átirat)',kep:'a hang vizualizációja',hang:'remix, új hangszín',video:'zenei vizualizáció klip','3d':'hanghullám-szobor'},
+    video:{llm:'jelenet-összefoglaló',kep:'kiemelt filmkocka',hang:'leválasztott filmzene',video:'meghosszabbított jelenet','3d':'a jelenet térbeli mása'},
+    haromd:{llm:'modell-specifikáció',kep:'fotórealisztikus render',hang:'a tárgy hangeffektje',video:'körbeforgó bemutató','3d':'finomított modell'}
+  };
+  var SEEDS=['„naplemente a Balaton felett”','„retró robot a konyhában”','„eső kopog a bádogtetőn”','„sárkány, aki fél a tűztől”','„lo-fi dallam esős estére”','„egy város a felhők fölött”','„macska űrhajósruhában”'];
+
+  var cur=null, chain=[], busy=false;
+
+  function clearStage(){ while(stage.firstChild) stage.removeChild(stage.firstChild); }
+  function buildStage(type){
+    clearStage();
+    if(type==='szoveg'){
+      [[130,58,230],[130,80,250],[130,102,150]].forEach(function(r,i){
+        var b=mk('rect',{x:r[0],y:r[1]-4,width:r[2],height:6,rx:3,fill:'#aeb8b2','class':'tbar'});
+        b.style.animationDelay=(i*0.28)+'s'; stage.appendChild(b);
+        if(i===2){var c=mk('rect',{x:r[0]+r[2]+6,y:r[1]-7,width:7,height:13,fill:'#c9822a','class':'caret'});stage.appendChild(c);}
+      });
+    } else if(type==='kep'){
+      for(var r2=0;r2<4;r2++)for(var c2=0;c2<11;c2++){var cell=mk('rect',{x:196+c2*12,y:53+r2*13,width:9,height:9,rx:2,fill:'#c9822a','class':'pcell'});cell.style.animationDelay=(((r2*11+c2)%17)*0.12)+'s';stage.appendChild(cell);}
+    } else if(type==='hang'){
+      for(var i=0;i<30;i++){var bx=130+i*9;var bar=mk('rect',{x:bx-1.6,y:66,width:3.2,height:28,rx:1.6,fill:'#cbd6cf','class':'wbar'});bar.style.animationDelay=(-(i*0.06))+'s';stage.appendChild(bar);}
+    } else if(type==='haromd'){
+      var cx=260,cy=80,s=40,off=22, fx=cx-s/2-off/2, fy=cy-s/2+off/2, bx2=fx+off, by=fy-off;
+      var g=mk('g',{'class':'cube'});
+      function ln(x1,y1,x2,y2){g.appendChild(mk('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:'#c9822a','stroke-width':1.6}));}
+      ln(fx,fy,fx+s,fy);ln(fx+s,fy,fx+s,fy+s);ln(fx+s,fy+s,fx,fy+s);ln(fx,fy+s,fx,fy);
+      ln(bx2,by,bx2+s,by);ln(bx2+s,by,bx2+s,by+s);ln(bx2+s,by+s,bx2,by+s);ln(bx2,by+s,bx2,by);
+      ln(fx,fy,bx2,by);ln(fx+s,fy,bx2+s,by);ln(fx+s,fy+s,bx2+s,by+s);ln(fx,fy+s,bx2,by+s);
+      stage.appendChild(g);
+    } else if(type==='video'){
+      var film=mk('g',{'class':'film'});
+      for(var f=-1;f<12;f++){var fxx=f*52;
+        film.appendChild(mk('rect',{x:fxx+4,y:58,width:44,height:44,rx:3,fill:(f%2?'#16241f':'#1c2f28'),stroke:'#2a443c'}));
+        film.appendChild(mk('rect',{x:fxx+20,y:49,width:12,height:5,rx:1,fill:'#2a443c'}));
+        film.appendChild(mk('rect',{x:fxx+20,y:106,width:12,height:5,rx:1,fill:'#2a443c'}));
+      }
+      stage.appendChild(film);
+      stage.appendChild(mk('path',{d:'M250 66 L250 94 L275 80 Z',fill:'#c9822a'}));
+    }
+  }
+
+  function node(type,disp){ return {type:type,disp:disp||DISP[type]}; }
+  function renderChain(){
+    chainEl.innerHTML='';
+    var start=Math.max(0,chain.length-6);
+    if(start>0){var e=document.createElement('span');e.className='lg-arrow';e.textContent='…';chainEl.appendChild(e);}
+    for(var i=start;i<chain.length;i++){
+      if(i>start||start>0){var a=document.createElement('span');a.className='lg-arrow';a.textContent='→';chainEl.appendChild(a);}
+      var s=document.createElement('span');s.className='lg-node'+(i===chain.length-1?' cur':'');
+      var d=document.createElement('span');d.className='d';s.appendChild(d);
+      s.appendChild(document.createTextNode(chain[i].disp));
+      chainEl.appendChild(s);
+    }
+  }
+
+  function setSeed(){
+    var seed=SEEDS[Math.floor(Math.random()*SEEDS.length)];
+    cur=node('szoveg','ötlet');
+    chain=[node('szoveg','ötlet')];
+    typeEl.textContent='ötlet';
+    statusEl.textContent='készen áll';
+    outEl.innerHTML='<b>'+seed+'</b> — egy ötlet. Válassz egy modellt, és alakítsd tovább.';
+    buildStage('szoveg');
+    renderChain();
+  }
+
+  function apply(modelKey){
+    if(busy) return;
+    var m=MODELS[modelKey]; if(!m) return;
+    var newType=m.out;
+    var label=(OUT[cur.type]&&OUT[cur.type][modelKey])||'új kimenet';
+    var fromDisp=cur.disp;
+    busy=true;
+    statusEl.textContent=m.run;
+    if(!reduce) screenEl.classList.add('busy');
+    setTimeout(function(){
+      cur=node(newType);
+      chain.push(node(newType));
+      typeEl.textContent=DISP[newType];
+      statusEl.textContent='kész ✓';
+      outEl.innerHTML=fromDisp+' → <b>'+DISP[newType]+'</b> · '+label;
+      buildStage(newType);
+      renderChain();
+      screenEl.classList.remove('busy');
+      busy=false;
+    }, reduce?0:520);
+  }
+
+  root.querySelectorAll('.lg-mod').forEach(function(b){
+    b.addEventListener('click',function(){ apply(b.getAttribute('data-model')); });
   });
-
-  var pB=document.getElementById('prev-beszed');
-  for(var i=0;i<24;i++){var bx=378+i*11;var bar=mk('rect',{x:bx-1.6,y:264,width:3.2,height:26,rx:1.6,fill:'#cbd6cf','class':'wbar'});bar.style.animationDelay=(-(i*0.06))+'s';pB.appendChild(bar);}
-
-  var pK=document.getElementById('prev-kep');
-  for(var r2=0;r2<3;r2++)for(var c2=0;c2<9;c2++){var cell=mk('rect',{x:452+c2*12,y:259+r2*12,width:9,height:9,rx:2,fill:'#c9822a','class':'pcell'});cell.style.animationDelay=(((r2*9+c2)%18)*0.13)+'s';pK.appendChild(cell);}
-
-  var p3=document.getElementById('prev-3d');
-  (function(){
-    var cx=505,cy=278,s=20,off=13;
-    var fx=cx-s/2-off/2, fy=cy-s/2+off/2, bx2=fx+off, by=fy-off;
-    var g=mk('g',{'class':'cube'});
-    function ln(x1,y1,x2,y2){g.appendChild(mk('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:'#c9822a','stroke-width':1.4}));}
-    ln(fx,fy,fx+s,fy);ln(fx+s,fy,fx+s,fy+s);ln(fx+s,fy+s,fx,fy+s);ln(fx,fy+s,fx,fy);
-    ln(bx2,by,bx2+s,by);ln(bx2+s,by,bx2+s,by+s);ln(bx2+s,by+s,bx2,by+s);ln(bx2,by+s,bx2,by);
-    ln(fx,fy,bx2,by);ln(fx+s,fy,bx2+s,by);ln(fx+s,fy+s,bx2+s,by+s);ln(fx,fy+s,bx2,by+s);
-    p3.appendChild(g);
-  })();
-
-  var pZ=document.getElementById('prev-zene');
-  for(var j=0;j<20;j++){var zx=392+j*13;var zb=mk('rect',{x:zx-3,y:264,width:6,height:30,rx:2,fill:'#c9822a','class':'ebar'});zb.style.animationDelay=((j%7)*0.11)+'s';pZ.appendChild(zb);}
-
-  // --- állapotkezelés ---
-  var prevEls={},capEls={};
-  CAPS.forEach(function(c){prevEls[c]=document.getElementById('prev-'+c);});
-  w.querySelectorAll('.cap').forEach(function(g){capEls[g.getAttribute('data-cap')]=g;});
-  var titleEl=document.getElementById('aiPrevTitle'),statusEl=document.getElementById('aiPrevStatus');
-  var core=w.querySelector('.core'),pkt=document.getElementById('aiPkt');
-  var auto=true,timer=null,idx=0;
-
-  function setActive(cap){
-    CAPS.forEach(function(c){
-      capEls[c].classList.toggle('on',c===cap);
-      prevEls[c].classList.toggle('on',c===cap);
-    });
-    titleEl.textContent=META[cap].title;
-    statusEl.textContent=META[cap].status;
-  }
-  function pulse(){ if(reduce)return; core.classList.remove('pulse'); void core.getBBox&&core.getBoundingClientRect(); core.classList.add('pulse'); setTimeout(function(){core.classList.remove('pulse');},520); }
-  function packet(cap){
-    if(reduce||!pkt.animate)return;
-    var g=capEls[cap]; var cx=+g.getAttribute('data-cx');
-    pkt.setAttribute('cx',cx); pkt.setAttribute('cy',220);
-    pkt.animate([
-      {transform:'translate(0px,0px)',opacity:0},
-      {opacity:1,offset:.15},
-      {transform:'translate('+(448-cx)+'px,-90px)',opacity:1,offset:.9},
-      {transform:'translate('+(448-cx)+'px,-90px)',opacity:0}
-    ],{duration:600,easing:'cubic-bezier(.4,0,.2,1)'});
-  }
-  function pick(cap,user){
-    if(user){auto=false; if(timer){clearInterval(timer);timer=null;}}
-    packet(cap); setActive(cap); pulse();
-  }
-
-  w.querySelectorAll('.cap').forEach(function(g){
-    var cap=g.getAttribute('data-cap');
-    g.addEventListener('click',function(){pick(cap,true);});
-    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();pick(cap,true);}});
-  });
-
-  setActive(CAPS[0]);
-  if(!reduce){
-    timer=setInterval(function(){ if(!auto){return;} idx=(idx+1)%CAPS.length; setActive(CAPS[idx]); pulse(); },2800);
-  }
+  document.getElementById('lgReset').addEventListener('click',setSeed);
+  setSeed();
 })();
 </script>
 

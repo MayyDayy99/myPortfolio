@@ -104,6 +104,18 @@ p{margin:0}
 @media (max-width:900px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.svc-grid{grid-template-columns:1fr}}
 
+/* ── demó-figyelmeztető ablak ── */
+.modal-ov{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,28,24,.62);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:opacity .25s var(--ease),visibility .25s}
+.modal-ov.open{opacity:1;visibility:visible}
+.modal{max-width:480px;width:100%;background:var(--paper);border:1px solid var(--paper-3);border-radius:16px;padding:clamp(24px,4vw,36px);box-shadow:0 40px 90px -34px rgba(18,35,31,.55);transform:translateY(8px);opacity:0;transition:transform .25s var(--ease),opacity .25s}
+.modal-ov.open .modal{transform:none;opacity:1}
+.modal .m-badge{display:inline-flex;align-items:center;gap:.5em;font-family:"Space Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);background:rgba(201,130,42,.1);border:1px solid rgba(201,130,42,.28);padding:5px 11px;border-radius:999px}
+.modal h3{font-family:"Bricolage Grotesque",sans-serif;font-size:1.4rem;font-weight:600;margin:16px 0 0;letter-spacing:-.01em}
+.modal p{color:var(--muted);font-size:.98rem;line-height:1.6;margin-top:12px}
+.modal p b{color:var(--ink)}
+.modal .m-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.modal .m-actions .btn{flex:1 1 auto}
+
 /* ── típusgombok (szegmens-vezérlő) ── */
 .cat-wrap{display:flex;align-items:center;gap:12px;margin-bottom:26px;flex-wrap:wrap}
 .cat-hint{font-family:"Space Mono",monospace;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:inline-flex;align-items:center;gap:.5em}
@@ -365,7 +377,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
           <p class="feat-client"><b>Loricatus Group</b> — elégedett, folyamatos megrendelő.</p>
           <div class="tags"><span>ERP</span><span>DIMOP</span><span>Next.js</span><span>React</span><span>TypeScript</span></div>
           <div class="feat-links">
-            <a class="btn btn-primary" href="https://mayydayy99.github.io/LoricatusERPdemo/">Élő demó →</a>
+            <a class="btn btn-primary erp-demo-link" href="https://mayydayy99.github.io/LoricatusERPdemo/">Élő demó →</a>
             <a class="feat-gh" href="https://github.com/MayyDayy99/LoricatusERPdemo">GitHub ↗</a>
           </div>
         </div>
@@ -725,6 +737,34 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
       document.querySelectorAll('[data-reveal]').forEach(function(el){ io.observe(el); });
     } else { document.querySelectorAll('[data-reveal]').forEach(function(el){ el.classList.add('in'); }); }
   }
+})();
+</script>
+
+<!-- Demó-figyelmeztető ablak (Loricatus ERP) -->
+<div class="modal-ov" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
+  <div class="modal">
+    <span class="m-badge">Bemutató demó</span>
+    <h3 id="demoModalTitle">Mielőtt belépsz a demóba</h3>
+    <p>A következő oldal kizárólag <b>bemutató célú demó</b>. Minden benne látható adat <b>AI-generált / szimulált</b> — nem tartalmaz semmilyen valós adatot a Loricatus Group tényleges működéséből.</p>
+    <p>A felület bejárható és kattintgatható, de éles rendszerhez nincs köze.</p>
+    <div class="m-actions">
+      <a class="btn btn-primary" id="demoModalGo" href="#" target="_blank" rel="noopener">Értem, tovább →</a>
+      <button class="btn btn-ghost" type="button" id="demoModalCancel">Mégsem</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var ov=document.getElementById('demoModal'), link=document.querySelector('.erp-demo-link');
+  if(!ov||!link) return;
+  var go=document.getElementById('demoModalGo'), cancel=document.getElementById('demoModalCancel'), lastFocus=null;
+  function onKey(e){ if(e.key==='Escape') close(); }
+  function open(e){ e.preventDefault(); go.setAttribute('href', link.getAttribute('href')); lastFocus=document.activeElement; ov.classList.add('open'); go.focus(); document.addEventListener('keydown', onKey); }
+  function close(){ ov.classList.remove('open'); document.removeEventListener('keydown', onKey); if(lastFocus) try{lastFocus.focus();}catch(_){} }
+  link.addEventListener('click', open);
+  cancel.addEventListener('click', close);
+  go.addEventListener('click', function(){ close(); });
+  ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
 })();
 </script>
 

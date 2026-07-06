@@ -145,8 +145,8 @@ p{margin:0}
 
 /* ── kiemelt (flagship) munka ── */
 .featured{margin-bottom:32px}
-.feat-card{display:grid;grid-template-columns:1.1fr .9fr;background:var(--ink);color:var(--paper);border:1px solid var(--ink-line);border-radius:calc(var(--r) + 4px);overflow:hidden;box-shadow:0 30px 60px -42px rgba(18,35,31,.6)}
-.feat-media{position:relative;background:var(--ink-deep);min-height:300px}
+.feat-card{display:grid;grid-template-columns:1.32fr 1fr;align-items:center;background:var(--ink);color:var(--paper);border:1px solid var(--ink-line);border-radius:calc(var(--r) + 4px);overflow:hidden;box-shadow:0 30px 60px -42px rgba(18,35,31,.6)}
+.feat-media{position:relative;background:var(--ink-deep);aspect-ratio:16/9}
 .feat-media img,.feat-media video{width:100%;height:100%;object-fit:cover;display:block}
 .feat-badge{position:absolute;top:14px;left:14px;font-family:"Space Mono",monospace;font-size:.66rem;letter-spacing:.08em;color:var(--ink);background:var(--amber);padding:5px 10px;border-radius:7px;font-weight:700;display:flex;align-items:center;gap:.45em}
 .feat-badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
@@ -300,18 +300,17 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
       <article class="feat-card">
         <div class="feat-media">
           <span class="feat-badge"><span class="live"></span>DEMÓ — szimulált adatok</span>
-          <video src="videos/loricatus_erp_teaser.mp4" autoplay muted loop playsinline preload="auto" aria-label="Loricatus ERP — vállalatirányítási rendszer, teaser videó"></video>
+          <video src="videos/loricatus_erp_teaser.mp4" poster="images/erp_poster.jpg" autoplay muted loop playsinline preload="auto" aria-label="Loricatus ERP — vállalatirányítási rendszer, teaser videó"></video>
         </div>
         <div class="feat-body">
           <span class="label label--accent">Kiemelt munka · DIMOP-pályázat</span>
           <h3>Loricatus ERP — vállalatirányítási rendszer</h3>
-          <p class="lead">DIMOP-pályázat keretében megvalósított, teljes vállalatirányítási rendszer építőipari cégeknek: ügyfelek, projektek, ajánlatok, számlák, szerződések, munkalapok, feladatok és jutalék — egy rendszerben. Az „Élő demó" egy bejárható, szimulált adatokkal működő bemutatót nyit.</p>
+          <p class="lead">DIMOP-pályázat keretében megvalósított, teljes vállalatirányítás építőipari cégeknek — ügyfelektől a projekteken át a számlázásig és jutalékig. Az „Élő demó" bejárható, szimulált bemutatót nyit.</p>
           <p class="feat-client"><b>Loricatus Group</b> — elégedett, folyamatos megrendelő.</p>
           <div class="tags"><span>ERP</span><span>DIMOP</span><span>Next.js</span><span>React</span><span>TypeScript</span></div>
           <div class="feat-links">
             <a class="btn btn-primary" href="https://mayydayy99.github.io/LoricatusERPdemo/">Élő demó →</a>
             <a class="feat-gh" href="https://github.com/MayyDayy99/LoricatusERPdemo">GitHub ↗</a>
-            <span class="priv">bemutató mock — nincs mögötte éles adat</span>
           </div>
         </div>
       </article>

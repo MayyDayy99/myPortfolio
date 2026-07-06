@@ -210,6 +210,37 @@ p{margin:0}
 .stack{border:1px solid var(--ink-line);border-radius:var(--r);background:var(--ink-deep);padding:clamp(18px,3vw,30px)}
 .stack svg{width:100%;height:auto;display:block}
 .stack .scap{margin-top:14px;font-family:"Space Mono",monospace;font-size:.74rem;color:var(--paper-dim);text-align:center}
+/* interaktív Lokális AI ábra */
+.ai-widget .cap{cursor:pointer}
+.ai-widget .cap rect{transition:fill .25s,stroke .25s}
+.ai-widget .cap:hover rect{stroke:var(--amber)}
+.ai-widget .cap:focus{outline:none}
+.ai-widget .cap:focus-visible rect{stroke:var(--amber);stroke-width:1.7}
+.ai-widget .cap.on rect{fill:#3a2a12;stroke:var(--amber);stroke-width:1.7}
+.ai-widget .cap.on text{fill:var(--amber)}
+.ai-widget .prev{display:none}
+.ai-widget .prev.on{display:block}
+.ai-widget .core.pulse{animation:aiCore .5s ease-out}
+@keyframes aiCore{0%{stroke-width:1.3}40%{stroke-width:3}100%{stroke-width:1.3}}
+.ai-widget .spark{transform-box:fill-box;transform-origin:center;animation:aiSpark 2.4s ease-in-out infinite}
+@keyframes aiSpark{0%,100%{opacity:.55;transform:scale(.9) rotate(0deg)}50%{opacity:1;transform:scale(1.12) rotate(20deg)}}
+.ai-widget .qdot{animation:aiQ 3.6s ease-in-out infinite}
+.ai-widget .adot{animation:aiA 3.6s ease-in-out infinite 1.8s}
+@keyframes aiQ{0%{transform:translateX(0);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateX(86px);opacity:0}}
+@keyframes aiA{0%{transform:translateX(0);opacity:0}12%{opacity:1}80%{opacity:1}100%{transform:translateX(-86px);opacity:0}}
+.ai-widget .tbar{transform-box:fill-box;transform-origin:left center;animation:aiGrow 1.4s ease-out infinite alternate}
+@keyframes aiGrow{0%{transform:scaleX(.05)}100%{transform:scaleX(1)}}
+.ai-widget .caret{animation:aiCaret 1s steps(1) infinite}
+@keyframes aiCaret{0%,49%{opacity:1}50%,100%{opacity:0}}
+.ai-widget .wbar{transform-box:fill-box;transform-origin:center;animation:aiWave 1.1s ease-in-out infinite}
+@keyframes aiWave{0%,100%{transform:scaleY(.22)}50%{transform:scaleY(1)}}
+.ai-widget .pcell{transform-box:fill-box;transform-origin:center;animation:aiPop 2.4s ease-in-out infinite}
+@keyframes aiPop{0%{opacity:.12;transform:scale(.55)}45%{opacity:1;transform:scale(1)}82%{opacity:1;transform:scale(1)}100%{opacity:.12;transform:scale(.55)}}
+.ai-widget .cube{transform-box:fill-box;transform-origin:center;animation:aiSpin 4.4s linear infinite}
+@keyframes aiSpin{to{transform:rotate(360deg)}}
+.ai-widget .ebar{transform-box:fill-box;transform-origin:bottom;animation:aiEq .95s ease-in-out infinite}
+@keyframes aiEq{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.ai-widget .spark,.ai-widget .qdot,.ai-widget .adot,.ai-widget .tbar,.ai-widget .caret,.ai-widget .wbar,.ai-widget .pcell,.ai-widget .cube,.ai-widget .ebar{animation:none}}
 .lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,52px);margin-top:42px;align-items:start}
 .models{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
 .model{border:1px solid var(--ink-line);border-radius:11px;padding:15px 16px;background:var(--ink-soft)}
@@ -501,45 +532,59 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     </div>
     <p class="proof-cap" data-reveal>Ez a videófeldolgozó rendszer önmagában <b>4 AI-modellt</b> fűz egy láncba: Whisper (beszédfelismerés) → NLLB (fordítás) → XTTS-v2 (hangklónozás) → Demucs (hangszétválasztás). A felület pedig <b>teljesen egyedi</b> — lehet chat, irányítópult vagy egy konkrét eszköz, mint ez; olyat építek, amilyet a te feladatod kíván.</p>
 
-    <div class="stack" data-reveal>
-      <svg viewBox="0 0 720 300" role="img" aria-label="A saját, privát AI a te eszközödön fut: te kérdezel, a válasz helyben születik, és az adataid nem lépnek ki.">
+    <div class="stack ai-widget" data-reveal>
+      <svg viewBox="0 0 720 340" role="img" aria-label="A saját, privát AI a te eszközödön fut: te kérdezel, a válasz helyben születik, és az adataid nem lépnek ki. Kattints egy képességre lent a mintaválaszért.">
         <defs>
           <marker id="arw" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#c9822a" stroke-width="1.5"/></marker>
         </defs>
         <!-- Te (a felhasználó) -->
-        <circle cx="64" cy="120" r="15" fill="none" stroke="#c9822a" stroke-width="1.6"/>
-        <path d="M40 168 q24 -30 48 0" fill="none" stroke="#c9822a" stroke-width="1.6"/>
-        <text x="64" y="196" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" fill="#eff1ec">Te</text>
+        <circle cx="64" cy="128" r="15" fill="none" stroke="#c9822a" stroke-width="1.6"/>
+        <path d="M40 176 q24 -30 48 0" fill="none" stroke="#c9822a" stroke-width="1.6"/>
+        <text x="64" y="204" text-anchor="middle" font-family="'Space Mono',monospace" font-size="12" fill="#eff1ec">Te</text>
         <!-- kérdés / válasz -->
-        <line x1="100" y1="112" x2="192" y2="112" stroke="#c9822a" stroke-width="1.5" marker-end="url(#arw)"/>
-        <text x="146" y="103" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">kérdés</text>
-        <line x1="192" y1="140" x2="100" y2="140" stroke="#c9822a" stroke-width="1.5" marker-end="url(#arw)"/>
-        <text x="146" y="157" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">válasz</text>
+        <line x1="100" y1="120" x2="192" y2="120" stroke="#c9822a" stroke-width="1.5" marker-end="url(#arw)"/>
+        <text x="146" y="111" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">kérdés</text>
+        <circle class="qdot" cx="104" cy="120" r="3" fill="#c9822a"/>
+        <line x1="192" y1="148" x2="100" y2="148" stroke="#c9822a" stroke-width="1.5" marker-end="url(#arw)"/>
+        <text x="146" y="165" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">válasz</text>
+        <circle class="adot" cx="188" cy="148" r="3" fill="#c9822a"/>
         <!-- A te eszközöd (minden ezen belül történik) -->
-        <rect x="200" y="26" width="496" height="248" rx="18" fill="#1b302a" stroke="#2a443c"/>
-        <text x="226" y="60" font-family="'Space Mono',monospace" font-size="13" font-weight="700" letter-spacing="1.2" fill="#eff1ec">A TE ESZKÖZÖD</text>
-        <text x="226" y="82" font-family="'Space Mono',monospace" font-size="11" fill="#c3cbc2">gép · saját szerver · saját felhő</text>
-        <g transform="translate(566,44)">
+        <rect x="200" y="24" width="496" height="292" rx="18" fill="#1b302a" stroke="#2a443c"/>
+        <text x="226" y="58" font-family="'Space Mono',monospace" font-size="13" font-weight="700" letter-spacing="1.2" fill="#eff1ec">A TE ESZKÖZÖD</text>
+        <text x="226" y="80" font-family="'Space Mono',monospace" font-size="11" fill="#c3cbc2">gép · saját szerver · saját felhő</text>
+        <g transform="translate(566,42)">
           <rect x="0" y="0" width="106" height="26" rx="13" fill="none" stroke="#c9822a" stroke-width="1.2"/>
           <path d="M9 12v-3a4 4 0 0 1 8 0v3M7 12h12v9H7z" fill="none" stroke="#c9822a" stroke-width="1.3" transform="translate(3,1) scale(0.72)"/>
           <text x="40" y="17" font-family="'Space Mono',monospace" font-size="11" fill="#c9822a">privát</text>
         </g>
         <!-- Privát AI mag -->
-        <rect x="286" y="104" width="324" height="66" rx="14" fill="#0f1c18" stroke="#c9822a" stroke-width="1.3"/>
-        <path d="M378 123 L382 133 L392 137 L382 141 L378 151 L374 141 L364 137 L374 133 Z" fill="none" stroke="#c9822a" stroke-width="1.4"/>
-        <text x="468" y="134" text-anchor="middle" font-family="'Bricolage Grotesque',sans-serif" font-size="19" font-weight="600" fill="#eff1ec">Privát AI</text>
-        <text x="452" y="156" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">helyben fut — nincs külső szolgáltató</text>
-        <!-- amit kérhetsz tőle -->
-        <text x="226" y="200" font-family="'Space Mono',monospace" font-size="11" fill="#c3cbc2">amit kérhetsz tőle:</text>
-        <g font-family="'Space Mono',monospace" font-size="11.5" fill="#eff1ec" text-anchor="middle">
-          <rect x="221" y="212" width="82" height="34" rx="9" fill="#15201c" stroke="#2a443c"/><text x="262" y="234">szöveg</text>
-          <rect x="314" y="212" width="82" height="34" rx="9" fill="#15201c" stroke="#2a443c"/><text x="355" y="234">beszéd</text>
-          <rect x="407" y="212" width="82" height="34" rx="9" fill="#15201c" stroke="#2a443c"/><text x="448" y="234">kép</text>
-          <rect x="500" y="212" width="82" height="34" rx="9" fill="#15201c" stroke="#2a443c"/><text x="541" y="234">3D</text>
-          <rect x="593" y="212" width="82" height="34" rx="9" fill="#15201c" stroke="#2a443c"/><text x="634" y="234">zene</text>
+        <rect class="core" x="286" y="100" width="324" height="60" rx="14" fill="#0f1c18" stroke="#c9822a" stroke-width="1.3"/>
+        <g class="spark"><path d="M378 119 L382 129 L392 133 L382 137 L378 147 L374 137 L364 133 L374 129 Z" fill="none" stroke="#c9822a" stroke-width="1.4"/></g>
+        <text x="468" y="126" text-anchor="middle" font-family="'Bricolage Grotesque',sans-serif" font-size="19" font-weight="600" fill="#eff1ec">Privát AI</text>
+        <text x="452" y="147" text-anchor="middle" font-family="'Space Mono',monospace" font-size="10.5" fill="#c3cbc2">helyben fut — nincs külső szolgáltató</text>
+        <!-- amit kérhetsz tőle (interaktív gombok) -->
+        <text x="226" y="192" font-family="'Space Mono',monospace" font-size="11" fill="#c3cbc2">amit kérhetsz tőle — <tspan fill="#c9822a">kattints</tspan> egy gombra:</text>
+        <g class="cap-btns" font-family="'Space Mono',monospace" font-size="11.5" fill="#eff1ec" text-anchor="middle">
+          <g class="cap" data-cap="szoveg" data-cx="262" tabindex="0" role="button" aria-label="szöveg mintaválasz"><rect x="221" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="262" y="224">szöveg</text></g>
+          <g class="cap" data-cap="beszed" data-cx="355" tabindex="0" role="button" aria-label="beszéd mintaválasz"><rect x="314" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="355" y="224">beszéd</text></g>
+          <g class="cap" data-cap="kep" data-cx="448" tabindex="0" role="button" aria-label="kép mintaválasz"><rect x="407" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="448" y="224">kép</text></g>
+          <g class="cap" data-cap="3d" data-cx="541" tabindex="0" role="button" aria-label="3D mintaválasz"><rect x="500" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="541" y="224">3D</text></g>
+          <g class="cap" data-cap="zene" data-cx="634" tabindex="0" role="button" aria-label="zene mintaválasz"><rect x="593" y="204" width="82" height="32" rx="9" fill="#15201c" stroke="#2a443c"/><text x="634" y="224">zene</text></g>
         </g>
+        <!-- kimenet / preview panel -->
+        <rect x="221" y="252" width="454" height="52" rx="10" fill="#12211d" stroke="#2a443c"/>
+        <text id="aiPrevTitle" x="237" y="273" font-family="'Space Mono',monospace" font-size="11" font-weight="700" fill="#c9822a">szöveg</text>
+        <text id="aiPrevStatus" x="237" y="290" font-family="'Space Mono',monospace" font-size="9.5" fill="#c3cbc2">válasz generálása…</text>
+        <line x1="342" y1="260" x2="342" y2="296" stroke="#2a443c" stroke-width="1"/>
+        <g class="prev" id="prev-szoveg"></g>
+        <g class="prev" id="prev-beszed"></g>
+        <g class="prev" id="prev-kep"></g>
+        <g class="prev" id="prev-3d"></g>
+        <g class="prev" id="prev-zene"></g>
+        <!-- kérés-csomag (kattintáskor) -->
+        <circle class="pkt" id="aiPkt" r="3.6" fill="#c9822a" opacity="0"/>
       </svg>
-      <div class="scap">Te kérdezel, a válasz helyben születik — az adataid soha nem lépnek ki a te eszközödről.</div>
+      <div class="scap">Te kérdezel, a válasz helyben születik — az adataid soha nem lépnek ki a te eszközödről. <span style="color:var(--amber)">Próbáld ki: kattints egy képességre.</span></div>
     </div>
 
     <div class="lab-cols">
@@ -782,6 +827,97 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     });
   },{threshold:0.35});
   vids.forEach(function(v){ io.observe(v); });
+})();
+</script>
+
+<!-- Interaktív Lokális AI ábra -->
+<script>
+(function(){
+  var w=document.querySelector('.ai-widget'); if(!w) return;
+  var NS='http://www.w3.org/2000/svg';
+  function mk(t,a){var e=document.createElementNS(NS,t);for(var k in a)e.setAttribute(k,a[k]);return e;}
+  var META={
+    szoveg:{title:'szöveg',status:'válasz generálása…'},
+    beszed:{title:'beszéd',status:'hang szintézise…'},
+    kep:{title:'kép',status:'kép festése…'},
+    '3d':{title:'3D',status:'modell forgatása…'},
+    zene:{title:'zene',status:'zene generálása…'}
+  };
+  var CAPS=['szoveg','beszed','kep','3d','zene'];
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+  // --- preview tartalmak felépítése ---
+  var pS=document.getElementById('prev-szoveg');
+  [{y:266,ww:250},{y:279,ww:288},{y:292,ww:168}].forEach(function(r,i){
+    var b=mk('rect',{x:376,y:r.y-4,width:r.ww,height:5,rx:2.5,fill:'#aeb8b2','class':'tbar'});
+    b.style.animationDelay=(i*0.28)+'s'; pS.appendChild(b);
+    if(i===2){var c=mk('rect',{x:376+r.ww+5,y:r.y-6,width:6,height:11,fill:'#c9822a','class':'caret'});pS.appendChild(c);}
+  });
+
+  var pB=document.getElementById('prev-beszed');
+  for(var i=0;i<24;i++){var bx=378+i*11;var bar=mk('rect',{x:bx-1.6,y:264,width:3.2,height:26,rx:1.6,fill:'#cbd6cf','class':'wbar'});bar.style.animationDelay=(-(i*0.06))+'s';pB.appendChild(bar);}
+
+  var pK=document.getElementById('prev-kep');
+  for(var r2=0;r2<3;r2++)for(var c2=0;c2<9;c2++){var cell=mk('rect',{x:452+c2*12,y:259+r2*12,width:9,height:9,rx:2,fill:'#c9822a','class':'pcell'});cell.style.animationDelay=(((r2*9+c2)%18)*0.13)+'s';pK.appendChild(cell);}
+
+  var p3=document.getElementById('prev-3d');
+  (function(){
+    var cx=505,cy=278,s=20,off=13;
+    var fx=cx-s/2-off/2, fy=cy-s/2+off/2, bx2=fx+off, by=fy-off;
+    var g=mk('g',{'class':'cube'});
+    function ln(x1,y1,x2,y2){g.appendChild(mk('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:'#c9822a','stroke-width':1.4}));}
+    ln(fx,fy,fx+s,fy);ln(fx+s,fy,fx+s,fy+s);ln(fx+s,fy+s,fx,fy+s);ln(fx,fy+s,fx,fy);
+    ln(bx2,by,bx2+s,by);ln(bx2+s,by,bx2+s,by+s);ln(bx2+s,by+s,bx2,by+s);ln(bx2,by+s,bx2,by);
+    ln(fx,fy,bx2,by);ln(fx+s,fy,bx2+s,by);ln(fx+s,fy+s,bx2+s,by+s);ln(fx,fy+s,bx2,by+s);
+    p3.appendChild(g);
+  })();
+
+  var pZ=document.getElementById('prev-zene');
+  for(var j=0;j<20;j++){var zx=392+j*13;var zb=mk('rect',{x:zx-3,y:264,width:6,height:30,rx:2,fill:'#c9822a','class':'ebar'});zb.style.animationDelay=((j%7)*0.11)+'s';pZ.appendChild(zb);}
+
+  // --- állapotkezelés ---
+  var prevEls={},capEls={};
+  CAPS.forEach(function(c){prevEls[c]=document.getElementById('prev-'+c);});
+  w.querySelectorAll('.cap').forEach(function(g){capEls[g.getAttribute('data-cap')]=g;});
+  var titleEl=document.getElementById('aiPrevTitle'),statusEl=document.getElementById('aiPrevStatus');
+  var core=w.querySelector('.core'),pkt=document.getElementById('aiPkt');
+  var auto=true,timer=null,idx=0;
+
+  function setActive(cap){
+    CAPS.forEach(function(c){
+      capEls[c].classList.toggle('on',c===cap);
+      prevEls[c].classList.toggle('on',c===cap);
+    });
+    titleEl.textContent=META[cap].title;
+    statusEl.textContent=META[cap].status;
+  }
+  function pulse(){ if(reduce)return; core.classList.remove('pulse'); void core.getBBox&&core.getBoundingClientRect(); core.classList.add('pulse'); setTimeout(function(){core.classList.remove('pulse');},520); }
+  function packet(cap){
+    if(reduce||!pkt.animate)return;
+    var g=capEls[cap]; var cx=+g.getAttribute('data-cx');
+    pkt.setAttribute('cx',cx); pkt.setAttribute('cy',220);
+    pkt.animate([
+      {transform:'translate(0px,0px)',opacity:0},
+      {opacity:1,offset:.15},
+      {transform:'translate('+(448-cx)+'px,-90px)',opacity:1,offset:.9},
+      {transform:'translate('+(448-cx)+'px,-90px)',opacity:0}
+    ],{duration:600,easing:'cubic-bezier(.4,0,.2,1)'});
+  }
+  function pick(cap,user){
+    if(user){auto=false; if(timer){clearInterval(timer);timer=null;}}
+    packet(cap); setActive(cap); pulse();
+  }
+
+  w.querySelectorAll('.cap').forEach(function(g){
+    var cap=g.getAttribute('data-cap');
+    g.addEventListener('click',function(){pick(cap,true);});
+    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();pick(cap,true);}});
+  });
+
+  setActive(CAPS[0]);
+  if(!reduce){
+    timer=setInterval(function(){ if(!auto){return;} idx=(idx+1)%CAPS.length; setActive(CAPS[idx]); pulse(); },2800);
+  }
 })();
 </script>
 

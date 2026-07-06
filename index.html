@@ -282,26 +282,74 @@ p{margin:0}
 .lg2-op-arrow{font-size:1.5rem;color:var(--amber);line-height:1}
 .lg2 .lg2-op.wait .lg2-op-arrow{animation:lg2Nudge 1.3s ease-in-out infinite}
 @keyframes lg2Nudge{0%,100%{transform:translateX(0);opacity:.7}50%{transform:translateX(4px);opacity:1}}
-/* kimenet-tartalmak */
+/* kimenet-tartalmak — élő, látványos animációkkal */
+.lg2-canvas>*{animation:lg2Reveal .55s cubic-bezier(.2,.7,.3,1) both}
+@keyframes lg2Reveal{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+/* szöveg — gépelő */
 .lg2-txt{width:100%;height:100%;padding:12px 14px;font-size:.82rem;line-height:1.5;color:#e2e8e3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical}
 .lg2-txt.q{display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.05rem;font-style:italic;color:#eff1ec;-webkit-line-clamp:3}
+.lg2-txt .cr{display:inline-block;width:2px;height:1em;vertical-align:-2px;background:var(--amber);margin-left:1px;animation:lg2Caret 1s steps(1) infinite}
+@keyframes lg2Caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+/* kép — élő naplemente */
 .lg2-img{width:100%;height:100%;display:block}
+.lg2-img .sun{transform-box:fill-box;transform-origin:center;animation:lg2Sun 5s ease-in-out infinite}
+@keyframes lg2Sun{0%,100%{transform:translateY(2px)}50%{transform:translateY(-4px)}}
+.lg2-img .glow{transform-box:fill-box;transform-origin:center;animation:lg2Glow 3.2s ease-in-out infinite}
+@keyframes lg2Glow{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:.55;transform:scale(1.14)}}
+.lg2-img .birds{animation:lg2Birds 12s linear infinite}
+@keyframes lg2Birds{0%{transform:translate(-40px,8px)}100%{transform:translate(345px,-12px)}}
+.lg2-img .shim{animation:lg2Shim 3.6s ease-in-out infinite}
+@keyframes lg2Shim{0%,100%{opacity:.2}50%{opacity:.75}}
+.lg2-img .star{animation:lg2Star 2.6s ease-in-out infinite}
+@keyframes lg2Star{0%,100%{opacity:.25}50%{opacity:.95}}
+/* hang — pörgő ekvalizer + pulzáló play */
 .lg2-au{display:flex;align-items:center;gap:12px;width:100%;padding:0 16px}
-.lg2-au .pl{width:40px;height:40px;flex:none;border-radius:50%;border:2px solid var(--amber);position:relative}
+.lg2-au .pl{width:40px;height:40px;flex:none;border-radius:50%;border:2px solid var(--amber);position:relative;animation:lg2Ring 2s ease-out infinite}
+@keyframes lg2Ring{0%{box-shadow:0 0 0 0 rgba(201,130,42,.45)}70%,100%{box-shadow:0 0 0 11px rgba(201,130,42,0)}}
 .lg2-au .pl::before{content:"";position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-left:12px solid var(--amber);border-top:7px solid transparent;border-bottom:7px solid transparent}
 .lg2-au .wv{flex:1;display:flex;align-items:center;gap:3px;height:48px}
-.lg2-au .wv i{flex:1;min-width:2px;background:#7fa093;border-radius:2px;transform-origin:center}
+.lg2-au .wv i{flex:1;min-width:2px;background:#7fa093;border-radius:2px;transform-origin:center;animation:lg2Eq .9s ease-in-out infinite}
+@keyframes lg2Eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
 .lg2-au .tm{font-family:"Space Mono",monospace;font-size:.64rem;color:#c3cbc2;flex:none}
-.lg2-vid{position:relative;width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,#17251f,#0b1310)}
-.lg2-vid .pl{width:48px;height:48px;border-radius:50%;background:var(--amber);position:relative;box-shadow:0 8px 22px -8px rgba(201,130,42,.7)}
+/* videó — játszó jelenet + telő csík */
+.lg2-vid{position:relative;width:100%;height:100%;overflow:hidden;background:#0b1310}
+.lg2-vid .sc{position:absolute;inset:0}
+.lg2-vid .pl{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border-radius:50%;background:var(--amber);box-shadow:0 8px 22px -8px rgba(201,130,42,.8);animation:lg2Pulse 2s ease-out infinite}
+@keyframes lg2Pulse{0%{box-shadow:0 0 0 0 rgba(201,130,42,.5)}70%,100%{box-shadow:0 0 0 14px rgba(201,130,42,0)}}
 .lg2-vid .pl::before{content:"";position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-left:15px solid #0f1c18;border-top:9px solid transparent;border-bottom:9px solid transparent}
-.lg2-vid .pg{position:absolute;left:12px;right:12px;bottom:11px;height:4px;border-radius:2px;background:rgba(239,241,236,.18);overflow:hidden}
-.lg2-vid .pg::before{content:"";position:absolute;inset:0 62% 0 0;background:var(--amber);border-radius:2px}
-.lg2-vid .tm{position:absolute;right:12px;top:11px;font-family:"Space Mono",monospace;font-size:.62rem;color:#eff1ec;background:rgba(15,28,24,.7);padding:2px 6px;border-radius:4px}
-.lg2-3d{display:flex;flex-direction:column;align-items:center;gap:9px}
-.lg2-3d svg{width:74px;height:74px;overflow:visible}
+.lg2-vid .pg{position:absolute;left:12px;right:12px;bottom:11px;height:4px;border-radius:2px;background:rgba(239,241,236,.2);overflow:hidden}
+.lg2-vid .pg i{position:absolute;left:0;top:0;bottom:0;width:100%;background:var(--amber);border-radius:2px;transform-origin:left;animation:lg2Prog 8s linear infinite}
+@keyframes lg2Prog{0%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+.lg2-vid .scan{position:absolute;left:0;right:0;height:44%;background:linear-gradient(rgba(201,130,42,0),rgba(201,130,42,.1),rgba(201,130,42,0));animation:lg2Scan 3.4s linear infinite}
+@keyframes lg2Scan{0%{top:-44%}100%{top:100%}}
+.lg2-vid .tm{position:absolute;right:12px;top:11px;font-family:"Space Mono",monospace;font-size:.62rem;color:#eff1ec;background:rgba(15,28,24,.72);padding:2px 6px;border-radius:4px;z-index:2}
+/* 3D — valódi forgó üvegkocka (CSS 3D) */
+.lg2-3d{display:flex;flex-direction:column;align-items:center;gap:11px}
+.lg2-scene3d{width:82px;height:82px;perspective:360px}
+.lg2-cube{position:relative;width:82px;height:82px;transform-style:preserve-3d;animation:lg2Cube 7s linear infinite}
+@keyframes lg2Cube{from{transform:rotateX(-24deg) rotateY(0)}to{transform:rotateX(-24deg) rotateY(360deg)}}
+.lg2-cube .f{position:absolute;width:82px;height:82px;border:1.5px solid var(--amber);background:rgba(201,130,42,.1);box-shadow:inset 0 0 20px rgba(201,130,42,.16)}
+.lg2-cube .f1{transform:translateZ(41px)}.lg2-cube .f2{transform:rotateY(180deg) translateZ(41px)}
+.lg2-cube .f3{transform:rotateY(90deg) translateZ(41px)}.lg2-cube .f4{transform:rotateY(-90deg) translateZ(41px)}
+.lg2-cube .f5{transform:rotateX(90deg) translateZ(41px)}.lg2-cube .f6{transform:rotateX(-90deg) translateZ(41px)}
 .lg2-3d span{font-family:"Space Mono",monospace;font-size:.62rem;color:#c3cbc2}
-.lg2-canvas.busy::after{content:"feldolgozás…";position:absolute;inset:0;display:grid;place-items:center;background:rgba(13,24,21,.82);font-family:"Space Mono",monospace;font-size:.72rem;color:var(--amber);letter-spacing:.04em}
+/* generálás-overlay */
+.lg2-gen{position:absolute;inset:0;z-index:6;display:flex;align-items:center;justify-content:center;gap:9px;font-family:"Space Mono",monospace;font-size:.74rem;color:var(--amber);background:rgba(11,20,17,.74);overflow:hidden}
+.lg2-gen::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 35%,rgba(201,130,42,.32) 50%,transparent 65%);background-size:220% 100%;animation:lg2Sweep .85s linear infinite}
+.lg2-gen .sp{position:relative;width:15px;height:15px;border:2px solid rgba(201,130,42,.3);border-top-color:var(--amber);border-radius:50%;animation:lg2Spin .7s linear infinite}
+.lg2-gen .t{position:relative}
+@keyframes lg2Sweep{from{background-position:180% 0}to{background-position:-70% 0}}
+@keyframes lg2Spin{to{transform:rotate(360deg)}}
+/* energia-lüktetés a folyamban */
+.lg2-op.fire .lg2-op-arrow{animation:lg2Fire .8s ease}
+@keyframes lg2Fire{0%{color:var(--amber);text-shadow:none}35%{color:#fff;text-shadow:0 0 15px var(--amber)}100%{color:var(--amber);text-shadow:none}}
+.lg2-card--out.arrive{animation:lg2Arrive .7s ease}
+@keyframes lg2Arrive{0%{box-shadow:0 0 0 1px rgba(201,130,42,.12)}40%{box-shadow:0 0 0 2px var(--amber),0 0 30px -4px rgba(201,130,42,.65)}100%{box-shadow:0 0 0 1px rgba(201,130,42,.12)}}
+.lg2-mod.fire{animation:lg2Btn .55s ease}
+@keyframes lg2Btn{0%{background:#15201c}30%{background:#3a2a12;border-color:var(--amber)}100%{background:#15201c}}
+@media (prefers-reduced-motion:reduce){
+  .lg2-canvas>*,.lg2-img .sun,.lg2-img .glow,.lg2-img .birds,.lg2-img .shim,.lg2-img .star,.lg2-au .pl,.lg2-au .wv i,.lg2-vid .pl,.lg2-vid .pg i,.lg2-vid .scan,.lg2-cube,.lg2-txt .cr,.lg2-gen::before,.lg2-gen .sp{animation:none}
+}
 /* modell-gombok */
 .lg2-models{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:18px}
 .lg2-mod{display:flex;flex-direction:column;gap:2px;align-items:center;padding:12px 8px;border:1px solid #2a443c;border-radius:11px;background:#15201c;color:#eff1ec;font-family:"Space Mono",monospace;cursor:pointer;transition:border-color .16s,background .16s,transform .08s}
@@ -951,15 +999,16 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   var inType=document.getElementById('lgInType'), inCanvas=document.getElementById('lgInCanvas'), inDesc=document.getElementById('lgInDesc'),
       outType=document.getElementById('lgOutType'), outCanvas=document.getElementById('lgOutCanvas'), outDesc=document.getElementById('lgOutDesc'),
       opModel=document.getElementById('lgOpModel'), opBox=root.querySelector('.lg2-op'),
+      outCard=document.getElementById('lgOutCard'),
       chainEl=document.getElementById('lgChain'), models=document.getElementById('lgModels');
 
   var DISP={text:'szöveg',image:'kép',audio:'hang',video:'videó',model3d:'3D'};
   var MODELS={
-    llm:{name:'LLM',out:'text',run:'nyelvi modell fut…'},
-    kep:{name:'Kép-modell',out:'image',run:'kép-modell fest…'},
-    hang:{name:'Hang-modell',out:'audio',run:'hang-modell szintetizál…'},
-    video:{name:'Videó-modell',out:'video',run:'videó-modell renderel…'},
-    '3d':{name:'3D-modell',out:'model3d',run:'3D-modell farag…'}
+    llm:{name:'LLM',out:'text',run:'nyelvi modell fut…',gen:'szöveg generálása'},
+    kep:{name:'Kép-modell',out:'image',run:'kép-modell fest…',gen:'kép festése'},
+    hang:{name:'Hang-modell',out:'audio',run:'hang-modell szintetizál…',gen:'hang szintézise'},
+    video:{name:'Videó-modell',out:'video',run:'videó-modell renderel…',gen:'klip renderelése'},
+    '3d':{name:'3D-modell',out:'model3d',run:'3D-modell farag…',gen:'modell faragása'}
   };
   // bemeneti típus -> modell -> az eredmény leírása (minden kombó ki van találva)
   var CAP={
@@ -983,42 +1032,61 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     model3d:'Modell-spec: tóparti jelenet · ~12 500 poligon · 3 db 2K textúra · középpontozott, méretezhető .glb.'
   };
 
-  // ---- kimenet-tartalmak (valódi, felismerhető) ----
+  // ---- kimenet-tartalmak (valódi, felismerhető, ÉLŐ) ----
   function svgImage(){
     return '<svg class="lg2-img" viewBox="0 0 300 150" preserveAspectRatio="xMidYMid slice" aria-label="generált kép">'+
-      '<defs><linearGradient id="lg2sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4bd57"/><stop offset=".55" stop-color="#df8038"/><stop offset="1" stop-color="#6e3529"/></linearGradient></defs>'+
+      '<defs><linearGradient id="lg2sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4bd57"/><stop offset=".5" stop-color="#df8038"/><stop offset="1" stop-color="#6e3529"/></linearGradient>'+
+      '<radialGradient id="lg2gl" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe9b3" stop-opacity=".85"/><stop offset="1" stop-color="#ffe9b3" stop-opacity="0"/></radialGradient></defs>'+
       '<rect width="300" height="150" fill="url(#lg2sky)"/>'+
-      '<circle cx="150" cy="70" r="27" fill="#ffe9b3"/>'+
+      '<circle class="star" cx="232" cy="26" r="2.4" fill="#fff5db"/><circle class="star" cx="258" cy="40" r="1.8" fill="#fff5db" style="animation-delay:.8s"/><circle class="star" cx="274" cy="20" r="1.6" fill="#fff5db" style="animation-delay:1.4s"/>'+
+      '<circle class="glow" cx="150" cy="70" r="48" fill="url(#lg2gl)"/>'+
+      '<circle class="sun" cx="150" cy="70" r="27" fill="#ffe9b3"/>'+
+      '<g class="birds" fill="none" stroke="#3a2726" stroke-width="1.4" stroke-linecap="round"><path d="M0 0 l5 -4 l5 4"/><path d="M15 6 l4 -3 l4 3"/></g>'+
       '<path d="M0 92 L55 82 L110 93 L165 80 L220 92 L300 84 L300 108 L0 108 Z" fill="#7a4a3a"/>'+
       '<rect y="106" width="300" height="44" fill="#3a2726"/>'+
-      '<rect x="138" y="106" width="24" height="44" fill="#f4c56b" opacity=".55"/>'+
-      '<circle cx="235" cy="44" r="4" fill="#fff5db" opacity=".8"/><circle cx="255" cy="30" r="2.5" fill="#fff5db" opacity=".7"/>'+
+      '<g class="shim"><rect x="118" y="112" width="64" height="2" fill="#f4c56b"/><rect x="86" y="120" width="128" height="1.5" fill="#f4c56b" opacity=".7"/><rect x="106" y="130" width="88" height="1.5" fill="#f4c56b" opacity=".55"/></g>'+
+      '<rect x="139" y="106" width="22" height="44" fill="#f4c56b" opacity=".45"/>'+
       '</svg>';
   }
-  function audioPlayer(kind){
+  function audioPlayer(dur){
     var n=26,bars='';
-    for(var i=0;i<n;i++){ var h=18+Math.round(30*Math.abs(Math.sin(i*0.7))); bars+='<i style="height:'+h+'%"></i>'; }
-    return '<div class="lg2-au"><span class="pl"></span><div class="wv">'+bars+'</div><span class="tm">'+(kind||'0:12')+'</span></div>';
+    for(var i=0;i<n;i++){ var h=22+Math.round(34*Math.abs(Math.sin(i*0.7))); bars+='<i style="height:'+h+'%;animation-delay:'+(-(i%9)*0.11)+'s"></i>'; }
+    return '<div class="lg2-au"><span class="pl"></span><div class="wv">'+bars+'</div><span class="tm">'+(dur||'0:12')+'</span></div>';
   }
   function videoPlayer(dur){
-    return '<div class="lg2-vid"><span class="tm">'+(dur||'0:08')+'</span><span class="pl"></span><span class="pg"></span></div>';
+    return '<div class="lg2-vid"><div class="sc">'+svgImage()+'</div>'+
+      '<span style="position:absolute;inset:0;background:rgba(11,19,16,.28)"></span>'+
+      '<span class="scan"></span><span class="tm">▶ '+(dur||'0:08')+'</span>'+
+      '<span class="pl"></span><span class="pg"><i></i></span></div>';
   }
   function cube3d(){
-    var cx=37,cy=37,s=32,off=16, fx=cx-s/2-off/2, fy=cy-s/2+off/2, bx=fx+off, by=fy-off;
-    function ln(a,b,c,d){return '<line x1="'+a+'" y1="'+b+'" x2="'+c+'" y2="'+d+'" stroke="#c9822a" stroke-width="1.6"/>';}
-    var g=ln(fx,fy,fx+s,fy)+ln(fx+s,fy,fx+s,fy+s)+ln(fx+s,fy+s,fx,fy+s)+ln(fx,fy+s,fx,fy)+
-          ln(bx,by,bx+s,by)+ln(bx+s,by,bx+s,by+s)+ln(bx+s,by+s,bx,by+s)+ln(bx,by+s,bx,by)+
-          ln(fx,fy,bx,by)+ln(fx+s,fy,bx+s,by)+ln(fx+s,fy+s,bx+s,by+s)+ln(fx,fy+s,bx,by+s);
-    return '<div class="lg2-3d"><svg viewBox="0 0 74 74"><g class="cube" style="transform-origin:37px 37px">'+g+'</g></svg><span>tárgy.glb · 3D modell</span></div>';
+    return '<div class="lg2-3d"><div class="lg2-scene3d"><div class="lg2-cube">'+
+      '<span class="f f1"></span><span class="f f2"></span><span class="f f3"></span><span class="f f4"></span><span class="f f5"></span><span class="f f6"></span>'+
+      '</div></div><span>tárgy.glb · 3D modell</span></div>';
   }
-  function renderCanvas(el,artifact){
+  var twTimer=null;
+  function typewriter(el,text){
+    if(twTimer){clearInterval(twTimer);twTimer=null;}
+    var i=0, step=Math.max(1,Math.ceil(text.length/64));
+    el.textContent='';
+    twTimer=setInterval(function(){ i+=step; el.textContent=text.slice(0,i); if(i>=text.length){clearInterval(twTimer);twTimer=null;} },22);
+  }
+  function renderCanvas(el,artifact,animate){
     var t=artifact.type;
-    if(t==='text'){ el.innerHTML='<div class="lg2-txt'+(artifact.seed?' q':'')+'">'+artifact.text+'</div>'; }
+    if(twTimer){clearInterval(twTimer);twTimer=null;}
+    if(t==='text'){
+      var wrap=document.createElement('div'); wrap.className='lg2-txt'+(artifact.seed?' q':'');
+      var span=document.createElement('span'); wrap.appendChild(span);
+      var cr=document.createElement('span'); cr.className='cr'; wrap.appendChild(cr);
+      el.innerHTML=''; el.appendChild(wrap);
+      if(animate && !reduce){ typewriter(span,artifact.text); } else { span.textContent=artifact.text; }
+    }
     else if(t==='image'){ el.innerHTML=svgImage(); }
     else if(t==='audio'){ el.innerHTML=audioPlayer(artifact.dur); }
     else if(t==='video'){ el.innerHTML=videoPlayer(artifact.dur); }
     else if(t==='model3d'){ el.innerHTML=cube3d(); }
   }
+  function fire(el){ if(!el)return; el.classList.remove('fire'); void el.offsetWidth; el.classList.add('fire'); }
 
   var cur=null, chain=[], busy=false, seedIdx=0, started=false;
 
@@ -1046,7 +1114,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     inDesc.textContent='Még nincs bemenet — a mostani kimenetből lesz.';
     // kimenet = ötlet
     outType.textContent='ötlet';
-    renderCanvas(outCanvas,cur);
+    renderCanvas(outCanvas,cur,true);
     outDesc.innerHTML='Egy nyers ötlet, szövegként. <b style="color:var(--amber)">Koppints egy modellre →</b>';
     opModel.textContent='koppints egy modellre';
     opBox.classList.toggle('wait',!reduce);
@@ -1060,15 +1128,20 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     var caption=(CAP[cur.type]&&CAP[cur.type][modelKey])||'új kimenet';
     var prev=cur;
     started=true; opBox.classList.remove('wait');
+    // vizuális visszajelzés: gomb + operátor lüktet
+    fire(models.querySelector('.lg2-mod[data-model="'+modelKey+'"]'));
+    fire(opBox);
     // bemenet <- előző kimenet
     inType.textContent=prev.disp;
-    renderCanvas(inCanvas,prev);
+    renderCanvas(inCanvas,prev,false);
     inDesc.textContent=prev.caption;
     // operátor
     opModel.textContent=m.name;
-    // kimenet feldolgozás
+    // kimenet feldolgozás — látványos generálás-overlay
     busy=true;
-    outCanvas.classList.add('busy');
+    var gen=document.createElement('div'); gen.className='lg2-gen';
+    gen.innerHTML='<span class="sp"></span><span class="t">'+m.gen+'…</span>';
+    outCanvas.appendChild(gen);
     outDesc.textContent=m.run;
     setTimeout(function(){
       var text=null;
@@ -1077,12 +1150,12 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
       cur={type:newType,text:text,dur:dur,caption:caption,disp:DISP[newType]};
       chain.push({type:newType,disp:DISP[newType]});
       outType.textContent=DISP[newType];
-      outCanvas.classList.remove('busy');
-      renderCanvas(outCanvas,cur);
+      renderCanvas(outCanvas,cur,true);
+      outCard.classList.remove('arrive'); void outCard.offsetWidth; outCard.classList.add('arrive');
       outDesc.innerHTML='<b>'+DISP[newType]+'</b> · '+caption;
       renderChain();
       busy=false;
-    }, reduce?0:560);
+    }, reduce?0:850);
   }
 
   models.querySelectorAll('.lg2-mod').forEach(function(b){

@@ -138,6 +138,11 @@ p{margin:0}
 .proj .priv{font-family:"Space Mono",monospace;font-size:.72rem;color:var(--muted);margin-top:16px;padding-top:13px;border-top:1px solid var(--paper-2)}
 .allwork{margin-top:34px}
 
+/* ── animáció-indító gombok a kártyán ── */
+.anim-launch{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.anim-go{font-family:"Space Mono",monospace;font-size:.78rem;padding:8px 12px;border-radius:999px;border:1px solid var(--paper-3);background:#fff;color:var(--ink);cursor:pointer;transition:transform .15s var(--ease),background .18s,color .18s,border-color .18s;display:inline-flex;align-items:center;gap:.45em;white-space:nowrap}
+.anim-go:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-1px)}
+
 /* ── kiemelt (flagship) munka ── */
 .featured{margin-bottom:32px}
 .feat-card{display:grid;grid-template-columns:1.1fr .9fr;background:var(--ink);color:var(--paper);border:1px solid var(--ink-line);border-radius:calc(var(--r) + 4px);overflow:hidden;box-shadow:0 30px 60px -42px rgba(18,35,31,.6)}
@@ -377,10 +382,17 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
           <div class="proj-body"><div class="meta"><span>Böngésző-kiegészítő</span><span>interaktív</span></div><h3>[Haver neve] — interaktív böngésző-társ</h3><p>Böngészőben élő, interaktív társ, amely reagál az éppen megnyitott weboldalra: [egészítsd ki — mit csinál, pl. kommentál, segít, animál, reagál a tartalomra].</p><div class="tags"><span>JavaScript</span><span>Böngésző-kiegészítő</span><span>Interaktív</span><span>[+ tech]</span></div><div class="plinks"><a href="#">GitHub ↗</a><a href="#">Élő oldal ↗</a></div></div>
         </article>
 
-        <!-- ═══ PLACEHOLDER — HTML-animáció (töltsd ki a [ ] részeket; másold, ha több van) ═══ -->
         <article class="proj" data-cat="app">
-          <div class="proj-img"><img data-ph alt="[Animáció címe]"></div>
-          <div class="proj-body"><div class="meta"><span>HTML-animáció</span><span>[CSS / Canvas / SVG]</span></div><h3>[Animáció címe]</h3><p>[Rövid leírás: mit mutat az animáció és mivel készült — pl. tiszta CSS, Canvas vagy SVG, interakcióval vagy anélkül.]</p><div class="tags"><span>HTML</span><span>CSS</span><span>Animáció</span></div><div class="plinks"><a href="#">Élő oldal ↗</a></div></div>
+          <div class="proj-img"><img src="images/animaciok.jpg" alt="Loricatus ERP task-animációk — indító"></div>
+          <div class="proj-body"><div class="meta"><span>HTML-animáció</span><span>CSS/JS</span></div><h3>Task-animációk — Loricatus ERP</h3><p>Teljes képernyős effektek, amelyek az ERP-ben egy új feladat születésekor játszódnak le. Kattints egy gombra — <b>itt, az oldalon</b> lejátszom:</p>
+            <div class="anim-launch">
+              <button type="button" class="anim-go" onclick="triggerLeafRain()">🍂 Levélhullás</button>
+              <button type="button" class="anim-go" onclick="triggerMoneyRain()">💸 Pénzhullás</button>
+              <button type="button" class="anim-go" onclick="triggerDroneSwarm()">🚁 Drónos felmérés</button>
+              <button type="button" class="anim-go" onclick="triggerMachineTime()">⚙️ Gépidő</button>
+              <button type="button" class="anim-go" onclick="triggerOfficeWorkflow()">📋 Papírmunka</button>
+            </div>
+          <div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>Animáció</span></div></div>
         </article>
 
         <!-- ═══ LOKÁLIS AI ═══ -->
@@ -658,6 +670,1937 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
       document.querySelectorAll('[data-reveal]').forEach(function(el){ io.observe(el); });
     } else { document.querySelectorAll('[data-reveal]').forEach(function(el){ el.classList.add('in'); }); }
   }
+})();
+</script>
+
+<!-- Loricatus ERP task-animációk (beágyazva a taskanimaciok.html-ből) -->
+<script data-task-animaciok>
+/* ============================================================
+   1) LEAF RAIN — levélhullás / triggerLeafRain
+   ============================================================ */
+const triggerLeafRain = (function () {
+  const STYLE_ID = 'leaf-rain-style';
+
+  const STYLES = `
+.leaf-rain-overlay {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 9999;
+  background: transparent;
+  animation: lrOverlayFadeOut 700ms ease 4400ms forwards;
+}
+.leaf-rain-overlay .item {
+  position: absolute; top: -10vh;
+  left: var(--x, 50%);
+  transform: translate3d(-50%, -20vh, 0) scale(var(--scale, 1)) rotate(var(--rotate, 0deg));
+  will-change: transform, opacity; opacity: 0;
+  animation: lrLeafFall var(--duration, 4000ms) cubic-bezier(0.32, 0, 0.36, 1) var(--delay, 0ms) forwards;
+  filter: drop-shadow(0 8px 10px rgba(20, 56, 7, 0.22));
+}
+.leaf-rain-overlay .item .sway-wrap {
+  display: block; transform-origin: 50% 50%;
+  animation: lrLeafSway var(--swayDur, 2200ms) ease-in-out var(--delay, 0ms) infinite alternate;
+}
+.leaf-rain-overlay .item .flutter-wrap {
+  display: block; transform-origin: 50% 50%; transform-style: preserve-3d;
+  animation: lrLeafFlutter var(--flutterDur, 1800ms) ease-in-out var(--delay, 0ms) infinite alternate;
+}
+.leaf-rain-overlay .item.layer-back  {
+  filter: drop-shadow(0 4px 6px rgba(20, 56, 7, 0.14)) blur(0.3px); opacity: 0.85;
+}
+.leaf-rain-overlay .item.layer-front {
+  filter: drop-shadow(0 12px 16px rgba(20, 56, 7, 0.3));
+}
+@keyframes lrLeafFall {
+  0% { transform: translate3d(-50%, -20vh, 0) scale(var(--scale, 1)) rotate(var(--rotate, 0deg)); opacity: 0; }
+  8%  { opacity: 1; }
+  92% { opacity: 1; }
+  100% {
+    transform:
+      translate3d(calc(-50% + var(--drift, 0px)), 120vh, 0)
+      scale(var(--scale, 1))
+      rotate(calc(var(--rotate, 0deg) + var(--rotEnd, 360deg)));
+    opacity: 0;
+  }
+}
+@keyframes lrLeafSway {
+  0%   { transform: translateX(calc(var(--swayAmp, 14px) * -1)); }
+  100% { transform: translateX(var(--swayAmp, 14px)); }
+}
+@keyframes lrLeafFlutter {
+  0%   { transform: rotateZ(-7deg) rotateY(-55deg) rotateX(8deg); }
+  50%  { transform: rotateZ(0deg)  rotateY(0deg)   rotateX(-4deg); }
+  100% { transform: rotateZ(7deg)  rotateY(55deg)  rotateX(8deg); }
+}
+@keyframes lrOverlayFadeOut { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .leaf-rain-overlay .item { display: none !important; }
+  .leaf-rain-overlay { animation: lrOverlayFadeOut 700ms ease 2400ms forwards; }
+  .leaf-rain-overlay .reduced-motion-burst {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px; height: 160px;
+    display: grid; place-items: center;
+    animation: lrRmPulse 1600ms ease-out forwards;
+    filter: drop-shadow(0 8px 18px rgba(31, 106, 68, 0.3));
+  }
+}
+.leaf-rain-overlay .reduced-motion-burst { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .leaf-rain-overlay .reduced-motion-burst { display: grid; }
+}
+@keyframes lrRmPulse {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.12); }
+}
+@media (max-width: 600px) {
+  .leaf-rain-overlay .item {
+    --scale-mult: 0.78;
+    transform: translate3d(-50%, -20vh, 0) scale(calc(var(--scale, 1) * var(--scale-mult))) rotate(var(--rotate, 0deg));
+  }
+}
+`;
+
+  const palettes = [
+    { hi: '#e9ff9a', mid: '#86d83a', deep: '#2d8a1f', vein: '#0e3a08' },
+    { hi: '#c9f57a', mid: '#5fc930', deep: '#1f7a25', vein: '#0a3210' },
+    { hi: '#a8f0b6', mid: '#3fd17a', deep: '#127a48', vein: '#062a18' },
+    { hi: '#dcf99a', mid: '#7fd640', deep: '#3f8a1c', vein: '#173a08' },
+    { hi: '#b8f7c8', mid: '#46e08a', deep: '#1a8a52', vein: '#062a18' },
+  ];
+
+  function ensureStyles() {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = STYLES;
+    document.head.appendChild(style);
+  }
+
+  function leafSVG(p, variant) {
+    const v = typeof variant === 'number' ? variant : 0;
+    const lengthRoll = (v * 37) % 100 / 100;
+    const widthRoll  = (v * 53) % 100 / 100;
+    const L = 80 + lengthRoll * 28;
+    const W = 38 + widthRoll  * 18;
+    const tip = -L / 2;
+    const base = L / 2;
+    const curve = ((v * 11) % 10) - 5;
+
+    const veinYs = [-0.6, -0.3, 0.0, 0.3].map(t => (tip + (base - tip) * (t + 0.5)));
+    const veinLines = veinYs.map((y) => {
+      const x = (W * 0.7) * (1 - Math.abs((y - 0) / (L / 2)) * 0.7);
+      const tipY = y - (L * 0.16);
+      return `
+    <path d="M ${curve.toFixed(1)} ${y.toFixed(1)} Q ${(x * 0.5).toFixed(1)} ${((y + tipY) / 2).toFixed(1)} ${x.toFixed(1)} ${tipY.toFixed(1)}"/>
+    <path d="M ${curve.toFixed(1)} ${y.toFixed(1)} Q ${(-x * 0.5).toFixed(1)} ${((y + tipY) / 2).toFixed(1)} ${(-x).toFixed(1)} ${tipY.toFixed(1)}"/>`;
+    }).join('');
+
+    const vbX = -W - 8;
+    const vbY = tip - 8;
+    const vbW = (W + 8) * 2;
+    const vbH = (base - tip) + 28;
+
+    return `
+<svg width="${(vbW * 0.9).toFixed(0)}" height="${(vbH * 0.9).toFixed(0)}" viewBox="${vbX} ${vbY} ${vbW} ${vbH}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="leafFace${variant}" cx="0.42" cy="0.3" r="0.85">
+      <stop offset="0" stop-color="${p.hi}"/>
+      <stop offset="0.55" stop-color="${p.mid}"/>
+      <stop offset="1" stop-color="${p.deep}"/>
+    </radialGradient>
+  </defs>
+  <path d="
+    M ${curve.toFixed(1)} ${tip.toFixed(1)}
+    C ${(W * 0.85 + curve).toFixed(1)} ${(tip * 0.55).toFixed(1)},
+      ${W.toFixed(1)} ${(tip * 0.1).toFixed(1)},
+      ${(W * 0.9 + curve * 0.6).toFixed(1)} ${(base * 0.55).toFixed(1)}
+    C ${(W * 0.6 + curve).toFixed(1)} ${(base * 0.92).toFixed(1)},
+      ${(W * 0.2).toFixed(1)} ${base.toFixed(1)},
+      ${curve.toFixed(1)} ${base.toFixed(1)}
+    C ${(-W * 0.2).toFixed(1)} ${base.toFixed(1)},
+      ${(-W * 0.6 + curve).toFixed(1)} ${(base * 0.92).toFixed(1)},
+      ${(-W * 0.9 + curve * 0.6).toFixed(1)} ${(base * 0.55).toFixed(1)}
+    C ${(-W).toFixed(1)} ${(tip * 0.1).toFixed(1)},
+      ${(-W * 0.85 + curve).toFixed(1)} ${(tip * 0.55).toFixed(1)},
+      ${curve.toFixed(1)} ${tip.toFixed(1)} Z"
+    fill="url(#leafFace${variant})" stroke="${p.vein}" stroke-opacity="0.32" stroke-width="0.7"/>
+  <path d="M ${curve.toFixed(1)} ${tip.toFixed(1)} Q ${(curve * 1.4).toFixed(1)} 0 ${curve.toFixed(1)} ${base.toFixed(1)}"
+        stroke="${p.vein}" stroke-opacity="0.55" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <g stroke="${p.vein}" stroke-opacity="0.45" stroke-width="0.7" fill="none" stroke-linecap="round">${veinLines}
+  </g>
+  <path d="M ${curve.toFixed(1)} ${base.toFixed(1)} L ${curve.toFixed(1)} ${(base + 12).toFixed(1)}"
+        stroke="${p.vein}" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  <ellipse cx="${(-W * 0.28).toFixed(1)}" cy="${(tip * 0.5).toFixed(1)}" rx="${(W * 0.22).toFixed(1)}" ry="${(L * 0.12).toFixed(1)}"
+           fill="#ffffff" fill-opacity="0.22" transform="rotate(-18 ${(-W * 0.28).toFixed(1)} ${(tip * 0.5).toFixed(1)})"/>
+</svg>`;
+  }
+
+  function buildLeafSVG(index) {
+    const p = palettes[index % palettes.length];
+    return leafSVG(p, index);
+  }
+
+  function clusteredDelay() {
+    const PEAK_CENTER = 600;
+    const PEAK_WIDTH = 500;
+    const BURST_WINDOW = 1800;
+    const u1 = Math.random() || 1e-6;
+    const u2 = Math.random();
+    const g = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const d = PEAK_CENTER + g * (PEAK_WIDTH / 2);
+    return Math.max(0, Math.min(BURST_WINDOW, d));
+  }
+
+  function buildOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'leaf-rain-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const rm = document.createElement('div');
+    rm.className = 'reduced-motion-burst';
+    rm.innerHTML = `
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="lrRmGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#e9ff9a"/>
+      <stop offset="0.7" stop-color="#86d83a" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#2d8a1f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="80" cy="80" r="70" fill="url(#lrRmGrad)"/>
+  <g transform="translate(80 80) scale(0.7)">
+    ${leafSVG(palettes[0], 'rm')}
+  </g>
+</svg>`;
+    overlay.appendChild(rm);
+
+    const COUNT = 90;
+    for (let i = 0; i < COUNT; i++) {
+      const item = document.createElement('div');
+      item.className = 'item';
+
+      const depthRoll = Math.random();
+      let depthClass = '';
+      let scale = 1;
+      if (depthRoll < 0.28)      { depthClass = 'layer-back';  scale = 0.42 + Math.random() * 0.22; }
+      else if (depthRoll > 0.7)  { depthClass = 'layer-front'; scale = 0.95 + Math.random() * 0.3; }
+      else                       { scale = 0.65 + Math.random() * 0.25; }
+      if (depthClass) item.classList.add(depthClass);
+
+      const x = (Math.random() * 100).toFixed(2) + '%';
+      const drift = ((Math.random() - 0.5) * 320).toFixed(1) + 'px';
+      const delay = i < 10
+        ? Math.floor((i / 10) * 250)
+        : Math.floor(clusteredDelay());
+      const baseDur = 4000 + Math.floor(Math.random() * 1600);
+      const duration = baseDur + (depthClass === 'layer-back' ? 600 : 0) + (depthClass === 'layer-front' ? -300 : 0);
+      const rotate = Math.floor((Math.random() - 0.5) * 120);
+      const rotEnd = Math.floor(280 + Math.random() * 320) * (Math.random() < 0.5 ? 1 : -1);
+      const flutterDur = 1400 + Math.floor(Math.random() * 1200);
+      const swayDur = 1800 + Math.floor(Math.random() * 1400);
+      const swayAmp = (8 + Math.random() * 18).toFixed(1) + 'px';
+
+      item.style.setProperty('--x', x);
+      item.style.setProperty('--drift', drift);
+      item.style.setProperty('--delay', delay + 'ms');
+      item.style.setProperty('--duration', duration + 'ms');
+      item.style.setProperty('--scale', scale.toFixed(3));
+      item.style.setProperty('--rotate', rotate + 'deg');
+      item.style.setProperty('--rotEnd', rotEnd + 'deg');
+      item.style.setProperty('--flutterDur', flutterDur + 'ms');
+      item.style.setProperty('--swayDur', swayDur + 'ms');
+      item.style.setProperty('--swayAmp', swayAmp);
+
+      const sway = document.createElement('span');
+      sway.className = 'sway-wrap';
+      const flutter = document.createElement('span');
+      flutter.className = 'flutter-wrap';
+      flutter.innerHTML = buildLeafSVG(i);
+      sway.appendChild(flutter);
+      item.appendChild(sway);
+
+      overlay.appendChild(item);
+    }
+
+    return overlay;
+  }
+
+  return function triggerLeafRain() {
+    if (typeof document === 'undefined') return;
+    ensureStyles();
+    document.querySelector('.leaf-rain-overlay')?.remove();
+    const overlay = buildOverlay();
+    document.body.appendChild(overlay);
+    window.setTimeout(() => {
+      overlay.remove();
+    }, 5500);
+  };
+})();
+
+/* ============================================================
+   2) MONEY RAIN — pénzhullás / triggerMoneyRain
+   ============================================================ */
+const triggerMoneyRain = (function () {
+  const STYLE_ID = 'money-rain-style';
+
+  const STYLES = `
+.money-rain-overlay {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 9999;
+  background: transparent;
+  animation: mrOverlayFadeOut 600ms ease 3600ms forwards;
+}
+.money-rain-overlay .item {
+  position: absolute; top: -10vh; left: var(--x, 50%);
+  transform: translate3d(-50%, -20vh, 0) scale(var(--scale, 1)) rotate(var(--rotate, 0deg));
+  will-change: transform, opacity;
+  opacity: 0;
+  animation: mrFall var(--duration, 3200ms) cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms) forwards;
+  filter: drop-shadow(0 6px 8px rgba(15, 23, 42, 0.18));
+}
+.money-rain-overlay .item .flutter-wrap {
+  display: block; transform-origin: 50% 50%;
+  animation: mrFlutter var(--flutterDur, 1400ms) ease-in-out var(--delay, 0ms) infinite alternate;
+}
+.money-rain-overlay .item.coin .flutter-wrap {
+  animation: mrCoinSpin var(--spinDur, 900ms) linear var(--delay, 0ms) infinite;
+}
+.money-rain-overlay .item.layer-back  { filter: drop-shadow(0 4px 6px rgba(15,23,42,0.14)) blur(0.3px); opacity: 0.85; }
+.money-rain-overlay .item.layer-front { filter: drop-shadow(0 10px 14px rgba(15,23,42,0.22)); }
+@keyframes mrFall {
+  0% { transform: translate3d(-50%, -20vh, 0) scale(var(--scale, 1)) rotate(var(--rotate, 0deg)); opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { transform: translate3d(calc(-50% + var(--drift, 0px)), 120vh, 0) scale(var(--scale, 1)) rotate(calc(var(--rotate, 0deg) + var(--rotEnd, 360deg))); opacity: 0; }
+}
+@keyframes mrFlutter {
+  0%   { transform: rotateZ(-6deg) rotateY(-22deg) skewX(-2deg); }
+  100% { transform: rotateZ(6deg)  rotateY(22deg)  skewX(2deg); }
+}
+@keyframes mrCoinSpin {
+  0%   { transform: rotateY(0deg) scaleX(1); }
+  50%  { transform: rotateY(180deg) scaleX(-1); }
+  100% { transform: rotateY(360deg) scaleX(1); }
+}
+@keyframes mrOverlayFadeOut { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .money-rain-overlay .item { display: none !important; }
+  .money-rain-overlay { animation: mrOverlayFadeOut 600ms ease 2200ms forwards; }
+  .money-rain-overlay .reduced-motion-burst {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 140px; height: 140px;
+    display: grid; place-items: center;
+    animation: mrRmPulse 1400ms ease-out forwards;
+    filter: drop-shadow(0 8px 18px rgba(22,163,74,0.25));
+  }
+}
+.money-rain-overlay .reduced-motion-burst { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .money-rain-overlay .reduced-motion-burst { display: grid; }
+}
+@keyframes mrRmPulse {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1); }
+}
+@media (max-width: 600px) {
+  .money-rain-overlay .item { --scale-mult: 0.78; transform: translate3d(-50%, -20vh, 0) scale(calc(var(--scale, 1) * var(--scale-mult))) rotate(var(--rotate, 0deg)); }
+}
+`;
+
+  function ensureStyles() {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = STYLES;
+    document.head.appendChild(style);
+  }
+
+  function billSVG(variant) {
+    const palettes = [
+      { base: '#bfe3c8', mid: '#7fb98b', deep: '#3f7a4f', stroke: '#2f5e3c', accent: '#eaf6ed' },
+      { base: '#c9e7c9', mid: '#86c08a', deep: '#3a6f47', stroke: '#2b5536', accent: '#f0f8f1' },
+    ];
+    const p = palettes[variant % palettes.length];
+    return `
+<svg width="84" height="42" viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="mrBg${variant}" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="${p.base}"/>
+      <stop offset="1" stop-color="${p.mid}"/>
+    </linearGradient>
+    <linearGradient id="mrSheen${variant}" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="0.75" y="0.75" width="118.5" height="58.5" rx="5" fill="url(#mrBg${variant})" stroke="${p.stroke}" stroke-opacity="0.5" stroke-width="1"/>
+  <rect x="4" y="4" width="112" height="52" rx="3" fill="none" stroke="${p.deep}" stroke-opacity="0.55" stroke-width="0.8"/>
+  <circle cx="60" cy="30" r="14" fill="${p.accent}" fill-opacity="0.55" stroke="${p.deep}" stroke-opacity="0.5" stroke-width="0.7"/>
+  <circle cx="60" cy="30" r="9"  fill="none" stroke="${p.deep}" stroke-opacity="0.55" stroke-width="0.6"/>
+  <circle cx="60" cy="30" r="4"  fill="${p.deep}" fill-opacity="0.35"/>
+  <text x="10" y="16" font-family="Georgia, serif" font-size="9" fill="${p.deep}" fill-opacity="0.8">100</text>
+  <text x="110" y="50" font-family="Georgia, serif" font-size="9" fill="${p.deep}" fill-opacity="0.8" text-anchor="end">100</text>
+  <g stroke="${p.deep}" stroke-opacity="0.35" stroke-width="0.5" fill="none">
+    <path d="M8 24 C 20 20, 28 28, 40 24"/>
+    <path d="M8 30 C 20 26, 28 34, 40 30"/>
+    <path d="M8 36 C 20 32, 28 40, 40 36"/>
+    <path d="M80 24 C 92 20, 100 28, 112 24"/>
+    <path d="M80 30 C 92 26, 100 34, 112 30"/>
+    <path d="M80 36 C 92 32, 100 40, 112 36"/>
+  </g>
+  <rect x="0.75" y="0.75" width="118.5" height="58.5" rx="5" fill="url(#mrSheen${variant})" opacity="0.5"/>
+</svg>`;
+  }
+
+  function coinSVG(variant) {
+    const palettes = [
+      { rim: '#a8761a', face: '#f3c14b', shine: '#fff3c4', deep: '#7a4d0d' },
+      { rim: '#b88321', face: '#f6cd5a', shine: '#fff6cf', deep: '#7d520f' },
+    ];
+    const p = palettes[variant % palettes.length];
+    return `
+<svg width="38" height="38" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="mrCoinFace${variant}" cx="0.35" cy="0.35" r="0.8">
+      <stop offset="0" stop-color="${p.shine}"/>
+      <stop offset="0.55" stop-color="${p.face}"/>
+      <stop offset="1" stop-color="${p.rim}"/>
+    </radialGradient>
+    <linearGradient id="mrCoinSheen${variant}" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="0.4" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="30" cy="30" r="28" fill="url(#mrCoinFace${variant})" stroke="${p.deep}" stroke-opacity="0.55" stroke-width="1"/>
+  <circle cx="30" cy="30" r="23" fill="none" stroke="${p.deep}" stroke-opacity="0.45" stroke-width="0.8"/>
+  <g fill="${p.deep}" fill-opacity="0.55">
+    <path d="M30 14 L32 28 L46 30 L32 32 L30 46 L28 32 L14 30 L28 28 Z"/>
+  </g>
+  <ellipse cx="22" cy="20" rx="10" ry="5" fill="url(#mrCoinSheen${variant})"/>
+</svg>`;
+  }
+
+  function buildOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'money-rain-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const rm = document.createElement('div');
+    rm.className = 'reduced-motion-burst';
+    rm.innerHTML = `
+<svg width="140" height="140" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="mrRmGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#dcfce7"/>
+      <stop offset="0.7" stop-color="#86efac" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#16a34a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="70" cy="70" r="60" fill="url(#mrRmGrad)"/>
+  <path d="M48 72 l16 16 l30 -36" stroke="#16a34a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+    overlay.appendChild(rm);
+
+    const COUNT = 140;
+    const COIN_RATIO = 0.26;
+    const BURST_WINDOW = 900;
+    const PEAK_CENTER = 450;
+    const PEAK_WIDTH = 280;
+
+    function clusteredDelay() {
+      const u1 = Math.random() || 1e-6;
+      const u2 = Math.random();
+      const g = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+      const d = PEAK_CENTER + g * (PEAK_WIDTH / 2);
+      return Math.max(0, Math.min(BURST_WINDOW, d));
+    }
+
+    for (let i = 0; i < COUNT; i++) {
+      const isCoin = Math.random() < COIN_RATIO;
+      const item = document.createElement('div');
+      item.className = 'item ' + (isCoin ? 'coin' : 'bill');
+
+      const depthRoll = Math.random();
+      let depthClass = '';
+      let scale = 1;
+      if (depthRoll < 0.22) { depthClass = 'layer-back'; scale = 0.68 + Math.random() * 0.18; }
+      else if (depthRoll > 0.62) { depthClass = 'layer-front'; scale = 1.15 + Math.random() * 0.35; }
+      else { scale = 0.9 + Math.random() * 0.25; }
+      if (depthClass) item.classList.add(depthClass);
+
+      const x = (Math.random() * 100).toFixed(2) + '%';
+      const drift = ((Math.random() - 0.5) * 260).toFixed(1) + 'px';
+      const delay = i < 12 ? Math.floor((i / 12) * 250) : Math.floor(clusteredDelay());
+      const baseDur = isCoin ? 2400 : 2700;
+      const duration = baseDur + Math.floor(Math.random() * 900) + (depthClass === 'layer-back' ? 250 : 0);
+      const rotate = Math.floor((Math.random() - 0.5) * 80);
+      const rotEnd = (isCoin ? 540 : 240) + Math.floor((Math.random() - 0.5) * 180);
+      const flutterDur = 1100 + Math.floor(Math.random() * 700);
+      const spinDur = 700 + Math.floor(Math.random() * 500);
+
+      item.style.setProperty('--x', x);
+      item.style.setProperty('--drift', drift);
+      item.style.setProperty('--delay', delay + 'ms');
+      item.style.setProperty('--duration', duration + 'ms');
+      item.style.setProperty('--scale', scale.toFixed(3));
+      item.style.setProperty('--rotate', rotate + 'deg');
+      item.style.setProperty('--rotEnd', rotEnd + 'deg');
+      item.style.setProperty('--flutterDur', flutterDur + 'ms');
+      item.style.setProperty('--spinDur', spinDur + 'ms');
+
+      const inner = document.createElement('span');
+      inner.className = 'flutter-wrap';
+      inner.innerHTML = isCoin ? coinSVG(i) : billSVG(i);
+      item.appendChild(inner);
+
+      overlay.appendChild(item);
+    }
+
+    return overlay;
+  }
+
+  return function triggerMoneyRain() {
+    if (typeof document === 'undefined') return;
+    ensureStyles();
+    // Rapid-click védelem: ha már fut egy overlay, leszedjük az új előtt
+    document.querySelector('.money-rain-overlay')?.remove();
+    const overlay = buildOverlay();
+    document.body.appendChild(overlay);
+    window.setTimeout(() => {
+      overlay.remove();
+    }, 4200);
+  };
+})();
+
+/* ============================================================
+   3) DRONE SWARM — drónos felmérés / triggerDroneSwarm
+   ============================================================ */
+const triggerDroneSwarm = (function () {
+  const STYLE_ID = 'drone-swarm-style';
+
+  const STYLES = `
+.drone-swarm-overlay {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 9999;
+  background: transparent;
+  animation: dsOverlayFadeOut 600ms ease 3600ms forwards;
+}
+.drone-swarm-overlay .drone {
+  position: absolute; top: 0; left: 0; width: 0; height: 0;
+  will-change: transform, opacity; opacity: 0;
+  animation: dsDroneFly var(--duration, 3200ms) linear var(--delay, 0ms) forwards;
+}
+.drone-swarm-overlay .drone .body-wrap {
+  display: block; transform-origin: 50% 50%;
+  animation: dsDroneBank var(--duration, 3200ms) linear var(--delay, 0ms) forwards;
+}
+.drone-swarm-overlay .drone svg.drone-svg {
+  position: absolute; left: 0; top: 0;
+  transform: translate(-50%, -50%); overflow: visible;
+}
+.drone-swarm-overlay .prop {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: dsPropellerSpin var(--propDur, 90ms) linear infinite;
+}
+.drone-swarm-overlay .drone .trail {
+  position: absolute; left: 0; top: 0;
+  transform: translate(-50%, -50%); pointer-events: none;
+  animation: dsTrailFade 1600ms ease-out var(--delay, 0ms) both;
+}
+.drone-swarm-overlay .drone .survey {
+  position: absolute; left: 0; top: 60px;
+  transform: translate(-50%, 0); pointer-events: none;
+}
+.drone-swarm-overlay .drone .survey .ring {
+  transform-origin: 50% 50%;
+  animation: dsSurveyPulse 1600ms ease-out var(--surveyDelay, 0ms) infinite;
+}
+.drone-swarm-overlay .drone .survey .ring.r2 { animation-delay: calc(var(--surveyDelay, 0ms) + 500ms); }
+.drone-swarm-overlay .drone .survey .ring.r3 { animation-delay: calc(var(--surveyDelay, 0ms) + 1000ms); }
+.drone-swarm-overlay .drone .lidar {
+  position: absolute; left: 0; top: 32px;
+  transform: translate(-50%, 0); pointer-events: none; opacity: 0;
+  animation: dsLidarFade var(--duration, 3200ms) ease-out var(--delay, 0ms) forwards;
+}
+.drone-swarm-overlay .drone .lidar .cone {
+  transform-origin: 50% 0;
+  animation: dsLidarConePulse 1200ms ease-in-out var(--delay, 0ms) infinite alternate;
+}
+.drone-swarm-overlay .drone .lidar .sweep {
+  transform-origin: 50% 0;
+  animation: dsLidarSweep 900ms cubic-bezier(0.5, 0, 0.5, 1) var(--lidarDelay, 0ms) infinite;
+}
+.drone-swarm-overlay .drone .lidar .pt {
+  opacity: 0;
+  animation: dsLidarDot 1400ms ease-out var(--ptDelay, 0ms) infinite;
+  transform-box: fill-box; transform-origin: 50% 50%;
+}
+@keyframes dsDroneFly {
+  0% { transform: translate3d(var(--start-x, -20vw), var(--start-y, 15vh), 0) scale(var(--scale, 1)); opacity: 0; }
+  6%  { opacity: var(--opacity, 1); }
+  25% { transform: translate3d(calc(var(--start-x, -20vw) + (var(--end-x, 120vw) - var(--start-x, -20vw)) * 0.25), calc(var(--start-y, 15vh) + var(--wave-a, -10vh)), 0) scale(var(--scale, 1)); }
+  50% { transform: translate3d(calc(var(--start-x, -20vw) + (var(--end-x, 120vw) - var(--start-x, -20vw)) * 0.5), var(--mid-y, 40vh), 0) scale(var(--scale, 1)); }
+  75% { transform: translate3d(calc(var(--start-x, -20vw) + (var(--end-x, 120vw) - var(--start-x, -20vw)) * 0.75), calc(var(--mid-y, 40vh) + var(--wave-b, 8vh)), 0) scale(var(--scale, 1)); }
+  94% { opacity: var(--opacity, 1); }
+  100% { transform: translate3d(var(--end-x, 120vw), var(--end-y, 70vh), 0) scale(var(--scale, 1)); opacity: 0; }
+}
+@keyframes dsDroneBank {
+  0%   { transform: rotate(calc(var(--bank, 14deg) * -0.4)) translateY(-2px); }
+  25%  { transform: rotate(calc(var(--bank, 14deg) * -1)) translateY(-6px); }
+  50%  { transform: rotate(calc(var(--bank, 14deg) * 0.2)) translateY(2px); }
+  75%  { transform: rotate(var(--bank, 14deg)) translateY(6px); }
+  100% { transform: rotate(calc(var(--bank, 14deg) * 0.6)) translateY(0px); }
+}
+@keyframes dsPropellerSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes dsTrailFade {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scaleX(0.3); }
+  25%  { opacity: 0.55; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scaleX(1); }
+}
+@keyframes dsSurveyPulse {
+  0%   { transform: scale(0.4); opacity: 0.65; }
+  80%  { opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes dsLidarFade { 0% { opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes dsLidarConePulse { 0% { opacity: 0.55; transform: scaleY(0.96); } 100% { opacity: 0.85; transform: scaleY(1.04); } }
+@keyframes dsLidarSweep {
+  0% { transform: translateY(0) scaleX(0.4); opacity: 0; }
+  25% { opacity: 1; }
+  100% { transform: translateY(140px) scaleX(1); opacity: 0; }
+}
+@keyframes dsLidarDot {
+  0% { opacity: 0; transform: scale(0.4); }
+  20% { opacity: 0.95; transform: scale(1.1); }
+  60% { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.9); }
+}
+@keyframes dsOverlayFadeOut { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .drone-swarm-overlay .drone { display: none !important; }
+  .drone-swarm-overlay { animation: dsOverlayFadeOut 600ms ease 2200ms forwards; }
+  .drone-swarm-overlay .reduced-motion-mark {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px; height: 160px;
+    display: grid; place-items: center;
+    animation: dsRmPulse 1400ms ease-out forwards;
+    filter: drop-shadow(0 8px 18px rgba(31, 111, 235, 0.25));
+  }
+}
+.drone-swarm-overlay .reduced-motion-mark { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .drone-swarm-overlay .reduced-motion-mark { display: grid; }
+}
+@keyframes dsRmPulse {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+  30%  { opacity: 1; transform: translate(-50%, -50%) scale(1.04); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.08); }
+}
+@media (max-width: 600px) { .drone-swarm-overlay .drone { --scale-mult: 0.78; } }
+`;
+
+  function ensureStyles() {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = STYLES;
+    document.head.appendChild(style);
+  }
+
+  function droneSVG(id, lightOn = true) {
+    return `
+<svg class="drone-svg" width="160" height="120" viewBox="-80 -60 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="dsBody-${id}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#3a4150"/>
+      <stop offset="1" stop-color="#1c212b"/>
+    </linearGradient>
+    <radialGradient id="dsLens-${id}" cx="0.4" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#cfeaff"/>
+      <stop offset="0.55" stop-color="#5db8ff"/>
+      <stop offset="1" stop-color="#1f6feb"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#2a313d" stroke-width="4" stroke-linecap="round">
+    <line x1="-46" y1="-32" x2="46"  y2="32"/>
+    <line x1="-46" y1="32"  x2="46"  y2="-32"/>
+  </g>
+  <g fill="#0d1118">
+    <circle cx="-46" cy="-32" r="3"/>
+    <circle cx="46"  cy="-32" r="3"/>
+    <circle cx="-46" cy="32"  r="3"/>
+    <circle cx="46"  cy="32"  r="3"/>
+  </g>
+  <g fill="#5db8ff" fill-opacity="0.55">
+    <ellipse class="prop" cx="-46" cy="-32" rx="22" ry="3.2"/>
+    <ellipse class="prop" cx="46"  cy="-32" rx="22" ry="3.2"/>
+    <ellipse class="prop" cx="-46" cy="32"  rx="22" ry="3.2"/>
+    <ellipse class="prop" cx="46"  cy="32"  rx="22" ry="3.2"/>
+  </g>
+  <g fill="#8ecaff" fill-opacity="0.35">
+    <ellipse class="prop" cx="-46" cy="-32" rx="3.2" ry="22"/>
+    <ellipse class="prop" cx="46"  cy="-32" rx="3.2" ry="22"/>
+    <ellipse class="prop" cx="-46" cy="32"  rx="3.2" ry="22"/>
+    <ellipse class="prop" cx="46"  cy="32"  rx="3.2" ry="22"/>
+  </g>
+  <rect x="-26" y="-18" width="52" height="36" rx="9" fill="url(#dsBody-${id})" stroke="#0d1118" stroke-width="1.2"/>
+  <rect x="-22" y="-14" width="44" height="28" rx="6" fill="none" stroke="#5db8ff" stroke-opacity="0.18" stroke-width="0.8"/>
+  <rect x="-9" y="14" width="18" height="8" rx="3" fill="#0d1118"/>
+  <circle cx="0" cy="18" r="3.6" fill="url(#dsLens-${id})"/>
+  ${lightOn ? `
+  <circle cx="-26" cy="0" r="2.2" fill="#5db8ff"/>
+  <circle cx="26"  cy="0" r="2.2" fill="#ff6b6b" fill-opacity="0.85"/>
+  ` : ''}
+</svg>`;
+  }
+
+  function surveySVG() {
+    return `
+<svg class="survey-svg" width="220" height="220" viewBox="-110 -110 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <circle class="ring r1" cx="0" cy="0" r="34" fill="none" stroke="#5db8ff" stroke-opacity="0.65" stroke-width="1.6"/>
+  <circle class="ring r2" cx="0" cy="0" r="34" fill="none" stroke="#5db8ff" stroke-opacity="0.5" stroke-width="1.4"/>
+  <circle class="ring r3" cx="0" cy="0" r="34" fill="none" stroke="#5db8ff" stroke-opacity="0.4" stroke-width="1.2"/>
+  <g stroke="#5db8ff" stroke-opacity="0.55" stroke-width="1">
+    <line x1="-10" y1="0" x2="-4" y2="0"/>
+    <line x1="4"   y1="0" x2="10" y2="0"/>
+    <line x1="0" y1="-10" x2="0" y2="-4"/>
+    <line x1="0" y1="4"   x2="0" y2="10"/>
+  </g>
+</svg>`;
+  }
+
+  function lidarSVG(id) {
+    const pts = [];
+    const cols = 9;
+    const rowYs = [128, 134, 140];
+    for (let r = 0; r < rowYs.length; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = -56 + c * (112 / (cols - 1)) + (r % 2 ? 6 : 0);
+        const y = rowYs[r] + (Math.random() * 2 - 1);
+        const d = (Math.random() * 1200).toFixed(0);
+        pts.push(`<circle class="pt" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(0.9 + Math.random() * 0.7).toFixed(2)}" fill="#cfeaff" style="--ptDelay: ${d}ms"/>`);
+      }
+    }
+    return `
+<svg class="lidar-svg" width="180" height="160" viewBox="-90 0 180 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="dsLidarCone-${id}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#8ecaff" stop-opacity="0.55"/>
+      <stop offset="0.7" stop-color="#5db8ff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#5db8ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="dsLidarSweep-${id}" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#8ecaff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#cfeaff" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#8ecaff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <polygon class="cone" points="-4,0 4,0 60,130 -60,130" fill="url(#dsLidarCone-${id})"/>
+  <g stroke="#8ecaff" stroke-opacity="0.45" stroke-width="0.6">
+    <line x1="0" y1="0" x2="-58" y2="130"/>
+    <line x1="0" y1="0" x2="-38" y2="130"/>
+    <line x1="0" y1="0" x2="-18" y2="130"/>
+    <line x1="0" y1="0" x2="18"  y2="130"/>
+    <line x1="0" y1="0" x2="38"  y2="130"/>
+    <line x1="0" y1="0" x2="58"  y2="130"/>
+  </g>
+  <rect class="sweep" x="-30" y="-1" width="60" height="2" fill="url(#dsLidarSweep-${id})"/>
+  <line x1="-58" y1="130" x2="58" y2="130" stroke="#5db8ff" stroke-opacity="0.3" stroke-width="0.6" stroke-dasharray="2 3"/>
+  <g>${pts.join('')}</g>
+</svg>`;
+  }
+
+  function trailSVG() {
+    return `
+<svg class="trail-svg" width="200" height="20" viewBox="-100 -10 200 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="dsTrailGrad" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#5db8ff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#5db8ff" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect x="-100" y="-2" width="200" height="4" rx="2" fill="url(#dsTrailGrad)"/>
+</svg>`;
+  }
+
+  function buildOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'drone-swarm-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const rm = document.createElement('div');
+    rm.className = 'reduced-motion-mark';
+    rm.innerHTML = `
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <radialGradient id="dsRmGrad" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#dbeeff"/>
+      <stop offset="0.7" stop-color="#8ecaff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#1f6feb" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="80" cy="80" r="70" fill="url(#dsRmGrad)"/>
+  ${droneSVG('rm', true).replace('class="drone-svg"', 'class="drone-svg" style="transform: translate(0,0); position: static;"')}
+</svg>`;
+    overlay.appendChild(rm);
+
+    const COUNT = 11;
+    const drones = [];
+    for (let i = 0; i < COUNT; i++) {
+      const isLead = i === 0;
+      const yOffsetVh = isLead ? 0 : ((i % 2 === 0 ? -1 : 1) * (5 + Math.floor(i / 2) * 5));
+      const startX = -28 - (isLead ? 0 : (4 + Math.random() * 16));
+      const endX = 128 + (isLead ? 0 : (4 + Math.random() * 16));
+      const baseY = 26 + Math.random() * 8;
+      const startY = baseY + yOffsetVh;
+      const endY = startY + 22 + Math.random() * 18;
+      const midY = (startY + endY) / 2 - (10 + Math.random() * 14);
+      const waveSign = isLead ? -1 : (Math.random() < 0.5 ? -1 : 1);
+      const waveA = (waveSign * (6 + Math.random() * 10)).toFixed(1);
+      const waveB = ((-waveSign) * (5 + Math.random() * 9)).toFixed(1);
+      const midScale = (1.05 + Math.random() * 0.12).toFixed(2);
+      const scale = isLead ? 1.0 : (0.55 + Math.random() * 0.4);
+      const delay = isLead ? 0 : Math.floor(60 + Math.random() * 480);
+      const duration = 2600 + Math.floor(Math.random() * 600);
+      const bank = (10 + Math.random() * 8).toFixed(1);
+      const opacity = isLead ? 1 : (0.8 + Math.random() * 0.2);
+      const propDur = (55 + Math.floor(Math.random() * 40)) + 'ms';
+      const hasTrail = isLead || (i < 5 && Math.random() < 0.75);
+      const hasSurvey = (i === 3);
+      drones.push({
+        id: i, startX, startY, endX, endY, midY,
+        waveA, waveB, midScale,
+        scale, delay, duration, bank, opacity, propDur,
+        hasTrail, hasSurvey, hasLidar: true, isLead,
+      });
+    }
+
+    drones.forEach((d) => {
+      const el = document.createElement('div');
+      el.className = 'drone' + (d.isLead ? ' is-lead' : '');
+      el.style.setProperty('--start-x', d.startX + 'vw');
+      el.style.setProperty('--start-y', d.startY + 'vh');
+      el.style.setProperty('--end-x', d.endX + 'vw');
+      el.style.setProperty('--end-y', d.endY + 'vh');
+      el.style.setProperty('--mid-y', d.midY + 'vh');
+      el.style.setProperty('--wave-a', d.waveA + 'vh');
+      el.style.setProperty('--wave-b', d.waveB + 'vh');
+      el.style.setProperty('--mid-scale', d.midScale);
+      el.style.setProperty('--delay', d.delay + 'ms');
+      el.style.setProperty('--duration', d.duration + 'ms');
+      el.style.setProperty('--scale', d.scale.toFixed(3));
+      el.style.setProperty('--bank', d.bank + 'deg');
+      el.style.setProperty('--opacity', d.opacity.toFixed(3));
+      el.style.setProperty('--propDur', d.propDur);
+
+      const wrap = document.createElement('span');
+      wrap.className = 'body-wrap';
+      wrap.style.display = 'block';
+
+      if (d.hasTrail) {
+        const trail = document.createElement('div');
+        trail.className = 'trail';
+        trail.style.setProperty('--delay', d.delay + 'ms');
+        trail.style.left = '-90px';
+        trail.style.top = '0px';
+        trail.innerHTML = trailSVG();
+        wrap.appendChild(trail);
+      }
+      if (d.hasSurvey) {
+        const survey = document.createElement('div');
+        survey.className = 'survey';
+        survey.style.setProperty('--surveyDelay', (d.delay + 200) + 'ms');
+        survey.innerHTML = surveySVG();
+        wrap.appendChild(survey);
+      }
+      if (d.hasLidar) {
+        const lidar = document.createElement('div');
+        lidar.className = 'lidar';
+        lidar.style.setProperty('--delay', d.delay + 'ms');
+        lidar.style.setProperty('--duration', d.duration + 'ms');
+        lidar.style.setProperty('--lidarDelay', Math.floor(Math.random() * 400) + 'ms');
+        lidar.innerHTML = lidarSVG(d.id);
+        wrap.appendChild(lidar);
+      }
+
+      wrap.insertAdjacentHTML('beforeend', droneSVG(d.id, true));
+      el.appendChild(wrap);
+      overlay.appendChild(el);
+    });
+
+    return overlay;
+  }
+
+  return function triggerDroneSwarm() {
+    if (typeof document === 'undefined') return;
+    ensureStyles();
+    document.querySelector('.drone-swarm-overlay')?.remove();
+    const overlay = buildOverlay();
+    document.body.appendChild(overlay);
+    window.setTimeout(() => {
+      overlay.remove();
+    }, 4200);
+  };
+})();
+
+/* ============================================================
+   4) MACHINE TIME — gépidő / triggerMachineTime
+   ============================================================ */
+const triggerMachineTime = (function () {
+  const STYLE_ID = 'machine-time-style';
+
+  const STYLES = `
+.machine-time-overlay {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 9999;
+  background: transparent;
+  animation: mtOverlayFadeOut 500ms ease 3500ms forwards;
+}
+.machine-time-overlay .stage {
+  position: absolute; inset: 0; display: grid; place-items: center;
+}
+.machine-time-overlay .pc {
+  position: absolute; top: 50%; left: var(--pc-x, 50%);
+  transform: translate(-50%, -50%) translateY(20px);
+  opacity: 0; will-change: transform, opacity;
+  animation: mtPcIn 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--pc-delay, 0ms) forwards;
+}
+.machine-time-overlay .pc .screen-glow {
+  transform-origin: 50% 50%;
+  animation: mtSoftPulse 900ms ease-in-out var(--pc-delay, 0ms) infinite alternate;
+}
+.machine-time-overlay .pc .screen-points circle {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: mtScreenPointBlink 1100ms ease-in-out var(--pc-delay, 0ms) infinite;
+}
+.machine-time-overlay .pc .screen-points circle:nth-child(2n) { animation-delay: calc(var(--pc-delay, 0ms) + 120ms); }
+.machine-time-overlay .pc .screen-points circle:nth-child(3n) { animation-delay: calc(var(--pc-delay, 0ms) + 260ms); }
+.machine-time-overlay .pc .screen-points circle:nth-child(5n) { animation-delay: calc(var(--pc-delay, 0ms) + 380ms); }
+.machine-time-overlay .pc .screen-wire {
+  stroke-dasharray: 220; stroke-dashoffset: 220;
+  animation: mtScreenWireDraw 1600ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--pc-delay, 0ms) + 600ms) forwards;
+}
+.machine-time-overlay .pc .circuit {
+  stroke-dasharray: 30; stroke-dashoffset: 30;
+  animation: mtCircuitTrace 900ms ease-out calc(var(--pc-delay, 0ms) + 150ms) forwards;
+}
+.machine-time-overlay .pc .scan-bar {
+  transform-origin: 50% 0;
+  animation: mtPcScan 900ms cubic-bezier(0.5, 0, 0.5, 1) calc(var(--pc-delay, 0ms) + 200ms) infinite;
+}
+.machine-time-overlay .pc .emitter {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: mtEmitterPulse 850ms ease-in-out calc(var(--pc-delay, 0ms) + 250ms) infinite alternate;
+}
+.machine-time-overlay .pc .progress {
+  transform-origin: 0% 50%; transform: scaleX(0);
+  animation: mtProgressFill 3000ms cubic-bezier(0.6, 0, 0.3, 1) calc(var(--pc-delay, 0ms) + 200ms) forwards;
+}
+.machine-time-overlay .pc .led {
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: mtLedBlink 600ms ease-in-out var(--pc-delay, 0ms) infinite alternate;
+}
+.machine-time-overlay .cloud {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px; height: 280px; pointer-events: none;
+}
+@media (max-width: 600px) {
+  .machine-time-overlay .cloud { width: 280px; height: 220px; }
+}
+.machine-time-overlay .pt {
+  position: absolute; left: 50%; top: 50%;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--color, #8ecaff);
+  transform: translate3d(calc(var(--x, 0px) - 50%), calc(var(--y, 0px) - 50%), 0) scale(0.4);
+  opacity: 0; will-change: transform, opacity;
+  animation:
+    mtDataStream 1200ms cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms) forwards,
+    mtPointAssemble 1400ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--delay, 0ms) + 1100ms) forwards,
+    mtWireframeReveal 700ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--delay, 0ms) + 2500ms) forwards;
+}
+.machine-time-overlay .connections {
+  position: absolute; inset: 0; overflow: visible; opacity: 0;
+  animation: mtConnectionsReveal 1400ms cubic-bezier(0.22, 1, 0.36, 1) 1600ms forwards;
+}
+.machine-time-overlay .connections line {
+  stroke: #5db8ff; stroke-opacity: 0.35; stroke-width: 0.6;
+  stroke-dasharray: 60; stroke-dashoffset: 60;
+  animation: mtConnectionDraw 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--c-delay, 0ms) forwards;
+}
+.machine-time-overlay .wireframe {
+  position: absolute; top: 50%; left: 50%;
+  width: 360px; height: 280px;
+  transform: translate(-50%, -50%);
+  opacity: 0; pointer-events: none;
+  animation: mtWireframeReveal 800ms cubic-bezier(0.22, 1, 0.36, 1) 2600ms forwards;
+}
+.machine-time-overlay .wireframe path,
+.machine-time-overlay .wireframe line {
+  stroke: #5db8ff; stroke-width: 1; fill: none; stroke-opacity: 0.7;
+  stroke-dasharray: 240; stroke-dashoffset: 240;
+  animation: mtWireDraw 900ms cubic-bezier(0.22, 1, 0.36, 1) 2700ms forwards;
+}
+.machine-time-overlay .scan-line {
+  position: absolute; top: 50%; left: 50%;
+  width: 380px; height: 2px;
+  transform: translate(-50%, -50%); opacity: 0;
+  background: linear-gradient(to right,
+    rgba(141, 202, 255, 0) 0%,
+    rgba(207, 234, 255, 0.95) 50%,
+    rgba(141, 202, 255, 0) 100%);
+  box-shadow: 0 0 12px rgba(141, 202, 255, 0.45);
+  animation: mtScanSweep 1500ms cubic-bezier(0.22, 1, 0.36, 1) 1700ms forwards;
+}
+@media (max-width: 600px) {
+  .machine-time-overlay .scan-line { width: 300px; }
+}
+.machine-time-overlay .pulse {
+  position: absolute; top: 50%; left: 50%;
+  width: 80px; height: 80px; border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+  border: 1px solid rgba(141, 202, 255, 0.5);
+  opacity: 0;
+  animation: mtCorePulse 1300ms cubic-bezier(0.22, 1, 0.36, 1) 1500ms forwards;
+}
+.machine-time-overlay .pulse.delay2 { animation-delay: 1900ms; }
+
+@keyframes mtPcIn {
+  0%   { opacity: 0; transform: translate(-50%, -50%) translateY(16px); }
+  100% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+}
+@keyframes mtSoftPulse {
+  0%   { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+@keyframes mtScreenPointBlink {
+  0%   { opacity: 0.35; transform: scale(0.85); }
+  50%  { opacity: 1;    transform: scale(1.2); }
+  100% { opacity: 0.45; transform: scale(1); }
+}
+@keyframes mtScreenWireDraw {
+  0%   { stroke-dashoffset: 220; opacity: 0; }
+  20%  { opacity: 1; }
+  100% { stroke-dashoffset: 0;   opacity: 1; }
+}
+@keyframes mtEmitterPulse {
+  0%   { opacity: 0.4; transform: scale(0.8); }
+  100% { opacity: 1;   transform: scale(1.3); }
+}
+@keyframes mtProgressFill {
+  0%   { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+@keyframes mtLedBlink {
+  0%   { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+@keyframes mtCircuitTrace {
+  0%   { stroke-dashoffset: 30; opacity: 0; }
+  20%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes mtPcScan {
+  0%   { transform: translateY(0)  scaleX(0.4); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { transform: translateY(56px) scaleX(1); opacity: 0; }
+}
+@keyframes mtDataStream {
+  0% {
+    transform: translate3d(calc(var(--x, 0px) - 50%), calc(var(--y, 0px) - 50%), 0) scale(0.4);
+    opacity: 0;
+  }
+  20% { opacity: var(--opacity, 0.9); }
+  100% {
+    transform: translate3d(calc(var(--tx, 0px) - 50%), calc(var(--ty, 0px) - 50%), 0) scale(var(--scale, 1));
+    opacity: var(--opacity, 0.9);
+  }
+}
+@keyframes mtPointAssemble {
+  0% {
+    transform: translate3d(calc(var(--tx, 0px) - 50%), calc(var(--ty, 0px) - 50%), 0) scale(var(--scale, 1));
+  }
+  50% {
+    transform: translate3d(
+      calc(var(--tx, 0px) - 50% + var(--drift-x, 0px)),
+      calc(var(--ty, 0px) - 50% + var(--drift-y, 0px)),
+      0
+    ) scale(var(--scale, 1));
+  }
+  100% {
+    transform: translate3d(calc(var(--tx, 0px) - 50%), calc(var(--ty, 0px) - 50%), 0) scale(var(--scale, 1));
+  }
+}
+@keyframes mtWireframeReveal {
+  0% {
+    transform: translate3d(calc(var(--tx, 0px) - 50%), calc(var(--ty, 0px) - 50%), 0) scale(var(--scale, 1));
+    opacity: var(--opacity, 0.9);
+  }
+  50% {
+    transform: translate3d(calc(var(--gx, 0px) - 50%), calc(var(--gy, 0px) - 50%), 0) scale(0.9);
+    opacity: var(--opacity, 0.9);
+  }
+  100% {
+    transform: translate3d(calc(var(--gx, 0px) - 50%), calc(var(--gy, 0px) - 50%), 0) scale(0.6);
+    opacity: 0;
+  }
+}
+@keyframes mtConnectionsReveal {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes mtConnectionDraw {
+  0%   { stroke-dashoffset: 60; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes mtWireDraw {
+  0%   { stroke-dashoffset: 240; opacity: 0; }
+  20%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+@keyframes mtScanSweep {
+  0%   { transform: translate(-50%, calc(-50% - 120px)); opacity: 0; }
+  15%  { opacity: 0.9; }
+  85%  { opacity: 0.9; }
+  100% { transform: translate(-50%, calc(-50% + 120px)); opacity: 0; }
+}
+@keyframes mtCorePulse {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  30%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.4); }
+}
+@keyframes mtOverlayFadeOut { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .machine-time-overlay .pc,
+  .machine-time-overlay .pt,
+  .machine-time-overlay .connections,
+  .machine-time-overlay .scan-line,
+  .machine-time-overlay .pulse { display: none !important; }
+  .machine-time-overlay { animation: mtOverlayFadeOut 500ms ease 2200ms forwards; }
+  .machine-time-overlay .wireframe { animation: mtRmStatic 1400ms ease-out forwards; }
+  .machine-time-overlay .wireframe path,
+  .machine-time-overlay .wireframe line { animation: mtRmDraw 900ms ease-out forwards; }
+}
+@keyframes mtRmStatic {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes mtRmDraw {
+  0%   { stroke-dashoffset: 240; }
+  100% { stroke-dashoffset: 0; }
+}
+`;
+
+  function ensureStyles() {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = STYLES;
+    document.head.appendChild(style);
+  }
+
+  function rand(min, max) {
+    return min + Math.random() * (max - min);
+  }
+
+  /** Workstation / PC ikon SVG-je. */
+  function pcSVG(id) {
+    const side = id % 2 === 0 ? 52 : -52;
+    const sideOut = id % 2 === 0 ? 60 : -60;
+    const sideMid = id % 2 === 0 ? 58 : -58;
+    return `
+<svg width="128" height="114" viewBox="-64 -57 128 114" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="mtPcBody-${id}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#3a4150"/>
+      <stop offset="1" stop-color="#1c212b"/>
+    </linearGradient>
+    <linearGradient id="mtPcScreen-${id}" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#0a1422"/>
+      <stop offset="1" stop-color="#06101c"/>
+    </linearGradient>
+    <radialGradient id="mtPcEmitter-${id}" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#cfeaff" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#5db8ff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#5db8ff" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="mtPcScreenClip-${id}">
+      <rect x="-44" y="-32" width="88" height="56" rx="3"/>
+    </clipPath>
+  </defs>
+  <rect x="-52" y="-40" width="104" height="72" rx="6" fill="url(#mtPcBody-${id})" stroke="#0d1118" stroke-width="1.5"/>
+  <rect class="screen-glow" x="-44" y="-32" width="88" height="56" rx="3" fill="url(#mtPcScreen-${id})" stroke="#5db8ff" stroke-opacity="0.7" stroke-width="1"/>
+  <g clip-path="url(#mtPcScreenClip-${id})">
+    <g stroke="#5db8ff" stroke-opacity="0.18" stroke-width="0.5">
+      <line x1="-44" y1="-20" x2="44" y2="-20"/>
+      <line x1="-44" y1="-8"  x2="44" y2="-8"/>
+      <line x1="-44" y1="4"   x2="44" y2="4"/>
+      <line x1="-44" y1="16"  x2="44" y2="16"/>
+      <line x1="-28" y1="-32" x2="-28" y2="24"/>
+      <line x1="-12" y1="-32" x2="-12" y2="24"/>
+      <line x1="4"   y1="-32" x2="4"   y2="24"/>
+      <line x1="20"  y1="-32" x2="20"  y2="24"/>
+      <line x1="36"  y1="-32" x2="36"  y2="24"/>
+    </g>
+    <g class="screen-points" fill="#8ecaff">
+      <circle cx="-28" cy="-10" r="1.2"/>
+      <circle cx="-18" cy="-16" r="1.1"/>
+      <circle cx="-8"  cy="-12" r="1.3"/>
+      <circle cx="2"   cy="-18" r="1.1"/>
+      <circle cx="14"  cy="-10" r="1.2"/>
+      <circle cx="24"  cy="-14" r="1.0"/>
+      <circle cx="-24" cy="4"   r="1.2" fill="#cfeaff"/>
+      <circle cx="-12" cy="8"   r="1.1"/>
+      <circle cx="0"   cy="2"   r="1.3" fill="#cfeaff"/>
+      <circle cx="12"  cy="6"   r="1.2"/>
+      <circle cx="22"  cy="4"   r="1.1"/>
+      <circle cx="32"  cy="10"  r="1.0"/>
+      <circle cx="-30" cy="16"  r="1.1"/>
+      <circle cx="-16" cy="18"  r="1.2"/>
+      <circle cx="-2"  cy="14"  r="1.3" fill="#cfeaff"/>
+      <circle cx="10"  cy="18"  r="1.1"/>
+      <circle cx="26"  cy="16"  r="1.2"/>
+    </g>
+    <path class="screen-wire" d="M -32 18 L -32 -6 L -10 -22 L 14 -22 L 14 -6 L 36 -6 L 36 18 Z"
+          fill="none" stroke="#cfeaff" stroke-opacity="0.85" stroke-width="0.9"/>
+    <rect class="scan-bar" x="-44" y="-32" width="88" height="2" fill="#cfeaff" fill-opacity="0.85"/>
+    <rect x="-40" y="19" width="80" height="2.5" rx="1.25" fill="#1a2a44"/>
+    <rect class="progress" x="-40" y="19" width="80" height="2.5" rx="1.25" fill="#5db8ff"/>
+  </g>
+  <rect x="-44" y="-32" width="88" height="56" rx="3" fill="none" stroke="#5db8ff" stroke-opacity="0.15" stroke-width="0.5"/>
+  <circle class="emitter" cx="${side}" cy="0" r="10" fill="url(#mtPcEmitter-${id})"/>
+  <path class="circuit" d="M ${side} 0 L ${sideOut} 0"
+        fill="none" stroke="#5db8ff" stroke-opacity="0.85" stroke-width="1" stroke-linecap="round"/>
+  <path class="circuit" d="M ${side} -8 L ${sideMid} -8 L ${sideMid} -16"
+        fill="none" stroke="#5db8ff" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
+  <path class="circuit" d="M ${side} 8 L ${sideMid} 8 L ${sideMid} 16"
+        fill="none" stroke="#5db8ff" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
+  <rect x="-10" y="32" width="20" height="5" rx="1.5" fill="#0d1118"/>
+  <rect x="-22" y="37" width="44" height="4" rx="1.5" fill="#0d1118"/>
+  <circle class="led" cx="46" cy="28" r="1.8" fill="#8ecaff"/>
+</svg>`;
+  }
+
+  /** A pontfelhő cél-alakja: lágy, elliptikus blob, jitterrel. */
+  function cloudTarget(i, total) {
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    const t = i / total;
+    const angle = i * golden;
+    const rMax = 120;
+    const rMin = 18;
+    const r = rMin + Math.pow(t, 0.6) * (rMax - rMin) + rand(-10, 10);
+    const x = Math.cos(angle) * r;
+    const y = Math.sin(angle) * r * 0.66 + rand(-6, 6);
+    return { x, y };
+  }
+
+  /** A végső wireframe-rács cél-pozíciója egy részecskéhez. */
+  function gridTarget(i, cols, rows, cellW, cellH) {
+    const col = i % cols;
+    const row = Math.floor(i / cols) % rows;
+    const x = (col - (cols - 1) / 2) * cellW;
+    const y = (row - (rows - 1) / 2) * cellH;
+    return { x, y };
+  }
+
+  function buildOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'machine-time-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const stage = document.createElement('div');
+    stage.className = 'stage';
+    overlay.appendChild(stage);
+
+    const pcConfigs = [
+      { x: '16%', y: '-110px', delay: 0 },
+      { x: '20%', y: '110px', delay: 120 },
+      { x: '84%', y: '-110px', delay: 80 },
+      { x: '80%', y: '110px', delay: 200 },
+    ];
+    pcConfigs.forEach((cfg, idx) => {
+      const pc = document.createElement('div');
+      pc.className = 'pc';
+      pc.style.setProperty('--pc-x', cfg.x);
+      pc.style.top = `calc(50% + ${cfg.y})`;
+      pc.style.setProperty('--pc-delay', cfg.delay + 'ms');
+      pc.innerHTML = pcSVG(idx);
+      stage.appendChild(pc);
+    });
+
+    const cloud = document.createElement('div');
+    cloud.className = 'cloud';
+    overlay.appendChild(cloud);
+
+    const conns = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    conns.setAttribute('class', 'connections');
+    conns.setAttribute('viewBox', '-180 -140 360 280');
+    cloud.appendChild(conns);
+
+    const COUNT = 88;
+    const targets = [];
+    const gridCols = 11;
+    const gridRows = 7;
+    const gridCellW = 26;
+    const gridCellH = 28;
+
+    const originMap = [
+      { ox: -320, oy: -70 },
+      { ox: -300, oy: 70 },
+      { ox: 320, oy: -70 },
+      { ox: 300, oy: 70 },
+    ];
+    const palette = ['#cfeaff', '#8ecaff', '#5db8ff', '#3a8ed1'];
+
+    for (let i = 0; i < COUNT; i++) {
+      const target = cloudTarget(i, COUNT);
+      targets.push(target);
+
+      const origin = originMap[i % 4];
+      const ox = origin.ox + rand(-20, 20);
+      const oy = origin.oy + rand(-10, 10);
+
+      const grid = gridTarget(i, gridCols, gridRows, gridCellW, gridCellH);
+
+      const depth = Math.random();
+      const color = palette[Math.min(3, Math.floor(depth * 4))];
+      const scale = 0.55 + depth * 0.95;
+      const opacity = (0.55 + depth * 0.4).toFixed(2);
+      const delay = Math.floor(rand(0, 600));
+      const driftX = rand(-6, 6).toFixed(1);
+      const driftY = rand(-5, 5).toFixed(1);
+
+      const pt = document.createElement('div');
+      pt.className = 'pt';
+      pt.style.setProperty('--x', ox.toFixed(1) + 'px');
+      pt.style.setProperty('--y', oy.toFixed(1) + 'px');
+      pt.style.setProperty('--tx', target.x.toFixed(1) + 'px');
+      pt.style.setProperty('--ty', target.y.toFixed(1) + 'px');
+      pt.style.setProperty('--gx', grid.x.toFixed(1) + 'px');
+      pt.style.setProperty('--gy', grid.y.toFixed(1) + 'px');
+      pt.style.setProperty('--drift-x', driftX + 'px');
+      pt.style.setProperty('--drift-y', driftY + 'px');
+      pt.style.setProperty('--scale', scale.toFixed(2));
+      pt.style.setProperty('--opacity', opacity);
+      pt.style.setProperty('--delay', delay + 'ms');
+      pt.style.setProperty('--color', color);
+      cloud.appendChild(pt);
+    }
+
+    // Összekötő vonalak: minden 2. pontot a legközelebbi szomszédjához kötjük
+    const subset = targets.filter((_, i) => i % 2 === 0);
+    const lines = [];
+    for (let i = 0; i < subset.length; i++) {
+      let bestD = Infinity;
+      let bestJ = -1;
+      for (let j = 0; j < subset.length; j++) {
+        if (i === j) continue;
+        const dx = subset[i].x - subset[j].x;
+        const dy = subset[i].y - subset[j].y;
+        const d = dx * dx + dy * dy;
+        if (d < bestD) {
+          bestD = d;
+          bestJ = j;
+        }
+      }
+      if (bestJ >= 0 && bestD < 60 * 60) {
+        lines.push([subset[i], subset[bestJ]]);
+      }
+    }
+    lines.forEach((pair, idx) => {
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', pair[0].x.toFixed(1));
+      ln.setAttribute('y1', pair[0].y.toFixed(1));
+      ln.setAttribute('x2', pair[1].x.toFixed(1));
+      ln.setAttribute('y2', pair[1].y.toFixed(1));
+      ln.style.setProperty('--c-delay', 1700 + idx * 18 + 'ms');
+      conns.appendChild(ln);
+    });
+
+    const scan = document.createElement('div');
+    scan.className = 'scan-line';
+    overlay.appendChild(scan);
+
+    const pulse1 = document.createElement('div');
+    pulse1.className = 'pulse';
+    const pulse2 = document.createElement('div');
+    pulse2.className = 'pulse delay2';
+    overlay.appendChild(pulse1);
+    overlay.appendChild(pulse2);
+
+    const wf = document.createElement('div');
+    wf.className = 'wireframe';
+    wf.innerHTML = `
+<svg width="360" height="280" viewBox="-180 -140 360 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M -140 60 L -140 -30 L -40 -80 L 60 -80 L 60 -30 L 140 -30 L 140 60 Z"/>
+  <line x1="-140" y1="20" x2="140" y2="20"/>
+  <line x1="-140" y1="40" x2="140" y2="40"/>
+  <line x1="-40"  y1="-80" x2="-40"  y2="60"/>
+  <line x1="60"   y1="-80" x2="60"   y2="60"/>
+  <line x1="-140" y1="-30" x2="140"  y2="-30"/>
+  <line x1="-40"  y1="-80" x2="60"   y2="-80"/>
+  <line x1="-90"  y1="-30" x2="-90"  y2="60"/>
+  <line x1="10"   y1="-30" x2="10"   y2="60"/>
+  <line x1="100"  y1="-30" x2="100"  y2="60"/>
+</svg>`;
+    overlay.appendChild(wf);
+
+    return overlay;
+  }
+
+  return function triggerMachineTime() {
+    if (typeof document === 'undefined') return;
+    ensureStyles();
+    // Rapid-click védelem: ha már fut egy overlay, leszedjük az új előtt
+    document.querySelector('.machine-time-overlay')?.remove();
+    const overlay = buildOverlay();
+    document.body.appendChild(overlay);
+    window.setTimeout(() => {
+      overlay.remove();
+    }, 4200);
+  };
+})();
+
+/* ============================================================
+   5) OFFICE WORKFLOW — papírmunka / triggerOfficeWorkflow
+   ============================================================ */
+const triggerOfficeWorkflow = (function () {
+  const STYLE_ID = 'office-workflow-style';
+
+  const STYLES = `
+.office-premium-overlay {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden; z-index: 9999;
+  background: transparent;
+  animation: owOverlayFadeOut 600ms ease 3400ms forwards;
+  font-family: "Inter", "Helvetica Neue", Helvetica, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+}
+.office-premium-overlay .stage {
+  position: absolute; inset: 0; display: grid; place-items: center;
+}
+.office-premium-overlay .canvas {
+  position: relative; width: 720px; height: 460px;
+}
+@media (max-width: 900px) {
+  .office-premium-overlay .canvas { width: 560px; height: 380px; }
+}
+@media (max-width: 640px) {
+  .office-premium-overlay .canvas { width: 360px; height: 300px; }
+}
+.office-premium-overlay .guides {
+  position: absolute; inset: 0; pointer-events: none; overflow: visible; opacity: 0;
+  animation: owGuideReveal 1400ms cubic-bezier(0.22, 1, 0.36, 1) 1200ms forwards;
+}
+.office-premium-overlay .guides line {
+  stroke: #1f6feb; stroke-opacity: 0.5; stroke-width: 1; stroke-dasharray: 4 5;
+}
+.office-premium-overlay .guides .axis {
+  stroke-opacity: 0.7; stroke-width: 1.2; stroke-dasharray: 8 6;
+}
+.office-premium-overlay .connections {
+  position: absolute; inset: 0; pointer-events: none; overflow: visible; opacity: 0;
+  animation: owConnectionsReveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) 1500ms forwards;
+}
+.office-premium-overlay .connections line {
+  stroke: #1f6feb; stroke-opacity: 0.7; stroke-width: 1.2;
+  stroke-dasharray: 40; stroke-dashoffset: 40;
+  animation: owConnectionDraw 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--c-delay, 0ms) forwards;
+}
+.office-premium-overlay .glass-card {
+  position: absolute; left: 50%; top: 50%;
+  width: var(--w, 140px); height: var(--h, 90px);
+  margin-left: calc(var(--w, 140px) / -2);
+  margin-top: calc(var(--h, 90px) / -2);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 255, 0.92));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(31, 111, 235, 0.28);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    0 14px 36px -14px rgba(31, 111, 235, 0.32),
+    0 24px 60px -28px rgba(15, 23, 42, 0.35);
+  padding: 10px 12px; overflow: hidden; opacity: 0;
+  transform: translate3d(var(--x, 0px), var(--y, 0px), 0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1));
+  will-change: transform, opacity;
+  animation:
+    owCardFloatIn 800ms cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms) forwards,
+    owCardDrift  900ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--delay, 0ms) + 700ms) forwards,
+    owSnapAlign  650ms cubic-bezier(0.34, 1.45, 0.64, 1) calc(var(--delay, 0ms) + 1500ms) forwards,
+    owCardSettle 1200ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--delay, 0ms) + 2150ms) forwards;
+}
+.office-premium-overlay .glass-card.depth-back {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(232, 240, 252, 0.82));
+  border-color: rgba(31, 111, 235, 0.2);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 10px 26px -16px rgba(31, 111, 235, 0.28);
+}
+.office-premium-overlay .glass-card.depth-front {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(232, 244, 255, 0.96));
+  border-color: rgba(31, 111, 235, 0.4);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 1px 3px rgba(15, 23, 42, 0.08),
+    0 18px 44px -14px rgba(31, 111, 235, 0.45),
+    0 30px 80px -32px rgba(15, 23, 42, 0.45);
+}
+.office-premium-overlay .glass-card .titlebar {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+}
+.office-premium-overlay .glass-card .dot-row { display: flex; gap: 4px; }
+.office-premium-overlay .glass-card .dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1;
+}
+.office-premium-overlay .glass-card .dot.live {
+  background: #5db8ff; box-shadow: 0 0 6px rgba(93, 184, 255, 0.55);
+}
+.office-premium-overlay .glass-card .tag {
+  height: 6px; width: 24px; border-radius: 3px;
+  background: linear-gradient(90deg, #cbd5e1, #e2e8f0);
+}
+.office-premium-overlay .glass-card .line {
+  height: 5px; border-radius: 3px;
+  background: linear-gradient(90deg, #e2e8f0, #f1f5f9); margin-bottom: 5px;
+}
+.office-premium-overlay .glass-card .line.short { width: 55%; }
+.office-premium-overlay .glass-card .line.mid   { width: 78%; }
+.office-premium-overlay .glass-card .line.long  { width: 92%; }
+.office-premium-overlay .glass-card .accent-line {
+  height: 5px; border-radius: 3px;
+  background: linear-gradient(90deg, #5db8ff, #8ecaff); margin-bottom: 5px;
+}
+.office-premium-overlay .glass-card .chart {
+  display: flex; align-items: flex-end; gap: 3px; height: 28px; margin-top: 6px;
+}
+.office-premium-overlay .glass-card .chart span {
+  width: 6px; background: linear-gradient(180deg, #8ecaff, #5db8ff);
+  border-radius: 2px 2px 0 0; opacity: 0.85;
+}
+.office-premium-overlay .glass-card .chart span:nth-child(1) { height: 35%; }
+.office-premium-overlay .glass-card .chart span:nth-child(2) { height: 60%; }
+.office-premium-overlay .glass-card .chart span:nth-child(3) { height: 45%; }
+.office-premium-overlay .glass-card .chart span:nth-child(4) { height: 80%; }
+.office-premium-overlay .glass-card .chart span:nth-child(5) { height: 65%; }
+.office-premium-overlay .glass-card .chart span:nth-child(6) { height: 90%; }
+.office-premium-overlay .glass-card .chart span:nth-child(7) { height: 55%; }
+.office-premium-overlay .glass-card .donut {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: conic-gradient(#5db8ff 0 65%, #e2e8f0 65% 100%);
+  position: relative; margin: 2px 0;
+}
+.office-premium-overlay .glass-card .donut::after {
+  content: ''; position: absolute; inset: 8px;
+  background: rgba(255, 255, 255, 0.95); border-radius: 50%;
+}
+.office-premium-overlay .glass-card .sparkline { margin-top: 6px; }
+.office-premium-overlay .glass-card .sparkline path {
+  stroke: #5db8ff; stroke-width: 1.5; fill: none;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.office-premium-overlay .glass-card .sparkline .area {
+  fill: rgba(93, 184, 255, 0.18); stroke: none;
+}
+.office-premium-overlay .glass-card .check {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #16a34a; display: grid; place-items: center;
+  opacity: 0; transform: scale(0.6);
+  animation: owCheckPop 500ms cubic-bezier(0.34, 1.45, 0.64, 1) calc(var(--delay, 0ms) + 2400ms) forwards;
+}
+.office-premium-overlay .glass-card .check svg { display: block; }
+.office-premium-overlay .glass-card::after {
+  content: ''; position: absolute; inset: -2px; border-radius: 13px;
+  border: 1.5px solid rgba(31, 111, 235, 0.85);
+  box-shadow: 0 0 22px rgba(31, 111, 235, 0.45);
+  opacity: 0; pointer-events: none;
+  animation: owSubtleGlow 900ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--delay, 0ms) + 1700ms) forwards;
+}
+.office-premium-overlay .dust {
+  position: absolute; left: 50%; top: 50%;
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #1f6feb; box-shadow: 0 0 6px rgba(31, 111, 235, 0.6);
+  opacity: 0;
+  transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0) scale(var(--dscale, 1));
+  animation: owDustDrift 1600ms cubic-bezier(0.22, 1, 0.36, 1) var(--dust-delay, 0ms) forwards;
+}
+.office-premium-overlay .pulse {
+  position: absolute; left: 50%; top: 50%;
+  width: 80px; height: 80px; border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.5);
+  border: 1.5px solid rgba(31, 111, 235, 0.85);
+  box-shadow: 0 0 30px rgba(31, 111, 235, 0.35);
+  opacity: 0;
+  animation: owCompletionPulse 1400ms cubic-bezier(0.22, 1, 0.36, 1) 2300ms forwards;
+}
+.office-premium-overlay .pulse.p2 { animation-delay: 2550ms; border-color: rgba(93, 184, 255, 0.7); }
+
+@keyframes owCardFloatIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(var(--x, 0px), calc(var(--y, 0px) + 18px), 0) rotate(var(--rotation, 0deg)) scale(calc(var(--scale, 1) * 0.96));
+  }
+  100% {
+    opacity: var(--opacity, 0.95);
+    transform: translate3d(var(--x, 0px), var(--y, 0px), 0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1));
+  }
+}
+@keyframes owCardDrift {
+  0% {
+    transform: translate3d(var(--x, 0px), var(--y, 0px), 0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1));
+  }
+  100% {
+    transform: translate3d(
+      calc(var(--x, 0px) + (var(--tx, 0px) - var(--x, 0px)) * 0.72),
+      calc(var(--y, 0px) + (var(--ty, 0px) - var(--y, 0px)) * 0.72),
+      0
+    ) rotate(calc(var(--rotation, 0deg) * 0.35)) scale(var(--scale, 1));
+  }
+}
+@keyframes owSnapAlign {
+  0% {
+    transform: translate3d(
+      calc(var(--x, 0px) + (var(--tx, 0px) - var(--x, 0px)) * 0.72),
+      calc(var(--y, 0px) + (var(--ty, 0px) - var(--y, 0px)) * 0.72),
+      0
+    ) rotate(calc(var(--rotation, 0deg) * 0.35)) scale(var(--scale, 1));
+  }
+  70% {
+    transform: translate3d(
+      calc(var(--tx, 0px) + (var(--tx, 0px) - var(--x, 0px)) * 0.012),
+      calc(var(--ty, 0px) + (var(--ty, 0px) - var(--y, 0px)) * 0.012),
+      0
+    ) rotate(0deg) scale(calc(var(--scale, 1) * 1.015));
+  }
+  100% {
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) rotate(0deg) scale(var(--scale, 1));
+  }
+}
+@keyframes owCardSettle {
+  0% {
+    opacity: var(--opacity, 0.95);
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) rotate(0deg) scale(var(--scale, 1));
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) rotate(0deg) scale(var(--scale, 1));
+  }
+}
+@keyframes owSubtleGlow {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes owGuideReveal {
+  0%   { opacity: 0; }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes owConnectionsReveal {
+  0%   { opacity: 0; }
+  25%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes owConnectionDraw {
+  0%   { stroke-dashoffset: 40; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes owCompletionPulse {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  30%  { opacity: 0.7; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(3.2); }
+}
+@keyframes owCheckPop {
+  0%   { opacity: 0; transform: scale(0.4); }
+  60%  { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes owDustDrift {
+  0%   { opacity: 0; transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0) scale(var(--dscale, 1)); }
+  20%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translate3d(calc(var(--dx, 0px) * 1.4), calc(var(--dy, 0px) * 1.4 - 8px), 0) scale(calc(var(--dscale, 1) * 0.6)); }
+}
+@keyframes owOverlayFadeOut { to { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .office-premium-overlay .glass-card {
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(var(--scale, 1));
+    opacity: var(--opacity, 0.95);
+    animation: owRmFade 2200ms ease-out forwards;
+  }
+  .office-premium-overlay .guides,
+  .office-premium-overlay .connections,
+  .office-premium-overlay .dust,
+  .office-premium-overlay .pulse { display: none !important; }
+  .office-premium-overlay .glass-card .check { animation: none; opacity: 1; transform: scale(1); }
+  .office-premium-overlay { animation: owOverlayFadeOut 500ms ease 2400ms forwards; }
+}
+@keyframes owRmFade {
+  0%   { opacity: 0; transform: translate3d(var(--tx, 0px), calc(var(--ty, 0px) + 8px), 0) scale(var(--scale, 1)); }
+  20%  { opacity: var(--opacity, 0.95); transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(var(--scale, 1)); }
+  100% { opacity: 0; }
+}
+`;
+
+  function ensureStyles() {
+    if (typeof document === 'undefined') return;
+    if (document.getElementById(STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = STYLE_ID;
+    style.textContent = STYLES;
+    document.head.appendChild(style);
+  }
+
+  function checkSVG() {
+    return `
+<svg width="9" height="9" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <path d="M2 5.2 L4.2 7.4 L8 3.2" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+  }
+
+  // Kártya-tartalom sablonok — apró, absztrakt UI-elemek.
+  const templates = [
+    () => `
+<div class="titlebar">
+  <span class="tag"></span>
+  <span class="dot-row"><span class="dot live"></span><span class="dot"></span><span class="dot"></span></span>
+</div>
+<div class="line long"></div>
+<div class="line mid"></div>
+<div class="line short"></div>`,
+    () => `
+<div class="titlebar">
+  <span class="tag"></span>
+  <span class="dot-row"><span class="dot live"></span><span class="dot"></span></span>
+</div>
+<div class="chart">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>`,
+    () => `
+<div style="display:flex; gap:10px; align-items:center;">
+  <div class="donut"></div>
+  <div style="flex:1;">
+    <div class="line mid"></div>
+    <div class="line short"></div>
+    <div class="accent-line" style="width:60%;"></div>
+  </div>
+</div>`,
+    () => `
+<div class="titlebar">
+  <span class="tag"></span>
+  <span class="dot-row"><span class="dot live"></span><span class="dot"></span></span>
+</div>
+<svg class="sparkline" width="100%" height="38" viewBox="0 0 120 38" preserveAspectRatio="none" aria-hidden="true">
+  <path class="area" d="M0,28 L15,22 L30,26 L45,14 L60,18 L75,8 L90,12 L105,6 L120,10 L120,38 L0,38 Z"/>
+  <path d="M0,28 L15,22 L30,26 L45,14 L60,18 L75,8 L90,12 L105,6 L120,10"/>
+</svg>`,
+    () => `
+<div class="titlebar">
+  <span class="tag"></span>
+  <span class="dot-row"><span class="dot live"></span></span>
+</div>
+<div style="height: 14px; width: 60%; border-radius: 4px; background: linear-gradient(90deg,#1f6feb,#5db8ff); margin: 4px 0 8px;"></div>
+<div class="line short"></div>
+<div class="line mid"></div>`,
+    () => `
+<div class="titlebar">
+  <span class="tag"></span>
+  <span class="dot-row"><span class="dot"></span><span class="dot"></span></span>
+</div>
+<div style="display:flex; gap:6px; align-items:center; margin-bottom:5px;">
+  <span style="width:8px; height:8px; border-radius:2px; background:#5db8ff;"></span>
+  <span class="line long" style="flex:1; margin:0;"></span>
+</div>
+<div style="display:flex; gap:6px; align-items:center; margin-bottom:5px;">
+  <span style="width:8px; height:8px; border-radius:2px; border:1px solid #cbd5e1;"></span>
+  <span class="line mid" style="flex:1; margin:0;"></span>
+</div>
+<div style="display:flex; gap:6px; align-items:center;">
+  <span style="width:8px; height:8px; border-radius:2px; border:1px solid #cbd5e1;"></span>
+  <span class="line short" style="flex:1; margin:0;"></span>
+</div>`,
+  ];
+
+  // A dashboard-rács: minden kártya közép-pontja px-ben a canvas közepéhez képest.
+  const layout = [
+    { tx: -255, ty: -160, w: 150, h: 96 },
+    { tx: -85, ty: -160, w: 150, h: 96 },
+    { tx: 85, ty: -160, w: 150, h: 96 },
+    { tx: 255, ty: -160, w: 150, h: 96 },
+    { tx: -195, ty: 0, w: 200, h: 110 },
+    { tx: 30, ty: 0, w: 150, h: 110 },
+    { tx: 205, ty: 0, w: 150, h: 110 },
+    { tx: -230, ty: 150, w: 170, h: 102 },
+    { tx: -50, ty: 150, w: 170, h: 102 },
+    { tx: 130, ty: 150, w: 170, h: 102 },
+    { tx: 300, ty: 150, w: 100, h: 102 },
+  ];
+
+  function buildOverlay() {
+    const overlay = document.createElement('div');
+    overlay.className = 'office-premium-overlay';
+    overlay.setAttribute('aria-hidden', 'true');
+
+    const stage = document.createElement('div');
+    stage.className = 'stage';
+    overlay.appendChild(stage);
+
+    const canvas = document.createElement('div');
+    canvas.className = 'canvas';
+    stage.appendChild(canvas);
+
+    // Igazító segédvonalak
+    const guides = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    guides.setAttribute('class', 'guides');
+    guides.setAttribute('viewBox', '-360 -230 720 460');
+    const axisV = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    axisV.setAttribute('class', 'axis');
+    axisV.setAttribute('x1', '0');
+    axisV.setAttribute('y1', '-230');
+    axisV.setAttribute('x2', '0');
+    axisV.setAttribute('y2', '230');
+    const axisH = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    axisH.setAttribute('class', 'axis');
+    axisH.setAttribute('x1', '-360');
+    axisH.setAttribute('y1', '0');
+    axisH.setAttribute('x2', '360');
+    axisH.setAttribute('y2', '0');
+    guides.appendChild(axisV);
+    guides.appendChild(axisH);
+    [-160, 0, 150].forEach((y) => {
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', '-360');
+      ln.setAttribute('y1', String(y));
+      ln.setAttribute('x2', '360');
+      ln.setAttribute('y2', String(y));
+      guides.appendChild(ln);
+    });
+    [-255, -85, 85, 255].forEach((x) => {
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', String(x));
+      ln.setAttribute('y1', '-230');
+      ln.setAttribute('x2', String(x));
+      ln.setAttribute('y2', '230');
+      guides.appendChild(ln);
+    });
+    canvas.appendChild(guides);
+
+    // Összekötő vonalak
+    const conns = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    conns.setAttribute('class', 'connections');
+    conns.setAttribute('viewBox', '-360 -230 720 460');
+    canvas.appendChild(conns);
+
+    // Kártyák
+    layout.forEach((cfg, i) => {
+      const card = document.createElement('div');
+      card.className = 'glass-card';
+      const depth = i % 5 === 0 ? 'back' : i % 4 === 0 ? 'front' : 'mid';
+      if (depth !== 'mid') card.classList.add('depth-' + depth);
+
+      const angle = Math.random() * Math.PI * 2;
+      const r = 220 + Math.random() * 180;
+      const sx = Math.cos(angle) * r;
+      const sy = Math.sin(angle) * r * 0.7;
+      const rotation = (Math.random() * 24 - 12).toFixed(1);
+      const scale = depth === 'back' ? 0.92 : depth === 'front' ? 1.0 : 0.97;
+      const opacity = depth === 'back' ? 0.88 : depth === 'front' ? 1 : 0.96;
+      const delay = Math.floor(i * 60 + Math.random() * 120);
+
+      card.style.setProperty('--w', cfg.w + 'px');
+      card.style.setProperty('--h', cfg.h + 'px');
+      card.style.setProperty('--x', sx.toFixed(1) + 'px');
+      card.style.setProperty('--y', sy.toFixed(1) + 'px');
+      card.style.setProperty('--tx', cfg.tx + 'px');
+      card.style.setProperty('--ty', cfg.ty + 'px');
+      card.style.setProperty('--rotation', rotation + 'deg');
+      card.style.setProperty('--scale', scale.toString());
+      card.style.setProperty('--opacity', opacity.toString());
+      card.style.setProperty('--delay', delay + 'ms');
+
+      const tplIndex = (i * 3 + (cfg.w > 180 ? 1 : 0)) % templates.length;
+      card.innerHTML = templates[tplIndex]();
+
+      const check = document.createElement('div');
+      check.className = 'check';
+      check.innerHTML = checkSVG();
+      card.appendChild(check);
+
+      canvas.appendChild(card);
+    });
+
+    // Összekötő vonalak a szomszédos kártyák között
+    const edges = [
+      [0, 1], [1, 2], [2, 3],
+      [4, 5], [5, 6],
+      [7, 8], [8, 9], [9, 10],
+      [0, 4], [3, 6],
+      [4, 7], [6, 10],
+    ];
+    edges.forEach(([a, b], idx) => {
+      const A = layout[a];
+      const B = layout[b];
+      if (!A || !B) return;
+      const ln = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      ln.setAttribute('x1', String(A.tx));
+      ln.setAttribute('y1', String(A.ty));
+      ln.setAttribute('x2', String(B.tx));
+      ln.setAttribute('y2', String(B.ty));
+      ln.style.setProperty('--c-delay', idx * 35 + 'ms');
+      conns.appendChild(ln);
+    });
+
+    // Por-részecskék a snap alatt
+    const DUST = 28;
+    for (let i = 0; i < DUST; i++) {
+      const dust = document.createElement('div');
+      dust.className = 'dust';
+      const a = Math.random() * Math.PI * 2;
+      const r = 30 + Math.random() * 180;
+      const dx = Math.cos(a) * r;
+      const dy = Math.sin(a) * r * 0.7;
+      dust.style.setProperty('--dx', dx.toFixed(1) + 'px');
+      dust.style.setProperty('--dy', dy.toFixed(1) + 'px');
+      dust.style.setProperty('--dscale', (0.5 + Math.random() * 0.8).toFixed(2));
+      dust.style.setProperty('--dust-delay', 1400 + Math.random() * 600 + 'ms');
+      canvas.appendChild(dust);
+    }
+
+    // Befejező pulzáló gyűrűk
+    const pulse1 = document.createElement('div');
+    pulse1.className = 'pulse';
+    const pulse2 = document.createElement('div');
+    pulse2.className = 'pulse p2';
+    canvas.appendChild(pulse1);
+    canvas.appendChild(pulse2);
+
+    return overlay;
+  }
+
+  return function triggerOfficeWorkflow() {
+    if (typeof document === 'undefined') return;
+    ensureStyles();
+    // Rapid-click védelem: ha már fut egy overlay, leszedjük az új előtt
+    document.querySelector('.office-premium-overlay')?.remove();
+    const overlay = buildOverlay();
+    document.body.appendChild(overlay);
+    window.setTimeout(() => {
+      overlay.remove();
+    }, 4200);
+  };
 })();
 </script>
 </body>

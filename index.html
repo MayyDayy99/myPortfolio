@@ -1602,7 +1602,7 @@ const triggerDroneSwarm = (function () {
     width: 160px; height: 160px;
     display: grid; place-items: center;
     animation: dsRmPulse 1400ms ease-out forwards;
-    filter: drop-shadow(0 8px 18px rgba(31, 111, 235, 0.25));
+    filter: drop-shadow(0 8px 18px rgba(201, 130, 42, 0.25));
   }
 }
 .drone-swarm-overlay .reduced-motion-mark { display: none; }
@@ -1635,9 +1635,9 @@ const triggerDroneSwarm = (function () {
       <stop offset="1" stop-color="#1c212b"/>
     </linearGradient>
     <radialGradient id="dsLens-${id}" cx="0.4" cy="0.4" r="0.6">
-      <stop offset="0" stop-color="#cfeaff"/>
-      <stop offset="0.55" stop-color="#5db8ff"/>
-      <stop offset="1" stop-color="#1f6feb"/>
+      <stop offset="0" stop-color="#f6e2c3"/>
+      <stop offset="0.55" stop-color="#e2a23b"/>
+      <stop offset="1" stop-color="#c9822a"/>
     </radialGradient>
   </defs>
   <g stroke="#2a313d" stroke-width="4" stroke-linecap="round">
@@ -1650,24 +1650,24 @@ const triggerDroneSwarm = (function () {
     <circle cx="-46" cy="32"  r="3"/>
     <circle cx="46"  cy="32"  r="3"/>
   </g>
-  <g fill="#5db8ff" fill-opacity="0.55">
+  <g fill="#e2a23b" fill-opacity="0.55">
     <ellipse class="prop" cx="-46" cy="-32" rx="22" ry="3.2"/>
     <ellipse class="prop" cx="46"  cy="-32" rx="22" ry="3.2"/>
     <ellipse class="prop" cx="-46" cy="32"  rx="22" ry="3.2"/>
     <ellipse class="prop" cx="46"  cy="32"  rx="22" ry="3.2"/>
   </g>
-  <g fill="#8ecaff" fill-opacity="0.35">
+  <g fill="#edc17e" fill-opacity="0.35">
     <ellipse class="prop" cx="-46" cy="-32" rx="3.2" ry="22"/>
     <ellipse class="prop" cx="46"  cy="-32" rx="3.2" ry="22"/>
     <ellipse class="prop" cx="-46" cy="32"  rx="3.2" ry="22"/>
     <ellipse class="prop" cx="46"  cy="32"  rx="3.2" ry="22"/>
   </g>
   <rect x="-26" y="-18" width="52" height="36" rx="9" fill="url(#dsBody-${id})" stroke="#0d1118" stroke-width="1.2"/>
-  <rect x="-22" y="-14" width="44" height="28" rx="6" fill="none" stroke="#5db8ff" stroke-opacity="0.18" stroke-width="0.8"/>
+  <rect x="-22" y="-14" width="44" height="28" rx="6" fill="none" stroke="#e2a23b" stroke-opacity="0.18" stroke-width="0.8"/>
   <rect x="-9" y="14" width="18" height="8" rx="3" fill="#0d1118"/>
   <circle cx="0" cy="18" r="3.6" fill="url(#dsLens-${id})"/>
   ${lightOn ? `
-  <circle cx="-26" cy="0" r="2.2" fill="#5db8ff"/>
+  <circle cx="-26" cy="0" r="2.2" fill="#e2a23b"/>
   <circle cx="26"  cy="0" r="2.2" fill="#ff6b6b" fill-opacity="0.85"/>
   ` : ''}
 </svg>`;
@@ -1676,10 +1676,10 @@ const triggerDroneSwarm = (function () {
   function surveySVG() {
     return `
 <svg class="survey-svg" width="220" height="220" viewBox="-110 -110 220 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <circle class="ring r1" cx="0" cy="0" r="34" fill="none" stroke="#5db8ff" stroke-opacity="0.65" stroke-width="1.6"/>
-  <circle class="ring r2" cx="0" cy="0" r="34" fill="none" stroke="#5db8ff" stroke-opacity="0.5" stroke-width="1.4"/>
-  <circle class="ring r3" cx="0" cy="0" r="34" fill="none" stroke="#5db8ff" stroke-opacity="0.4" stroke-width="1.2"/>
-  <g stroke="#5db8ff" stroke-opacity="0.55" stroke-width="1">
+  <circle class="ring r1" cx="0" cy="0" r="34" fill="none" stroke="#e2a23b" stroke-opacity="0.65" stroke-width="1.6"/>
+  <circle class="ring r2" cx="0" cy="0" r="34" fill="none" stroke="#e2a23b" stroke-opacity="0.5" stroke-width="1.4"/>
+  <circle class="ring r3" cx="0" cy="0" r="34" fill="none" stroke="#e2a23b" stroke-opacity="0.4" stroke-width="1.2"/>
+  <g stroke="#e2a23b" stroke-opacity="0.55" stroke-width="1">
     <line x1="-10" y1="0" x2="-4" y2="0"/>
     <line x1="4"   y1="0" x2="10" y2="0"/>
     <line x1="0" y1="-10" x2="0" y2="-4"/>
@@ -1697,25 +1697,25 @@ const triggerDroneSwarm = (function () {
         const x = -56 + c * (112 / (cols - 1)) + (r % 2 ? 6 : 0);
         const y = rowYs[r] + (Math.random() * 2 - 1);
         const d = (Math.random() * 1200).toFixed(0);
-        pts.push(`<circle class="pt" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(0.9 + Math.random() * 0.7).toFixed(2)}" fill="#cfeaff" style="--ptDelay: ${d}ms"/>`);
+        pts.push(`<circle class="pt" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(0.9 + Math.random() * 0.7).toFixed(2)}" fill="#f6e2c3" style="--ptDelay: ${d}ms"/>`);
       }
     }
     return `
 <svg class="lidar-svg" width="180" height="160" viewBox="-90 0 180 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     <linearGradient id="dsLidarCone-${id}" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#8ecaff" stop-opacity="0.55"/>
-      <stop offset="0.7" stop-color="#5db8ff" stop-opacity="0.18"/>
-      <stop offset="1" stop-color="#5db8ff" stop-opacity="0"/>
+      <stop offset="0" stop-color="#edc17e" stop-opacity="0.55"/>
+      <stop offset="0.7" stop-color="#e2a23b" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#e2a23b" stop-opacity="0"/>
     </linearGradient>
     <linearGradient id="dsLidarSweep-${id}" x1="0" x2="1" y1="0" y2="0">
-      <stop offset="0" stop-color="#8ecaff" stop-opacity="0"/>
-      <stop offset="0.5" stop-color="#cfeaff" stop-opacity="0.95"/>
-      <stop offset="1" stop-color="#8ecaff" stop-opacity="0"/>
+      <stop offset="0" stop-color="#edc17e" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f6e2c3" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#edc17e" stop-opacity="0"/>
     </linearGradient>
   </defs>
   <polygon class="cone" points="-4,0 4,0 60,130 -60,130" fill="url(#dsLidarCone-${id})"/>
-  <g stroke="#8ecaff" stroke-opacity="0.45" stroke-width="0.6">
+  <g stroke="#edc17e" stroke-opacity="0.45" stroke-width="0.6">
     <line x1="0" y1="0" x2="-58" y2="130"/>
     <line x1="0" y1="0" x2="-38" y2="130"/>
     <line x1="0" y1="0" x2="-18" y2="130"/>
@@ -1724,7 +1724,7 @@ const triggerDroneSwarm = (function () {
     <line x1="0" y1="0" x2="58"  y2="130"/>
   </g>
   <rect class="sweep" x="-30" y="-1" width="60" height="2" fill="url(#dsLidarSweep-${id})"/>
-  <line x1="-58" y1="130" x2="58" y2="130" stroke="#5db8ff" stroke-opacity="0.3" stroke-width="0.6" stroke-dasharray="2 3"/>
+  <line x1="-58" y1="130" x2="58" y2="130" stroke="#e2a23b" stroke-opacity="0.3" stroke-width="0.6" stroke-dasharray="2 3"/>
   <g>${pts.join('')}</g>
 </svg>`;
   }
@@ -1734,8 +1734,8 @@ const triggerDroneSwarm = (function () {
 <svg class="trail-svg" width="200" height="20" viewBox="-100 -10 200 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     <linearGradient id="dsTrailGrad" x1="0" x2="1" y1="0" y2="0">
-      <stop offset="0" stop-color="#5db8ff" stop-opacity="0"/>
-      <stop offset="1" stop-color="#5db8ff" stop-opacity="0.55"/>
+      <stop offset="0" stop-color="#e2a23b" stop-opacity="0"/>
+      <stop offset="1" stop-color="#e2a23b" stop-opacity="0.55"/>
     </linearGradient>
   </defs>
   <rect x="-100" y="-2" width="200" height="4" rx="2" fill="url(#dsTrailGrad)"/>
@@ -1753,9 +1753,9 @@ const triggerDroneSwarm = (function () {
 <svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
   <defs>
     <radialGradient id="dsRmGrad" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#dbeeff"/>
-      <stop offset="0.7" stop-color="#8ecaff" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#1f6feb" stop-opacity="0"/>
+      <stop offset="0" stop-color="#f6e2c3"/>
+      <stop offset="0.7" stop-color="#edc17e" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#c9822a" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <circle cx="80" cy="80" r="70" fill="url(#dsRmGrad)"/>
@@ -1930,7 +1930,7 @@ const triggerMachineTime = (function () {
 .machine-time-overlay .pt {
   position: absolute; left: 50%; top: 50%;
   width: 4px; height: 4px; border-radius: 50%;
-  background: var(--color, #8ecaff);
+  background: var(--color, #edc17e);
   transform: translate3d(calc(var(--x, 0px) - 50%), calc(var(--y, 0px) - 50%), 0) scale(0.4);
   opacity: 0; will-change: transform, opacity;
   animation:
@@ -1943,7 +1943,7 @@ const triggerMachineTime = (function () {
   animation: mtConnectionsReveal 1400ms cubic-bezier(0.22, 1, 0.36, 1) 1600ms forwards;
 }
 .machine-time-overlay .connections line {
-  stroke: #5db8ff; stroke-opacity: 0.35; stroke-width: 0.6;
+  stroke: #e2a23b; stroke-opacity: 0.35; stroke-width: 0.6;
   stroke-dasharray: 60; stroke-dashoffset: 60;
   animation: mtConnectionDraw 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--c-delay, 0ms) forwards;
 }
@@ -1956,7 +1956,7 @@ const triggerMachineTime = (function () {
 }
 .machine-time-overlay .wireframe path,
 .machine-time-overlay .wireframe line {
-  stroke: #5db8ff; stroke-width: 1; fill: none; stroke-opacity: 0.7;
+  stroke: #e2a23b; stroke-width: 1; fill: none; stroke-opacity: 0.7;
   stroke-dasharray: 240; stroke-dashoffset: 240;
   animation: mtWireDraw 900ms cubic-bezier(0.22, 1, 0.36, 1) 2700ms forwards;
 }
@@ -2143,18 +2143,18 @@ const triggerMachineTime = (function () {
       <stop offset="1" stop-color="#06101c"/>
     </linearGradient>
     <radialGradient id="mtPcEmitter-${id}" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#cfeaff" stop-opacity="0.95"/>
-      <stop offset="0.5" stop-color="#5db8ff" stop-opacity="0.55"/>
-      <stop offset="1" stop-color="#5db8ff" stop-opacity="0"/>
+      <stop offset="0" stop-color="#f6e2c3" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#e2a23b" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#e2a23b" stop-opacity="0"/>
     </radialGradient>
     <clipPath id="mtPcScreenClip-${id}">
       <rect x="-44" y="-32" width="88" height="56" rx="3"/>
     </clipPath>
   </defs>
   <rect x="-52" y="-40" width="104" height="72" rx="6" fill="url(#mtPcBody-${id})" stroke="#0d1118" stroke-width="1.5"/>
-  <rect class="screen-glow" x="-44" y="-32" width="88" height="56" rx="3" fill="url(#mtPcScreen-${id})" stroke="#5db8ff" stroke-opacity="0.7" stroke-width="1"/>
+  <rect class="screen-glow" x="-44" y="-32" width="88" height="56" rx="3" fill="url(#mtPcScreen-${id})" stroke="#e2a23b" stroke-opacity="0.7" stroke-width="1"/>
   <g clip-path="url(#mtPcScreenClip-${id})">
-    <g stroke="#5db8ff" stroke-opacity="0.18" stroke-width="0.5">
+    <g stroke="#e2a23b" stroke-opacity="0.18" stroke-width="0.5">
       <line x1="-44" y1="-20" x2="44" y2="-20"/>
       <line x1="-44" y1="-8"  x2="44" y2="-8"/>
       <line x1="-44" y1="4"   x2="44" y2="4"/>
@@ -2165,42 +2165,42 @@ const triggerMachineTime = (function () {
       <line x1="20"  y1="-32" x2="20"  y2="24"/>
       <line x1="36"  y1="-32" x2="36"  y2="24"/>
     </g>
-    <g class="screen-points" fill="#8ecaff">
+    <g class="screen-points" fill="#edc17e">
       <circle cx="-28" cy="-10" r="1.2"/>
       <circle cx="-18" cy="-16" r="1.1"/>
       <circle cx="-8"  cy="-12" r="1.3"/>
       <circle cx="2"   cy="-18" r="1.1"/>
       <circle cx="14"  cy="-10" r="1.2"/>
       <circle cx="24"  cy="-14" r="1.0"/>
-      <circle cx="-24" cy="4"   r="1.2" fill="#cfeaff"/>
+      <circle cx="-24" cy="4"   r="1.2" fill="#f6e2c3"/>
       <circle cx="-12" cy="8"   r="1.1"/>
-      <circle cx="0"   cy="2"   r="1.3" fill="#cfeaff"/>
+      <circle cx="0"   cy="2"   r="1.3" fill="#f6e2c3"/>
       <circle cx="12"  cy="6"   r="1.2"/>
       <circle cx="22"  cy="4"   r="1.1"/>
       <circle cx="32"  cy="10"  r="1.0"/>
       <circle cx="-30" cy="16"  r="1.1"/>
       <circle cx="-16" cy="18"  r="1.2"/>
-      <circle cx="-2"  cy="14"  r="1.3" fill="#cfeaff"/>
+      <circle cx="-2"  cy="14"  r="1.3" fill="#f6e2c3"/>
       <circle cx="10"  cy="18"  r="1.1"/>
       <circle cx="26"  cy="16"  r="1.2"/>
     </g>
     <path class="screen-wire" d="M -32 18 L -32 -6 L -10 -22 L 14 -22 L 14 -6 L 36 -6 L 36 18 Z"
-          fill="none" stroke="#cfeaff" stroke-opacity="0.85" stroke-width="0.9"/>
-    <rect class="scan-bar" x="-44" y="-32" width="88" height="2" fill="#cfeaff" fill-opacity="0.85"/>
+          fill="none" stroke="#f6e2c3" stroke-opacity="0.85" stroke-width="0.9"/>
+    <rect class="scan-bar" x="-44" y="-32" width="88" height="2" fill="#f6e2c3" fill-opacity="0.85"/>
     <rect x="-40" y="19" width="80" height="2.5" rx="1.25" fill="#1a2a44"/>
-    <rect class="progress" x="-40" y="19" width="80" height="2.5" rx="1.25" fill="#5db8ff"/>
+    <rect class="progress" x="-40" y="19" width="80" height="2.5" rx="1.25" fill="#e2a23b"/>
   </g>
-  <rect x="-44" y="-32" width="88" height="56" rx="3" fill="none" stroke="#5db8ff" stroke-opacity="0.15" stroke-width="0.5"/>
+  <rect x="-44" y="-32" width="88" height="56" rx="3" fill="none" stroke="#e2a23b" stroke-opacity="0.15" stroke-width="0.5"/>
   <circle class="emitter" cx="${side}" cy="0" r="10" fill="url(#mtPcEmitter-${id})"/>
   <path class="circuit" d="M ${side} 0 L ${sideOut} 0"
-        fill="none" stroke="#5db8ff" stroke-opacity="0.85" stroke-width="1" stroke-linecap="round"/>
+        fill="none" stroke="#e2a23b" stroke-opacity="0.85" stroke-width="1" stroke-linecap="round"/>
   <path class="circuit" d="M ${side} -8 L ${sideMid} -8 L ${sideMid} -16"
-        fill="none" stroke="#5db8ff" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
+        fill="none" stroke="#e2a23b" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
   <path class="circuit" d="M ${side} 8 L ${sideMid} 8 L ${sideMid} 16"
-        fill="none" stroke="#5db8ff" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
+        fill="none" stroke="#e2a23b" stroke-opacity="0.55" stroke-width="0.8" stroke-linecap="round"/>
   <rect x="-10" y="32" width="20" height="5" rx="1.5" fill="#0d1118"/>
   <rect x="-22" y="37" width="44" height="4" rx="1.5" fill="#0d1118"/>
-  <circle class="led" cx="46" cy="28" r="1.8" fill="#8ecaff"/>
+  <circle class="led" cx="46" cy="28" r="1.8" fill="#edc17e"/>
 </svg>`;
   }
 
@@ -2273,7 +2273,7 @@ const triggerMachineTime = (function () {
       { ox: 320, oy: -70 },
       { ox: 300, oy: 70 },
     ];
-    const palette = ['#cfeaff', '#8ecaff', '#5db8ff', '#3a8ed1'];
+    const palette = ['#f6e2c3', '#edc17e', '#e2a23b', '#c9822a'];
 
     for (let i = 0; i < COUNT; i++) {
       const target = cloudTarget(i, COUNT);
@@ -2415,7 +2415,7 @@ const triggerOfficeWorkflow = (function () {
   animation: owGuideReveal 1400ms cubic-bezier(0.22, 1, 0.36, 1) 1200ms forwards;
 }
 .office-premium-overlay .guides line {
-  stroke: #1f6feb; stroke-opacity: 0.5; stroke-width: 1; stroke-dasharray: 4 5;
+  stroke: #c9822a; stroke-opacity: 0.5; stroke-width: 1; stroke-dasharray: 4 5;
 }
 .office-premium-overlay .guides .axis {
   stroke-opacity: 0.7; stroke-width: 1.2; stroke-dasharray: 8 6;
@@ -2425,7 +2425,7 @@ const triggerOfficeWorkflow = (function () {
   animation: owConnectionsReveal 1200ms cubic-bezier(0.22, 1, 0.36, 1) 1500ms forwards;
 }
 .office-premium-overlay .connections line {
-  stroke: #1f6feb; stroke-opacity: 0.7; stroke-width: 1.2;
+  stroke: #c9822a; stroke-opacity: 0.7; stroke-width: 1.2;
   stroke-dasharray: 40; stroke-dashoffset: 40;
   animation: owConnectionDraw 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--c-delay, 0ms) forwards;
 }
@@ -2438,11 +2438,11 @@ const triggerOfficeWorkflow = (function () {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 255, 0.92));
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(31, 111, 235, 0.28);
+  border: 1px solid rgba(201, 130, 42, 0.28);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 1px 2px rgba(15, 23, 42, 0.06),
-    0 14px 36px -14px rgba(31, 111, 235, 0.32),
+    0 14px 36px -14px rgba(201, 130, 42, 0.32),
     0 24px 60px -28px rgba(15, 23, 42, 0.35);
   padding: 10px 12px; overflow: hidden; opacity: 0;
   transform: translate3d(var(--x, 0px), var(--y, 0px), 0) rotate(var(--rotation, 0deg)) scale(var(--scale, 1));
@@ -2455,16 +2455,16 @@ const triggerOfficeWorkflow = (function () {
 }
 .office-premium-overlay .glass-card.depth-back {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(232, 240, 252, 0.82));
-  border-color: rgba(31, 111, 235, 0.2);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 10px 26px -16px rgba(31, 111, 235, 0.28);
+  border-color: rgba(201, 130, 42, 0.2);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 10px 26px -16px rgba(201, 130, 42, 0.28);
 }
 .office-premium-overlay .glass-card.depth-front {
   background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(232, 244, 255, 0.96));
-  border-color: rgba(31, 111, 235, 0.4);
+  border-color: rgba(201, 130, 42, 0.4);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,
     0 1px 3px rgba(15, 23, 42, 0.08),
-    0 18px 44px -14px rgba(31, 111, 235, 0.45),
+    0 18px 44px -14px rgba(201, 130, 42, 0.45),
     0 30px 80px -32px rgba(15, 23, 42, 0.45);
 }
 .office-premium-overlay .glass-card .titlebar {
@@ -2475,7 +2475,7 @@ const triggerOfficeWorkflow = (function () {
   width: 6px; height: 6px; border-radius: 50%; background: #cbd5e1;
 }
 .office-premium-overlay .glass-card .dot.live {
-  background: #5db8ff; box-shadow: 0 0 6px rgba(93, 184, 255, 0.55);
+  background: #e2a23b; box-shadow: 0 0 6px rgba(226, 162, 59, 0.55);
 }
 .office-premium-overlay .glass-card .tag {
   height: 6px; width: 24px; border-radius: 3px;
@@ -2490,13 +2490,13 @@ const triggerOfficeWorkflow = (function () {
 .office-premium-overlay .glass-card .line.long  { width: 92%; }
 .office-premium-overlay .glass-card .accent-line {
   height: 5px; border-radius: 3px;
-  background: linear-gradient(90deg, #5db8ff, #8ecaff); margin-bottom: 5px;
+  background: linear-gradient(90deg, #e2a23b, #edc17e); margin-bottom: 5px;
 }
 .office-premium-overlay .glass-card .chart {
   display: flex; align-items: flex-end; gap: 3px; height: 28px; margin-top: 6px;
 }
 .office-premium-overlay .glass-card .chart span {
-  width: 6px; background: linear-gradient(180deg, #8ecaff, #5db8ff);
+  width: 6px; background: linear-gradient(180deg, #edc17e, #e2a23b);
   border-radius: 2px 2px 0 0; opacity: 0.85;
 }
 .office-premium-overlay .glass-card .chart span:nth-child(1) { height: 35%; }
@@ -2508,7 +2508,7 @@ const triggerOfficeWorkflow = (function () {
 .office-premium-overlay .glass-card .chart span:nth-child(7) { height: 55%; }
 .office-premium-overlay .glass-card .donut {
   width: 36px; height: 36px; border-radius: 50%;
-  background: conic-gradient(#5db8ff 0 65%, #e2e8f0 65% 100%);
+  background: conic-gradient(#e2a23b 0 65%, #e2e8f0 65% 100%);
   position: relative; margin: 2px 0;
 }
 .office-premium-overlay .glass-card .donut::after {
@@ -2517,11 +2517,11 @@ const triggerOfficeWorkflow = (function () {
 }
 .office-premium-overlay .glass-card .sparkline { margin-top: 6px; }
 .office-premium-overlay .glass-card .sparkline path {
-  stroke: #5db8ff; stroke-width: 1.5; fill: none;
+  stroke: #e2a23b; stroke-width: 1.5; fill: none;
   stroke-linecap: round; stroke-linejoin: round;
 }
 .office-premium-overlay .glass-card .sparkline .area {
-  fill: rgba(93, 184, 255, 0.18); stroke: none;
+  fill: rgba(226, 162, 59, 0.18); stroke: none;
 }
 .office-premium-overlay .glass-card .check {
   position: absolute; right: 8px; bottom: 8px;
@@ -2533,15 +2533,15 @@ const triggerOfficeWorkflow = (function () {
 .office-premium-overlay .glass-card .check svg { display: block; }
 .office-premium-overlay .glass-card::after {
   content: ''; position: absolute; inset: -2px; border-radius: 13px;
-  border: 1.5px solid rgba(31, 111, 235, 0.85);
-  box-shadow: 0 0 22px rgba(31, 111, 235, 0.45);
+  border: 1.5px solid rgba(201, 130, 42, 0.85);
+  box-shadow: 0 0 22px rgba(201, 130, 42, 0.45);
   opacity: 0; pointer-events: none;
   animation: owSubtleGlow 900ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--delay, 0ms) + 1700ms) forwards;
 }
 .office-premium-overlay .dust {
   position: absolute; left: 50%; top: 50%;
   width: 4px; height: 4px; border-radius: 50%;
-  background: #1f6feb; box-shadow: 0 0 6px rgba(31, 111, 235, 0.6);
+  background: #c9822a; box-shadow: 0 0 6px rgba(201, 130, 42, 0.6);
   opacity: 0;
   transform: translate3d(var(--dx, 0px), var(--dy, 0px), 0) scale(var(--dscale, 1));
   animation: owDustDrift 1600ms cubic-bezier(0.22, 1, 0.36, 1) var(--dust-delay, 0ms) forwards;
@@ -2550,12 +2550,12 @@ const triggerOfficeWorkflow = (function () {
   position: absolute; left: 50%; top: 50%;
   width: 80px; height: 80px; border-radius: 50%;
   transform: translate(-50%, -50%) scale(0.5);
-  border: 1.5px solid rgba(31, 111, 235, 0.85);
-  box-shadow: 0 0 30px rgba(31, 111, 235, 0.35);
+  border: 1.5px solid rgba(201, 130, 42, 0.85);
+  box-shadow: 0 0 30px rgba(201, 130, 42, 0.35);
   opacity: 0;
   animation: owCompletionPulse 1400ms cubic-bezier(0.22, 1, 0.36, 1) 2300ms forwards;
 }
-.office-premium-overlay .pulse.p2 { animation-delay: 2550ms; border-color: rgba(93, 184, 255, 0.7); }
+.office-premium-overlay .pulse.p2 { animation-delay: 2550ms; border-color: rgba(226, 162, 59, 0.7); }
 
 @keyframes owCardFloatIn {
   0% {
@@ -2723,7 +2723,7 @@ const triggerOfficeWorkflow = (function () {
   <span class="tag"></span>
   <span class="dot-row"><span class="dot live"></span></span>
 </div>
-<div style="height: 14px; width: 60%; border-radius: 4px; background: linear-gradient(90deg,#1f6feb,#5db8ff); margin: 4px 0 8px;"></div>
+<div style="height: 14px; width: 60%; border-radius: 4px; background: linear-gradient(90deg,#c9822a,#e2a23b); margin: 4px 0 8px;"></div>
 <div class="line short"></div>
 <div class="line mid"></div>`,
     () => `
@@ -2732,7 +2732,7 @@ const triggerOfficeWorkflow = (function () {
   <span class="dot-row"><span class="dot"></span><span class="dot"></span></span>
 </div>
 <div style="display:flex; gap:6px; align-items:center; margin-bottom:5px;">
-  <span style="width:8px; height:8px; border-radius:2px; background:#5db8ff;"></span>
+  <span style="width:8px; height:8px; border-radius:2px; background:#e2a23b;"></span>
   <span class="line long" style="flex:1; margin:0;"></span>
 </div>
 <div style="display:flex; gap:6px; align-items:center; margin-bottom:5px;">

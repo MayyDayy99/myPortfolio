@@ -101,8 +101,22 @@ p{margin:0}
 .btn-primary:hover{background:#0c1a16}
 .btn-ghost{background:transparent;color:var(--ink);border-color:var(--paper-3)}
 .btn-ghost:hover{border-color:var(--ink)}
-.arr{transition:transform .2s var(--ease)}
-.btn:hover .arr{transform:translateX(3px)}
+.btn--sm{padding:9px 16px;font-size:var(--fs-sm)}
+.btn-amber{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.btn-amber:hover{background:var(--amber-dark);border-color:var(--amber-dark)}
+.btn-icon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;padding:0;border-radius:50%;color:var(--muted);border:1px solid var(--paper-3);background:transparent;cursor:pointer;transition:color .2s,border-color .2s,background .2s}
+.btn-icon:hover,.btn-icon:focus-visible{color:var(--ink);border-color:var(--ink-line);background:var(--paper-2);outline:none}
+.btn-icon svg{width:19px;height:19px;display:block}
+.btn--arrow::after{content:"\2192";transition:transform .2s var(--ease)}
+.btn--arrow:hover::after{transform:translateX(3px)}
+.on-ink .btn-ghost{color:var(--paper);border-color:var(--ink-line)}
+.on-ink .btn-ghost:hover{border-color:var(--amber);background:rgba(255,255,255,.03)}
+.on-ink .btn-icon{color:var(--paper);border-color:var(--ink-line)}
+.on-ink .btn-icon:hover,.on-ink .btn-icon:focus-visible{color:var(--amber);border-color:var(--amber);background:var(--amber-soft)}
+.badge{display:inline-flex;align-items:center;gap:.45em;font-family:"Space Mono",monospace;font-size:var(--fs-2xs);font-weight:700;letter-spacing:var(--track-mono);color:var(--ink);background:var(--amber);padding:4px 10px;border-radius:var(--r-sm)}
+.badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
+.badge--soft{color:var(--amber);background:var(--amber-soft);border:1px solid rgba(201,130,42,.28);text-transform:uppercase;letter-spacing:var(--track-label)}
+.proj-img .badge,.feat-media .badge{position:absolute;top:12px;left:12px;z-index:2}
 
 .header{position:sticky;top:0;z-index:100;background:rgba(239,241,236,.72);backdrop-filter:blur(10px);transition:box-shadow .3s}
 .header.scrolled{box-shadow:0 1px 0 var(--paper-3)}
@@ -148,7 +162,6 @@ p{margin:0}
 .modal-ov.open{opacity:1;visibility:visible}
 .modal{max-width:480px;width:100%;background:var(--paper);border:1px solid var(--paper-3);border-radius:var(--r-md);padding:clamp(24px,4vw,36px);box-shadow:var(--e-3);transform:translateY(8px);opacity:0;transition:transform .25s var(--ease),opacity .25s}
 .modal-ov.open .modal{transform:none;opacity:1}
-.modal .m-badge{display:inline-flex;align-items:center;gap:.5em;font-family:"Space Mono",monospace;font-size:var(--fs-2xs);font-weight:700;letter-spacing:var(--track-label);text-transform:uppercase;color:var(--amber);background:var(--amber-soft);border:1px solid rgba(201,130,42,.28);padding:5px 11px;border-radius:var(--r-full)}
 .modal h3{font-family:"Bricolage Grotesque",sans-serif;font-size:var(--fs-xl);font-weight:600;margin:16px 0 0;letter-spacing:-.01em}
 .modal p{color:var(--muted);font-size:var(--fs-sm);line-height:1.6;margin-top:12px}
 .modal p b{color:var(--ink)}
@@ -207,8 +220,6 @@ p{margin:0}
    Abszolút pozíció, hogy az álló videó ne nyújtsa meg a dobozt. */
 .proj--portrait .proj-img{aspect-ratio:16/9;position:relative;background:radial-gradient(120% 120% at 50% 30%,#1a2c26,#0c1512)}
 .proj--portrait .proj-img video,.proj--portrait .proj-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.proj--demo .badge{position:absolute;top:10px;left:10px;z-index:2;font-family:"Space Mono",monospace;font-size:var(--fs-2xs);letter-spacing:var(--track-mono);color:var(--ink);background:var(--amber);padding:4px 9px;border-radius:var(--r-sm);display:flex;align-items:center;gap:.4em}
-.proj--demo .badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
 .demo-frame{width:100%;height:100%;border:0;display:block;background:var(--ink)}
 .demo-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--paper-dim);font-family:"Space Mono",monospace;font-size:var(--fs-2xs);background:var(--ink)}
 .proj-body{padding:var(--pad-card);display:flex;flex-direction:column;flex:1}
@@ -219,13 +230,7 @@ p{margin:0}
 .proj .tags{margin-top:14px}
 .tags span{font-family:"Space Mono",monospace;font-size:var(--fs-2xs);color:var(--muted);background:var(--paper-2);padding:5px 10px;border-radius:var(--r-sm)}
 .proj .plinks{display:flex;align-items:center;justify-content:flex-start;gap:10px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--paper-2)}
-.proj .plink-try{display:inline-flex;align-items:center;gap:.4em;font-family:"Bricolage Grotesque",sans-serif;font-size:var(--fs-sm);font-weight:700;letter-spacing:-.01em;color:var(--ink);background:var(--amber);padding:9px 17px;border-radius:var(--r-full);transition:transform .15s var(--ease),background .2s}
-.proj .plink-try:hover{background:var(--amber-dark);color:var(--ink);transform:translateY(-2px)}
-.proj .plink-try2{display:inline-flex;align-items:center;gap:.5em;font-family:"Bricolage Grotesque",sans-serif;font-size:var(--fs-sm);font-weight:700;letter-spacing:-.01em;color:var(--amber);background:none;padding:8px 15px;border-radius:var(--r-full);border:1.5px solid rgba(201,130,42,.5);transition:background .2s,border-color .2s,transform .15s var(--ease)}
-.proj .plink-try2:hover{background:var(--amber-soft);border-color:var(--amber);transform:translateY(-2px)}
-.proj .plink-gh{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;flex:none;margin-left:auto;border-radius:50%;color:var(--muted);border:1px solid var(--paper-3);transition:color .2s,border-color .2s,background .2s}
-.proj .plink-gh:hover,.proj .plink-gh:focus-visible{color:var(--ink);border-color:var(--ink-line);background:var(--paper-2);outline:none}
-.proj .plink-gh svg{width:19px;height:19px;display:block}
+.plinks .btn-icon{margin-left:auto}
 .proj .priv{font-family:"Space Mono",monospace;font-size:var(--fs-2xs);color:var(--muted);margin-top:16px;padding-top:13px;border-top:1px solid var(--paper-2)}
 .allwork{margin-top:34px}
 
@@ -247,8 +252,6 @@ p{margin:0}
 .feat-card{display:grid;grid-template-columns:1.32fr 1fr;align-items:center;background:var(--ink);color:var(--paper);border:1px solid var(--ink-line);border-radius:var(--r-md);overflow:hidden;box-shadow:var(--e-3)}
 .feat-media{position:relative;background:var(--ink-deep);aspect-ratio:16/9}
 .feat-media img,.feat-media video{width:100%;height:100%;object-fit:cover;display:block}
-.feat-badge{position:absolute;top:14px;left:14px;font-family:"Space Mono",monospace;font-size:var(--fs-2xs);letter-spacing:var(--track-mono);color:var(--ink);background:var(--amber);padding:5px 10px;border-radius:var(--r-sm);font-weight:700;display:flex;align-items:center;gap:.45em}
-.feat-badge .live{width:6px;height:6px;border-radius:50%;background:var(--ink)}
 .feat-body{padding:clamp(24px,3.2vw,42px);display:flex;flex-direction:column;justify-content:center}
 .feat-body .label{color:var(--amber)}
 .feat-body h3{font-family:"Bricolage Grotesque",sans-serif;font-size:var(--fs-xl);font-weight:600;line-height:1.1;margin:12px 0 0}
@@ -256,11 +259,6 @@ p{margin:0}
 .feat-body .tags{margin-top:20px}
 .feat-body .tags span{color:var(--paper-dim);background:var(--ink-soft);border:1px solid var(--ink-line);padding:6px 11px}
 .feat-links{display:flex;flex-wrap:wrap;gap:12px 16px;margin-top:24px;align-items:center}
-.feat-links .btn-primary{background:var(--amber);color:var(--ink);border-color:var(--amber)}
-.feat-links .btn-primary:hover{background:var(--amber-dark);border-color:var(--amber-dark)}
-.feat-links .feat-gh{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex:none;border-radius:50%;color:var(--paper);border:1px solid var(--ink-line);transition:color .2s,border-color .2s,background .2s}
-.feat-links .feat-gh:hover,.feat-links .feat-gh:focus-visible{color:var(--amber);border-color:var(--amber);background:var(--amber-soft);outline:none}
-.feat-links .feat-gh svg{width:20px;height:20px;display:block}
 .feat-links .priv{font-family:"Space Mono",monospace;font-size:var(--fs-2xs);color:var(--paper-dim);width:100%}
 @media (max-width:760px){
   .feat-card{grid-template-columns:1fr}
@@ -299,7 +297,6 @@ p{margin:0}
 
 .kit{background:var(--paper-2)}
 .kit .label{display:block;margin-bottom:16px}
-.kit .tags span{font-size:.78rem;padding:7px 13px}
 
 .teach-line{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap-grid);margin-top:30px}
 .tcard{border:1px solid var(--paper-3);border-radius:var(--r-md);padding:var(--pad-card);background:#fff}
@@ -340,10 +337,6 @@ p{margin:0}
 .contact .lead{color:var(--paper-dim);margin:16px 0 30px;font-size:var(--fs-lg);max-width:var(--prose)}
 .contact .label{color:var(--paper-dim)}
 .clinks{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.clinks .btn-primary{background:var(--amber);color:var(--ink);border-color:var(--amber)}
-.clinks .btn-primary:hover{background:var(--amber-dark);border-color:var(--amber-dark)}
-.clink{display:inline-flex;align-items:center;gap:.5em;color:var(--paper);font-weight:500;padding:13px 18px;border:1.5px solid var(--ink-line);border-radius:var(--r-full);transition:border-color .2s,background .2s}
-.clink:hover{border-color:var(--amber);background:rgba(255,255,255,.03)}
 
 .footer{background:var(--ink);color:var(--paper-dim);border-top:1px solid var(--ink-line);padding-block:40px}
 .footer-grid{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
@@ -461,15 +454,15 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
          Aktiváláshoz, amikor kész a mock frontend:
            1) az <img data-ph>-t cseréld valódi képre:  <img src="images/erp.jpg" alt="…">
               (vagy videóra, mint a múzeumnál: <video src="videos/erp.webm" poster="images/erp.jpg" autoplay muted loop playsinline></video>)
-           2) a .feat-badge szövege legyen:  <span class="live"></span>DEMÓ · szimulált adatok
+           2) a .badge szövege legyen:  <span class="live"></span>DEMÓ · szimulált adatok
            3) a .feat-links-ben cseréld a "hamarosan" sort erre az élő gombra:
-              <a class="btn btn-primary" href="https://erp.maydayprod.app">Élő demó →</a>
+              <a class="btn btn-amber" href="https://erp.maydayprod.app">Élő demó</a>
            4) töltsd ki a [ ] helyőrzőket (rendszer neve, modulok, backend)
     -->
     <div class="featured" data-reveal>
-      <article class="feat-card">
+      <article class="feat-card on-ink">
         <div class="feat-media">
-          <span class="feat-badge"><span class="live"></span>DEMÓ · szimulált adatok</span>
+          <span class="badge"><span class="live"></span>DEMÓ · szimulált adatok</span>
           <video data-lazyvideo src="videos/loricatus_erp_teaser.mp4" poster="images/erp_poster.jpg" muted loop playsinline preload="none" aria-label="Loricatus ERP — vállalatirányítási rendszer, teaser videó"></video>
         </div>
         <div class="feat-body">
@@ -479,8 +472,8 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
           <p class="feat-client">Elégedett, folyamatos megrendelőm a <b>Loricatus Group</b>.</p>
           <div class="tags"><span>ERP</span><span>DIMOP</span><span>Next.js</span><span>React</span><span>TypeScript</span></div>
           <div class="feat-links">
-            <a class="btn btn-primary erp-demo-link" href="https://mayydayy99.github.io/LoricatusERPdemo/">Élő demó →</a>
-            <a class="feat-gh" href="https://github.com/MayyDayy99/LoricatusERPdemo" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a>
+            <a class="btn btn-amber erp-demo-link" href="https://mayydayy99.github.io/LoricatusERPdemo/">Élő demó</a>
+            <a class="btn-icon" href="https://github.com/MayyDayy99/LoricatusERPdemo" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a>
           </div>
         </div>
       </article>
@@ -503,46 +496,46 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
         <!-- ═══ WEBOLDALAK ═══ -->
         <article class="proj" data-cat="web">
           <div class="proj-img"><img src="images/loricatus.jpg" alt="Loricatus céges weboldal — kezdőképernyő"></div>
-          <div class="proj-body"><div class="meta"><span>Céges weboldal</span><span>HTML/CSS/JS</span></div><h3>Loricatus, céges weboldal</h3><p>Statikus bemutatkozó weboldal egy vállalkozásnak, saját kézzel írt HTML/CSS/JavaScript alapon.</p><div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="plinks"><a class="plink-try" href="https://loricatusgroup.github.io/loricatus_honlap/">Élő oldal →</a><a class="plink-gh" href="https://github.com/LoricatusGroup/loricatus_honlap" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>Céges weboldal</span><span>HTML/CSS/JS</span></div><h3>Loricatus, céges weboldal</h3><p>Statikus bemutatkozó weboldal egy vállalkozásnak, saját kézzel írt HTML/CSS/JavaScript alapon.</p><div class="tags"><span>HTML</span><span>CSS</span><span>JavaScript</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://loricatusgroup.github.io/loricatus_honlap/">Élő oldal</a><a class="btn-icon" href="https://github.com/LoricatusGroup/loricatus_honlap" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj" data-cat="web">
           <div class="proj-img"><img src="images/balaton.jpg" alt="Villa Uno Balaton — nyaraló weboldal"></div>
-          <div class="proj-body"><div class="meta"><span>Nyaraló weboldal</span><span>React · Supabase</span></div><h3>Villa Uno Balaton, nyaraló foglalási oldal</h3><p>Balatoni nyaraló bemutatkozó és foglalási weboldala saját domainen. Fotógaléria, többnyelvű felület és valós idejű foglalási naptár, Supabase-háttérrel.</p><div class="tags"><span>React</span><span>TypeScript</span><span>Supabase</span><span>Foglalási naptár</span><span>i18n</span></div><div class="plinks"><a class="plink-try" href="https://villaunobalaton.hu">Élő oldal →</a></div></div>
+          <div class="proj-body"><div class="meta"><span>Nyaraló weboldal</span><span>React · Supabase</span></div><h3>Villa Uno Balaton, nyaraló foglalási oldal</h3><p>Balatoni nyaraló bemutatkozó és foglalási weboldala saját domainen. Fotógaléria, többnyelvű felület és valós idejű foglalási naptár, Supabase-háttérrel.</p><div class="tags"><span>React</span><span>TypeScript</span><span>Supabase</span><span>Foglalási naptár</span><span>i18n</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://villaunobalaton.hu">Élő oldal</a></div></div>
         </article>
         <article class="proj" data-cat="web">
           <div class="proj-img"><img src="images/axontara.jpg" alt="AXONTARA — BIM és geoinformatikai termék-landing"></div>
-          <div class="proj-body"><div class="meta"><span>Termék-landing</span><span>HTML/CSS</span></div><h3>AXONTARA, BIM &amp; geoinformatikai eszközök</h3><p>Professzionális B2B landing az AXONTARA szoftvercsaládnak. Pontfelhőből BIM-, terep- és geospatial-modellek (Click2BIM / TERRA / SLIM), founding-member modellel. Egyfájlos, reszponzív oldal.</p><div class="tags"><span>HTML</span><span>CSS</span><span>Landing page</span><span>Reszponzív</span></div><div class="plinks"><a class="plink-try" href="https://loricatusgroup.github.io/axontara/">Élő oldal →</a><a class="plink-gh" href="https://github.com/LoricatusGroup/axontara" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>Termék-landing</span><span>HTML/CSS</span></div><h3>AXONTARA, BIM &amp; geoinformatikai eszközök</h3><p>Professzionális B2B landing az AXONTARA szoftvercsaládnak. Pontfelhőből BIM-, terep- és geospatial-modellek (Click2BIM / TERRA / SLIM), founding-member modellel. Egyfájlos, reszponzív oldal.</p><div class="tags"><span>HTML</span><span>CSS</span><span>Landing page</span><span>Reszponzív</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://loricatusgroup.github.io/axontara/">Élő oldal</a><a class="btn-icon" href="https://github.com/LoricatusGroup/axontara" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
 
         <article class="proj" data-cat="web">
           <div class="proj-img"><img src="images/tarsashaz.jpg" alt="Városmegújítás — Budapest társasházi nyilvántartás"></div>
-          <div class="proj-body"><div class="meta"><span>Önkormányzati platform</span><span>Next.js</span></div><h3>Városmegújítás, társasházi nyilvántartás</h3><p>Platform Budapest társasházainak felújítására. Strukturált felújítási kiírások (AI-illesztéssel), ellenőrzött kivitelezők, letéti fizetés és élethosszig kísérő épület-szervízkönyv 360°/BIM dokumentációval.</p><div class="tags"><span>Next.js</span><span>React</span><span>TypeScript</span><span>Tailwind</span><span>PWA</span></div><div class="plinks"><a class="plink-try" href="https://tarsashaz.vercel.app/">Élő oldal →</a></div></div>
+          <div class="proj-body"><div class="meta"><span>Önkormányzati platform</span><span>Next.js</span></div><h3>Városmegújítás, társasházi nyilvántartás</h3><p>Platform Budapest társasházainak felújítására. Strukturált felújítási kiírások (AI-illesztéssel), ellenőrzött kivitelezők, letéti fizetés és élethosszig kísérő épület-szervízkönyv 360°/BIM dokumentációval.</p><div class="tags"><span>Next.js</span><span>React</span><span>TypeScript</span><span>Tailwind</span><span>PWA</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://tarsashaz.vercel.app/">Élő oldal</a></div></div>
         </article>
 
         <!-- ═══ WEBALKALMAZÁSOK ═══ -->
         <article class="proj proj--portrait" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/museum_teaser.mp4" poster="images/museum_poster.jpg" muted loop playsinline preload="none" aria-label="Pixel Art Múzeum — 3D kiállítótér, teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>3D web</span><span>Three.js</span><span>GIMOP-pályázat</span></div><h3>Pixel Art Múzeum, 3D kiállítótér</h3><p>Böngészőben járható 3D múzeum négy szárnnyal, pixel-art festményekkel és betölthető GLB-modellekkel; háromnyelvű felület (HU / EN / IT). A <b>Loricatus Group</b> megbízásából, <b>GIMOP-pályázat</b> kivitelezéseként készült.</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>GLB</span><span>GIMOP</span></div><div class="plinks"><a class="plink-try" href="https://loricatusgroup.github.io/museum_2/">Próbáld ki! →</a><a class="plink-gh" href="https://github.com/LoricatusGroup/museum_2" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>3D web</span><span>Three.js</span><span>GIMOP-pályázat</span></div><h3>Pixel Art Múzeum, 3D kiállítótér</h3><p>Böngészőben járható 3D múzeum négy szárnnyal, pixel-art festményekkel és betölthető GLB-modellekkel; háromnyelvű felület (HU / EN / IT). A <b>Loricatus Group</b> megbízásából, <b>GIMOP-pályázat</b> kivitelezéseként készült.</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>GLB</span><span>GIMOP</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://loricatusgroup.github.io/museum_2/">Élő demó</a><a class="btn-icon" href="https://github.com/LoricatusGroup/museum_2" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/trollhunting_teaser.webm" poster="images/trollhunting_poster.jpg" muted loop playsinline preload="none" aria-label="Troll Hunting, 3D íjászjáték teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>3D játék</span><span>Three.js · felhő co-op</span></div><h3>Troll Hunting, 3D íjászjáték</h3><p>First-person íjász wave-survival játék egyetlen HTML-fájlban (Three.js), elemi nyíl-rendszerrel. Van hozzá felhő-alapú, valós idejű <b>co-op mód 2–4 főnek</b>, saját Oracle Cloud-szerveren, ahová a barátaid egyetlen linkkel csatlakoznak.</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>Valós idejű co-op</span><span>Oracle Cloud</span></div><div class="plinks"><a class="plink-try" href="https://trollhunting.maydayprod.app">Játék →</a><a class="plink-try2" href="https://coop.maydayprod.app">Co-op →</a><a class="plink-gh" href="https://github.com/MayyDayy99/Trollhunting" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>3D játék</span><span>Three.js · felhő co-op</span></div><h3>Troll Hunting, 3D íjászjáték</h3><p>First-person íjász wave-survival játék egyetlen HTML-fájlban (Three.js), elemi nyíl-rendszerrel. Van hozzá felhő-alapú, valós idejű <b>co-op mód 2–4 főnek</b>, saját Oracle Cloud-szerveren, ahová a barátaid egyetlen linkkel csatlakoznak.</p><div class="tags"><span>Three.js</span><span>WebGL</span><span>Valós idejű co-op</span><span>Oracle Cloud</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://trollhunting.maydayprod.app">Élő demó</a><a class="btn btn-ghost btn--sm" href="https://coop.maydayprod.app">Co-op mód</a><a class="btn-icon" href="https://github.com/MayyDayy99/Trollhunting" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj proj--portrait" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/cinepair_teaser.mp4" poster="images/cinepair_poster.jpg" muted loop playsinline preload="none" aria-label="CinePair — filmválasztó pároknak, teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>PWA</span><span>valós idejű</span></div><h3>CinePair, filmválasztó pároknak</h3><p>Swipe-alapú, Tinder-szerű filmválasztó alkalmazás pároknak és társaságoknak. Közös gyűjtők, valós idejű egyezés és push-értesítés. Telepíthető webalkalmazás (PWA), appbolt nélkül, egyenesen a kezdőképernyőre.</p><div class="tags"><span>PWA</span><span>Valós idejű</span><span>Push</span></div><div class="plinks"><a class="plink-try" href="https://cinepair.maydayprod.app/">Próbáld ki! →</a><a class="plink-gh" href="https://github.com/MayyDayy99/cinepair" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>PWA</span><span>valós idejű</span></div><h3>CinePair, filmválasztó pároknak</h3><p>Swipe-alapú, Tinder-szerű filmválasztó alkalmazás pároknak és társaságoknak. Közös gyűjtők, valós idejű egyezés és push-értesítés. Telepíthető webalkalmazás (PWA), appbolt nélkül, egyenesen a kezdőképernyőre.</p><div class="tags"><span>PWA</span><span>Valós idejű</span><span>Push</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://cinepair.maydayprod.app/">Élő demó</a><a class="btn-icon" href="https://github.com/MayyDayy99/cinepair" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/nexus_teaser.mp4" poster="images/nexus_poster.jpg" muted loop playsinline preload="none" aria-label="Nexus — szociálisháló-térkép, teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>Web app</span><span>React · D3</span></div><h3>Nexus, szociálisháló-térkép</h3><p>Személyes kapcsolatháló feltérképezése és vizualizációja egyfelhasználós web-appban, D3-alapú megjelenítéssel.</p><div class="tags"><span>React</span><span>TypeScript</span><span>D3</span><span>Supabase</span></div><div class="plinks"><a class="plink-try" href="https://mayydayy99.github.io/ago_socihalo/">Próbáld ki! →</a><a class="plink-gh" href="https://github.com/MayyDayy99/ago_socihalo" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>Web app</span><span>React · D3</span></div><h3>Nexus, szociálisháló-térkép</h3><p>Személyes kapcsolatháló feltérképezése és vizualizációja egyfelhasználós web-appban, D3-alapú megjelenítéssel.</p><div class="tags"><span>React</span><span>TypeScript</span><span>D3</span><span>Supabase</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://mayydayy99.github.io/ago_socihalo/">Élő demó</a><a class="btn-icon" href="https://github.com/MayyDayy99/ago_socihalo" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/oestream_teaser.mp4" poster="images/oestream_poster.jpg" muted loop playsinline preload="none" aria-label="OBS stream-vezérlő — teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>Stream-eszköz</span><span>OBS overlay</span></div><h3>OBS stream-vezérlő, Óbudai Egyetem</h3><p>OBS overlay-menedzser egyetemi közvetítésekhez. Külön vezérlőfelület, azonnali jelenetváltás, hotkeyek, visszaszámláló és egyedi üzenetek.</p><div class="tags"><span>OBS</span><span>JavaScript</span><span>Valós idejű</span></div><div class="plinks"><a class="plink-try" href="https://oestream.maydayprod.app/">Próbáld ki! →</a><a class="plink-gh" href="https://github.com/MayyDayy99/obs-stream-overlay-m" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>Stream-eszköz</span><span>OBS overlay</span></div><h3>OBS stream-vezérlő, Óbudai Egyetem</h3><p>OBS overlay-menedzser egyetemi közvetítésekhez. Külön vezérlőfelület, azonnali jelenetváltás, hotkeyek, visszaszámláló és egyedi üzenetek.</p><div class="tags"><span>OBS</span><span>JavaScript</span><span>Valós idejű</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://oestream.maydayprod.app/">Élő demó</a><a class="btn-icon" href="https://github.com/MayyDayy99/obs-stream-overlay-m" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj" data-cat="app">
           <div class="proj-img"><video data-lazyvideo src="videos/monopoly_teaser.mp4" poster="images/monopoly_poster.jpg" muted loop playsinline preload="none" aria-label="Monopoly — böngészős társas, teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>Böngészős játék</span><span>React · Vite</span></div><h3>Monopoly, böngészős társas</h3><p>Digitális Monopoly-társasjáték böngészőben, React + TypeScript + Vite alapon.</p><div class="tags"><span>React</span><span>TypeScript</span><span>Vite</span></div><div class="plinks"><a class="plink-try" href="https://loricatusgroup.github.io/monopoly/">Próbáld ki! →</a><a class="plink-gh" href="https://github.com/LoricatusGroup/monopoly" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>Böngészős játék</span><span>React · Vite</span></div><h3>Monopoly, böngészős társas</h3><p>Digitális Monopoly-társasjáték böngészőben, React + TypeScript + Vite alapon.</p><div class="tags"><span>React</span><span>TypeScript</span><span>Vite</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://loricatusgroup.github.io/monopoly/">Élő demó</a><a class="btn-icon" href="https://github.com/LoricatusGroup/monopoly" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
 
 
@@ -562,7 +555,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
         <!-- ═══ LOKÁLIS AI ═══ -->
         <article class="proj" data-cat="local">
           <div class="proj-img"><video data-lazyvideo src="videos/edti_studio_teaser.mp4" poster="images/ai_studio.jpg" muted loop playsinline preload="none" aria-label="EDTI Studio videófeldolgozó AI — teaser videó"></video></div>
-          <div class="proj-body"><div class="meta"><span>AI-pipeline</span><span>lokális · GPU</span></div><h3>EDTI Studio, videófeldolgozó AI</h3><p>Egyetemi oktatóvideó-feldolgozó platform. Magyar előadásból angol szinkron az ASR → fordítás → hangklónozott TTS láncon. A háttérben Whisper, NLLB, XTTS-v2, Demucs és FastAPI fut GPU-n. A linken bebarangolható statikus demó.</p><div class="tags"><span>Whisper</span><span>NLLB</span><span>XTTS-v2</span><span>Demucs</span><span>FastAPI</span></div><div class="plinks"><a class="plink-try" href="https://mayydayy99.github.io/AI_workstation/">Próbáld ki! →</a><a class="plink-gh" href="https://github.com/MayyDayy99/AI_workstation" aria-label="GitHub — forráskód" title="GitHub — forráskód"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
+          <div class="proj-body"><div class="meta"><span>AI-pipeline</span><span>lokális · GPU</span></div><h3>EDTI Studio, videófeldolgozó AI</h3><p>Egyetemi oktatóvideó-feldolgozó platform. Magyar előadásból angol szinkron az ASR → fordítás → hangklónozott TTS láncon. A háttérben Whisper, NLLB, XTTS-v2, Demucs és FastAPI fut GPU-n. A linken bebarangolható statikus demó.</p><div class="tags"><span>Whisper</span><span>NLLB</span><span>XTTS-v2</span><span>Demucs</span><span>FastAPI</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://mayydayy99.github.io/AI_workstation/">Élő demó</a><a class="btn-icon" href="https://github.com/MayyDayy99/AI_workstation" aria-label="Forráskód (GitHub)" title="Forráskód (GitHub)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5A11.5 11.5 0 0 0 .5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.36-3.88-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.4-1.27.73-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12 11.5 11.5 0 0 0 12 .5Z"/></svg></a></div></div>
         </article>
         <article class="proj" data-cat="local">
           <div class="proj-img"><img src="images/comfyui.jpg" alt="ComfyUI node-alapú munkafolyamat: Load Checkpoint → CLIP Text Encode → KSampler → VAE Decode → Save Image"></div>
@@ -570,7 +563,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
         </article>
         <article class="proj" data-cat="local">
           <div class="proj-img"><video data-lazyvideo src="videos/lab_teaser.mp4" poster="images/lab_poster.jpg" muted loop playsinline preload="none" aria-label="Geometria-vezérelt neurális kompozitálás — kutatási projekt teaser"></video></div>
-          <div class="proj-body"><div class="meta"><span>Kutatási projekt</span><span>lokális · Computer Vision</span></div><h3>Geometria-vezérelt neurális kompozitálás</h3><p>Szakdolgozati kutatás a PPKE-ITK MI-szakirányán. Lokális, GPU-gyorsított látás-pipeline, amely egy egykamerás videó 3D geometriáját rekonstruálja, majd úgy illeszt be szintetikus elemeket, hogy azok helyes mélységgel, perspektívával, takarással és fénnyel üljenek a jelenetben. 10 neurális modell egyetlen fogyasztói GPU-n, végig licenc-tiszta, reprodukálható, lokális-first stacken.</p><div class="tags"><span>PyTorch</span><span>CUDA</span><span>Computer Vision</span><span>Diffusion</span><span>Licenc-tiszta</span></div><div class="plinks"><a class="plink-try" href="https://lab.maydayprod.app/">Megnézem →</a></div></div>
+          <div class="proj-body"><div class="meta"><span>Kutatási projekt</span><span>lokális · Computer Vision</span></div><h3>Geometria-vezérelt neurális kompozitálás</h3><p>Szakdolgozati kutatás a PPKE-ITK MI-szakirányán. Lokális, GPU-gyorsított látás-pipeline, amely egy egykamerás videó 3D geometriáját rekonstruálja, majd úgy illeszt be szintetikus elemeket, hogy azok helyes mélységgel, perspektívával, takarással és fénnyel üljenek a jelenetben. 10 neurális modell egyetlen fogyasztói GPU-n, végig licenc-tiszta, reprodukálható, lokális-first stacken.</p><div class="tags"><span>PyTorch</span><span>CUDA</span><span>Computer Vision</span><span>Diffusion</span><span>Licenc-tiszta</span></div><div class="plinks"><a class="btn btn-amber btn--sm" href="https://lab.maydayprod.app/">Élő demó</a></div></div>
         </article>
 
       </div>
@@ -582,7 +575,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     <div class="dots" id="dots" aria-hidden="true"></div>
 
     <div class="allwork" data-reveal>
-      <a href="https://github.com/MayyDayy99" class="btn btn-ghost">Az összes projekt a GitHub-on ↗</a>
+      <a href="https://github.com/MayyDayy99" class="btn btn-ghost">Az összes projekt a GitHub-on</a>
     </div>
   </div>
 </section>
@@ -716,14 +709,14 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 </section>
 
 <!-- KAPCSOLAT -->
-<section class="section contact" id="kapcsolat">
+<section class="section contact on-ink" id="kapcsolat">
   <div class="wrap" data-reveal>
     <span class="label">Elérhetőség</span>
     <h2 style="margin-top:14px">Dolgozzunk együtt</h2>
     <p class="lead">Írj pár sort arról, mire lenne szükséged, a weboldaltól a saját lokális AI-ig bármiben. Az első, <b>30 perces egyeztetés díjmentes</b> és kötöttség nélküli, és általában <b>egy napon belül</b> válaszolok.</p>
     <div class="clinks">
-      <a class="btn btn-primary" href="mailto:pr.nemes@gmail.com?subject=Aj%C3%A1nlatk%C3%A9r%C3%A9s">Kérj ingyenes ajánlatot →</a>
-      <a class="clink" href="tel:+36205493710">
+      <a class="btn btn-amber btn--arrow" href="mailto:pr.nemes@gmail.com?subject=Aj%C3%A1nlatk%C3%A9r%C3%A9s">Kérj ingyenes ajánlatot</a>
+      <a class="btn btn-ghost" href="tel:+36205493710">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>+36 20 549 3710
       </a>
     </div>
@@ -859,12 +852,12 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 <!-- Demó-figyelmeztető ablak (Loricatus ERP) -->
 <div class="modal-ov" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
   <div class="modal">
-    <span class="m-badge">Bemutató demó</span>
+    <span class="badge badge--soft">Bemutató demó</span>
     <h3 id="demoModalTitle">Mielőtt belépsz a demóba</h3>
     <p>A következő oldal kizárólag <b>bemutató célú demó</b>. Minden benne látható adat <b>AI-generált vagy szimulált</b>, és nem tartalmaz semmilyen valós adatot a Loricatus Group tényleges működéséből.</p>
     <p>A felület bejárható és kattintgatható, de éles rendszerhez nincs köze.</p>
     <div class="m-actions">
-      <a class="btn btn-primary" id="demoModalGo" href="#" target="_blank" rel="noopener">Értem, tovább →</a>
+      <a class="btn btn-primary" id="demoModalGo" href="#" target="_blank" rel="noopener">Értem, tovább</a>
       <button class="btn btn-ghost" type="button" id="demoModalCancel">Mégsem</button>
     </div>
   </div>

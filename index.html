@@ -140,6 +140,8 @@ p{margin:0}
 .cine-box{position:relative;width:min(92vw,1180px);max-height:88vh;aspect-ratio:16/9;background:#000;border:1px solid rgba(239,241,236,.14);border-radius:14px;overflow:hidden;box-shadow:0 50px 110px -40px rgba(0,0,0,.8);transform:scale(.96);opacity:0;transition:transform .28s var(--ease),opacity .28s}
 .cine-ov.open .cine-box{transform:none;opacity:1}
 .cine-box video{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+/* kivétel: álló formátumú videó telefonon álló mozi-keretet kap (nem fekvőbe rakott állót) */
+.cine-box.cine-portrait{aspect-ratio:var(--car,9 / 16);width:min(94vw, calc(86vh * var(--arw,0.5625)));height:auto;max-height:86vh}
 .cine-close{position:absolute;top:16px;right:16px;z-index:2;width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(239,241,236,.28);border-radius:50%;background:rgba(15,28,24,.62);backdrop-filter:blur(6px);color:var(--paper);cursor:pointer;transition:background .2s,border-color .2s,transform .2s;opacity:.9}
 .cine-close:hover,.cine-close:focus-visible{background:var(--amber);border-color:var(--amber);color:var(--ink);opacity:1;transform:rotate(90deg);outline:none}
 .cine-close svg{width:19px;height:19px}
@@ -886,15 +888,32 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
       cv=document.getElementById('cineVideo'), closeBtn=document.getElementById('cineClose'),
       srcVid=null, lastFocus=null;
   var ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8V5.5A1.5 1.5 0 0 1 4.5 4H8M16 4h3.5A1.5 1.5 0 0 1 21 5.5V8M21 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H4.5A1.5 1.5 0 0 1 3 18.5V16"/></svg>';
+  var mqPhone=window.matchMedia('(max-width:680px)');
+  function sizeBox(w,h){
+    // álló videó telefonon → álló keret; minden más esetben a sima 16:9 mozi-keret
+    if(w>0&&h>0&&h>w&&mqPhone.matches){
+      box.style.setProperty('--car',w+' / '+h);
+      box.style.setProperty('--arw',(w/h).toFixed(4));
+      box.classList.add('cine-portrait');
+    }else{
+      box.classList.remove('cine-portrait');
+      box.style.removeProperty('--car');
+      box.style.removeProperty('--arw');
+    }
+  }
   function open(v){
     srcVid=v; lastFocus=document.activeElement;
     cv.src=v.currentSrc||v.src; if(v.getAttribute('poster')) cv.poster=v.getAttribute('poster');
+    sizeBox(v.videoWidth||0, v.videoHeight||0);
     cv.currentTime=0; ov.classList.add('open'); document.body.style.overflow='hidden';
     cv.play().catch(function(){}); closeBtn.focus();
   }
+  cv.addEventListener('loadedmetadata',function(){ sizeBox(cv.videoWidth||0, cv.videoHeight||0); });
+  mqPhone.addEventListener('change',function(){ if(ov.classList.contains('open')) sizeBox(cv.videoWidth||0, cv.videoHeight||0); });
   function close(){
     ov.classList.remove('open'); document.body.style.overflow='';
     try{cv.pause();}catch(e){} cv.removeAttribute('src'); cv.load();
+    box.classList.remove('cine-portrait'); box.style.removeProperty('--car'); box.style.removeProperty('--arw');
     if(lastFocus&&lastFocus.focus) lastFocus.focus();
   }
   vids.forEach(function(v){

@@ -22,8 +22,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI-megoldások</title>
-<meta name="description" content="AI-megoldások: weboldal és hosting, webalkalmazások, és saját, lokálisan vagy saját felhőben futó AI — privát ChatGPT és modell-pipeline-ok.">
+<title>Nemes Péter — weboldal, webalkalmazás és saját AI</title>
+<meta name="description" content="Weboldalt, egyedi webalkalmazást és nálad futó, privát AI-t építek magánszemélyeknek és kisvállalkozásoknak — közérthetően, működő demókkal.">
 <meta name="theme-color" content="#eff1ec">
 <link rel="canonical" href="https://portfolio.maydayprod.app/">
 <meta property="og:type" content="website">
@@ -31,14 +31,14 @@
 <meta property="og:locale" content="hu_HU">
 <meta property="og:url" content="https://portfolio.maydayprod.app/">
 <meta property="og:title" content="Nemes Péter — weboldaltól a saját, privát AI-ig">
-<meta property="og:description" content="Weboldal és hosting, egyedi webalkalmazások, és saját, lokálisan futó AI — magánszemélyeknek és kisvállalkozásoknak.">
+<meta property="og:description" content="Weboldalt, egyedi webalkalmazást és saját, nálad futó AI-t építek magánszemélyeknek és kisvállalkozásoknak. Nézd meg a munkáimat működő demókkal.">
 <meta property="og:image" content="https://portfolio.maydayprod.app/images/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Nemes Péter — AI-fejlesztő: weboldal, webalkalmazás, lokális privát AI, oktatás.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Nemes Péter — weboldaltól a saját, privát AI-ig">
-<meta name="twitter:description" content="Weboldal és hosting, egyedi webalkalmazások, és saját, lokálisan futó AI — magánszemélyeknek és kisvállalkozásoknak.">
+<meta name="twitter:description" content="Weboldalt, egyedi webalkalmazást és saját, nálad futó AI-t építek magánszemélyeknek és kisvállalkozásoknak. Nézd meg a munkáimat működő demókkal.">
 <meta name="twitter:image" content="https://portfolio.maydayprod.app/images/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2312231f'/%3E%3Ctext x='33' y='43' font-family='monospace' font-size='29' font-weight='700' letter-spacing='1' fill='%23e2a23b' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
 
@@ -282,10 +282,13 @@ p{margin:0}
 .tcard b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:1.08rem;margin-bottom:7px}
 .tcard p{color:var(--muted);font-size:.95rem}
 
-.about{max-width:58ch}
-.about h2{font-size:clamp(1.5rem,3vw,2.1rem);margin:16px 0 18px}
+.about{max-width:880px;display:flex;align-items:center;gap:clamp(26px,4.5vw,56px)}
+.about-photo{flex:none;width:clamp(132px,20vw,190px);height:clamp(132px,20vw,190px);border-radius:50%;object-fit:cover;object-position:50% 30%;border:3px solid var(--paper);box-shadow:0 22px 50px -24px rgba(18,35,31,.55)}
+.about-txt{max-width:58ch}
+.about h2{font-size:clamp(1.5rem,3vw,2.1rem);margin:14px 0 18px}
 .about p{font-size:1.08rem}
 .about p+p{margin-top:14px;color:var(--muted);font-size:1rem}
+@media(max-width:600px){.about{flex-direction:column;align-items:flex-start;gap:22px}}
 /* folyamat */
 .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:30px}
 .fstep{border:1px solid var(--paper-3);border-radius:var(--r);padding:24px 20px 22px;background:#fff}
@@ -650,10 +653,13 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 <!-- RÓLAM -->
 <section class="section" id="rolam" style="background:var(--paper-2)">
   <div class="wrap about" data-reveal>
-    <span class="label">Rólam</span>
-    <h2>Nemes Péter</h2>
-    <p>AI-megoldásokkal foglalkozom, műszaki és projektmenedzsment háttérrel. Egyéni vállalkozóként főként magánszemélyeknek és kisvállalkozásoknak dolgozom — közvetlen egyeztetéssel, a te tempódban.</p>
-    <p>Minden munkához átadás és rövid betanítás jár, hogy utána magad is könnyen boldogulj vele.</p>
+    <img class="about-photo" src="images/profil.jpg" alt="Nemes Péter" width="380" height="380" loading="lazy">
+    <div class="about-txt">
+      <span class="label">Rólam</span>
+      <h2>Nemes Péter</h2>
+      <p>AI-megoldásokkal foglalkozom, műszaki és projektmenedzsment háttérrel. Egyéni vállalkozóként főként magánszemélyeknek és kisvállalkozásoknak dolgozom — közvetlen egyeztetéssel, a te tempódban.</p>
+      <p>Minden munkához átadás és rövid betanítás jár, hogy utána magad is könnyen boldogulj vele.</p>
+    </div>
   </div>
 </section>
 
@@ -675,12 +681,12 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   <div class="wrap">
     <div class="shead" data-reveal><h2>Gyakori kérdések</h2></div>
     <div class="faq" data-reveal>
-      <details class="faq-item"><summary>Mennyibe kerül?</summary><p class="fa">Attól függ, mire van szükséged — egy egyszerű weboldal más, mint egy egyedi AI-rendszer. Írj pár sort, és küldök egy pontos, tételes ajánlatot. Az első egyeztetés díjmentes.</p></details>
-      <details class="faq-item"><summary>Mennyi idő, mire elkészül?</summary><p class="fa">Egy egyszerűbb oldal pár nap, egy összetettebb rendszer több hét. Az ajánlatban mindig konkrét határidőt adok.</p></details>
-      <details class="faq-item"><summary>Kell hozzáértés az én oldalamon?</summary><p class="fa">Nem. Mindent kész állapotban adok át, és érthetően megmutatom, hogyan használd — szakzsargon nélkül.</p></details>
-      <details class="faq-item"><summary>Kié lesz az adat és a kód?</summary><p class="fa">A tiéd. Az elkészült megoldás és a hozzá tartozó adat a te tulajdonod; lokális AI esetén ráadásul minden a te eszközödön marad, nem kerül külső szolgáltatóhoz.</p></details>
-      <details class="faq-item"><summary>Mi van, ha később módosítani kell?</summary><p class="fa">Az átadás után is elérsz. Kisebb módosítást gyorsan megoldok, nagyobb bővítésre pedig új ajánlatot adok.</p></details>
-      <details class="faq-item"><summary>Kiállítasz számlát?</summary><p class="fa">Igen — egyéni vállalkozóként számlát adok, igény szerint szerződéssel.</p></details>
+      <details class="faq-item"><summary>Mennyibe kerül?</summary><p class="fa">Attól függ, mire van szükséged — egy egyszerű weboldal egészen más, mint egy egyedi AI-rendszer. Írd meg pár sorban, mit szeretnél, és küldök rá egy tételes ajánlatot. Az első egyeztetés díjmentes.</p></details>
+      <details class="faq-item"><summary>Mennyi idő, mire elkészül?</summary><p class="fa">Egy egyszerűbb oldal jellemzően pár nap, egy összetettebb rendszer inkább néhány hét. Konkrét határidőt mindig az ajánlatban rögzítek.</p></details>
+      <details class="faq-item"><summary>Kell hozzáértés az én oldalamon?</summary><p class="fa">Nem kell. Kész állapotban adom át, és megmutatom, hogyan használd — nyugodtan kérdezhetsz, végig érthetően magyarázok.</p></details>
+      <details class="faq-item"><summary>Kié lesz az adat és a kód?</summary><p class="fa">A tiéd. Az elkészült megoldás és a hozzá tartozó adat a te tulajdonod. Lokális AI esetén ráadásul minden a saját eszközödön marad, nem kerül külső szolgáltatóhoz.</p></details>
+      <details class="faq-item"><summary>Mi van, ha később módosítani kell?</summary><p class="fa">Az átadás után is elérsz. A kisebb módosításokat gyorsan megoldom, nagyobb bővítésre pedig adok egy új ajánlatot.</p></details>
+      <details class="faq-item"><summary>Kiállítasz számlát?</summary><p class="fa">Igen, egyéni vállalkozóként számlázok — igény szerint szerződéssel.</p></details>
     </div>
   </div>
 </section>

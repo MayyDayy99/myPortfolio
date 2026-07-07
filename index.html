@@ -22,7 +22,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nemes Péter — AI-megoldások | weboldaltól a lokális AI-ig</title>
+<title>AI-megoldások</title>
 <meta name="description" content="AI-megoldások: weboldal és hosting, webalkalmazások, és saját, lokálisan vagy saját felhőben futó AI — privát ChatGPT és modell-pipeline-ok.">
 <meta name="theme-color" content="#eff1ec">
 <link rel="canonical" href="https://portfolio.maydayprod.app/">
@@ -90,8 +90,8 @@ p{margin:0}
 .head-contact a{display:inline-flex;align-items:center;gap:.45em;font-family:"Space Mono",monospace;font-size:.82rem;color:var(--text);opacity:.82;transition:opacity .2s,color .2s;white-space:nowrap}
 .head-contact a:hover{opacity:1;color:var(--amber)}
 .head-contact svg{width:15px;height:15px;color:var(--amber);flex:none}
-.nav-links{display:flex;align-items:center;gap:4px}
-.nav-links a{font-size:.95rem;font-weight:500;padding:8px 13px;border-radius:8px;color:var(--text);opacity:.85;transition:opacity .2s,background .2s}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{font-size:.9rem;font-weight:500;padding:7px 10px;border-radius:8px;color:var(--text);opacity:.85;transition:opacity .2s,background .2s;white-space:nowrap}
 .nav-links a:hover{opacity:1;background:var(--paper-2)}
 .nav-toggle{display:none;background:none;border:0;cursor:pointer;padding:8px;color:var(--ink)}
 
@@ -317,6 +317,12 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 @media (max-width:700px){
   .cnav{display:none}
 }
+@media (max-width:1200px){
+  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:2px;background:var(--paper);padding:14px;box-shadow:0 16px 36px -20px rgba(18,35,31,.4);border-top:1px solid var(--paper-3);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.2s var(--ease);z-index:60}
+  .nav-links.open{transform:none;opacity:1;pointer-events:auto}
+  .nav-links a{padding:13px;font-size:.98rem}
+  .nav-toggle{display:block}
+}
 @media (max-width:1040px){
   .head-contact .hc-mail .hc-txt{display:none}
   .head-contact .hc-mail{padding:6px}
@@ -327,10 +333,6 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .head-contact svg{width:21px;height:21px}
   .head-contact a{padding:8px}
   .nav-right{gap:6px}
-  .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:2px;background:var(--paper);padding:14px;box-shadow:0 16px 36px -20px rgba(18,35,31,.4);border-top:1px solid var(--paper-3);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.2s var(--ease)}
-  .nav-links.open{transform:none;opacity:1;pointer-events:auto}
-  .nav-links a{padding:13px}
-  .nav-toggle{display:block}
   .section{padding-block:clamp(48px,11vw,72px)}
   .track .proj{flex:0 0 84%}
   .cat-wrap{gap:8px}
@@ -360,6 +362,8 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
         <a href="#lokalis-ai">Lokális AI</a>
         <a href="#oktatas">Oktatás</a>
         <a href="#rolam">Rólam</a>
+        <a href="#folyamat">Folyamat</a>
+        <a href="#gyik">GYIK</a>
       </nav>
       <div class="head-contact">
         <a class="hc-phone" href="tel:+36205493710" aria-label="Telefon: +36 20 549 3710"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="hc-txt">+36 20 549 3710</span></a>

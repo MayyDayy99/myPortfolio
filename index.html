@@ -206,8 +206,16 @@ p{margin:0}
 
 /* ── animáció-indító gombok a kártyán ── */
 .anim-launch{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.anim-go{font-family:"Space Mono",monospace;font-size:.78rem;padding:8px 12px;border-radius:999px;border:1px solid var(--paper-3);background:#fff;color:var(--ink);cursor:pointer;transition:transform .15s var(--ease),background .18s,color .18s,border-color .18s;display:inline-flex;align-items:center;gap:.45em;white-space:nowrap}
-.anim-go:hover{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-1px)}
+.anim-go{font-family:"Space Mono",monospace;font-size:.78rem;padding:8px 12px;border-radius:999px;border:1px solid var(--paper-3);background:#fff;color:var(--ink);cursor:pointer;transition:transform .15s var(--ease),background .18s,color .18s,border-color .18s;display:inline-flex;align-items:center;gap:.45em;white-space:nowrap;animation:animGoPulse 2.4s ease-in-out infinite}
+.anim-go:nth-child(2){animation-delay:.28s}
+.anim-go:nth-child(3){animation-delay:.56s}
+.anim-go:nth-child(4){animation-delay:.84s}
+.anim-go:nth-child(5){animation-delay:1.12s}
+.anim-go:hover,.anim-go:focus-visible{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateY(-1px);animation:none}
+@keyframes animGoPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(201,130,42,0);border-color:var(--paper-3)}
+  50%{box-shadow:0 0 0 5px rgba(201,130,42,.15);border-color:rgba(201,130,42,.65)}
+}
 
 /* ── kiemelt (flagship) munka ── */
 .featured{margin-bottom:32px}

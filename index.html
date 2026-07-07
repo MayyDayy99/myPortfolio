@@ -242,8 +242,8 @@ p{margin:0}
 .proof-shot .bar{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid var(--ink-line);font-family:"Space Mono",monospace;font-size:.74rem;color:var(--paper-dim)}
 .proof-shot .bar i{width:10px;height:10px;border-radius:50%;background:#3a564d}.proof-shot .bar i:first-child{background:var(--amber)}
 .proof-shot .bar span{margin-left:auto}
-.proof-shot .shot{aspect-ratio:16/8}
-.proof-shot .shot img{width:100%;height:100%;object-fit:contain;background:var(--ink-deep)}
+.proof-shot .shot{aspect-ratio:16/9;position:relative}
+.proof-shot .shot img,.proof-shot .shot video{width:100%;height:100%;object-fit:cover;background:var(--ink-deep);display:block}
 .stack{border:1px solid var(--ink-line);border-radius:var(--r);background:var(--ink-deep);padding:clamp(18px,3vw,30px)}
 .stack svg{width:100%;height:auto;display:block}
 .stack .scap{margin-top:14px;font-family:"Space Mono",monospace;font-size:.74rem;color:var(--paper-dim);text-align:center}
@@ -555,7 +555,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 
     <div class="proof-shot" data-reveal>
       <div class="bar"><i></i><i></i><i></i><span>példa — egy általam épített AI-felület</span></div>
-      <div class="shot"><img src="images/ai_proof.jpg" alt="Példa egy egyedi, privát AI-felületre (EDTI Stúdió videófeldolgozó)"></div>
+      <div class="shot"><video data-lazyvideo src="videos/edti_studio_teaser.mp4" poster="images/ai_proof.jpg" muted loop playsinline preload="none" aria-label="EDTI Stúdió — videófeldolgozó AI-felület működés közben"></video></div>
     </div>
     <p class="proof-cap" data-reveal>Ez a videófeldolgozó rendszer önmagában <b>4 AI-modellt</b> fűz egy láncba: Whisper (beszédfelismerés) → NLLB (fordítás) → XTTS-v2 (hangklónozás) → Demucs (hangszétválasztás). A felület pedig <b>teljesen egyedi</b> — lehet chat, irányítópult vagy egy konkrét eszköz, mint ez; olyat építek, amilyet a te feladatod kíván.</p>
 

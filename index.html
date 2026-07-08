@@ -136,12 +136,8 @@ p{margin:0}
 .mast{padding-block:clamp(56px,10vw,116px) clamp(40px,6vw,68px)}
 .mast h1{font-size:var(--fs-2xl);font-weight:600;max-width:18ch;margin:20px 0 0}
 .mast .sub{margin-top:22px;color:var(--muted);font-size:var(--fs-lg);max-width:var(--prose)}
-.mast-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
 .mast-cta{display:flex;gap:var(--gap-list);flex-wrap:wrap;margin-top:var(--sp-6)}
 .mast-trust{display:block;margin-top:var(--sp-5)}
-.mast-side{justify-self:end;align-self:start;padding-top:var(--sp-5)}
-.mast-photo{width:clamp(160px,18vw,220px);height:auto;aspect-ratio:1;border-radius:50%;object-fit:cover;object-position:50% 28%;border:3px solid var(--paper);box-shadow:var(--e-2);outline:1px solid var(--paper-3);outline-offset:6px}
-@media (max-width:760px){.mast-grid{grid-template-columns:1fr}.mast-side{display:none}}
 
 .shead{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:14px;flex-wrap:wrap}
 .shead h2{font-size:var(--fs-xl)}
@@ -428,21 +424,14 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 
 <main id="top">
 <section class="wrap mast">
-  <div class="mast-grid">
-    <div>
-      <span class="label label--accent">Egyéni vállalkozó · AI-fejlesztés magánszemélyeknek és kisvállalkozásoknak</span>
-      <h1>A weboldaltól a saját, lokálisan futó AI-ig.</h1>
-      <p class="sub">Weboldal és hosting, egyedi webalkalmazások, és saját AI a te gépeden vagy felhődben. Válaszd ki, mi érdekel. Minden projektnél működő demó és videó, itt az oldalon belül.</p>
-      <div class="mast-cta">
-        <a class="btn btn-primary btn--arrow" href="#kapcsolat">Kérj ingyenes ajánlatot</a>
-        <a class="btn btn-ghost" href="#munkak">Munkáim</a>
-      </div>
-      <p class="mast-trust meta">Loricatus Group · Óbudai Egyetem · PPKE-ITK</p>
-    </div>
-    <div class="mast-side">
-      <img class="mast-photo" src="images/profil.jpg" alt="Nemes Péter" width="512" height="512">
-    </div>
+  <span class="label label--accent">Egyéni vállalkozó · AI-fejlesztés magánszemélyeknek és kisvállalkozásoknak</span>
+  <h1>A weboldaltól a saját, lokálisan futó AI-ig.</h1>
+  <p class="sub">Weboldal és hosting, egyedi webalkalmazások, és saját AI a te gépeden vagy felhődben. Válaszd ki, mi érdekel. Minden projektnél működő demó és videó, itt az oldalon belül.</p>
+  <div class="mast-cta">
+    <a class="btn btn-primary btn--arrow" href="#kapcsolat">Kérj ingyenes ajánlatot</a>
+    <a class="btn btn-ghost" href="#munkak">Munkáim</a>
   </div>
+  <p class="mast-trust meta">Loricatus Group · Óbudai Egyetem · PPKE-ITK</p>
 </section>
 
 <!-- ===================== SZOLGÁLTATÁSOK ===================== -->

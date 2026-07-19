@@ -3,55 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vizuális szerkesztő — bemutató</title>
+<title>Weboldal szerkesztő — bemutató</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Vizuális, kód nélküli tartalomszerkesztő bemutatója — kattints, írj át szöveget, állíts színt, rendezd át a szekciókat. A változtatások csak a böngésződben élnek.">
+<meta name="description" content="Vizuális, kód nélküli weboldal-szerkesztő bemutatója — kattints bármelyik szövegbe és írd át, állíts színt, vagy rendezd át a szekciókat. A változtatások csak a böngésződben élnek.">
 <style>
   /* ============================================================
-     Loricatus Editor — önálló bemutató (demo)
-     Egyetlen fájl, build és háttér nélkül. A valódi szerkesztő
-     Vite + React + Tailwind + Supabase; ez a látvány és az
-     interakció hű mása, de minden csak a böngésződben él és
-     újratöltésre visszaáll — nincs mentés, nincs adatbázis.
+     Weboldal szerkesztő — önálló bemutató (demo)
+     A szerkesztő a VALÓDI portfóliót tölti be egy iframe-be
+     (index.html), és arra ültet inline szerkesztést + színezőt +
+     szekció-átrendezést. Minden csak a böngésződben él, semmi nem
+     kerül mentésre — az éles oldal nem változik.
+     A sötét "glass" toolbar a valódi szerkesztő (Vite+React+Tailwind)
+     kinézetének hű mása.
      ============================================================ */
-
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  :root {
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-      "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  }
-  body {
-    font-family: var(--font);
-    background: #0f1116;
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-  }
+  :root { --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif; }
+  body { font-family: var(--font); background: #111827; color: #fff; -webkit-font-smoothing: antialiased; }
   button { font-family: inherit; }
 
-  /* ── App shell ─────────────────────────────────────────────── */
-  .app { min-height: 100vh; background: #111827; color: #fff; }
+  .app { display: flex; flex-direction: column; height: 100vh; background: #0b0f16; }
 
-  /* ── Toolbar (premium glass) — ported from admin/src/index.css ─ */
+  /* ── Toolbar ─────────────────────────────────────────────────── */
   .cms-toolbar {
-    position: sticky; top: 0; z-index: 20;
-    background: linear-gradient(180deg, rgba(30, 33, 42, 0.9), rgba(19, 21, 28, 0.92));
-    -webkit-backdrop-filter: blur(22px) saturate(150%);
-    backdrop-filter: blur(22px) saturate(150%);
+    flex: none;
+    background: linear-gradient(180deg, rgba(30, 33, 42, 0.92), rgba(19, 21, 28, 0.95));
+    -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%);
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.75);
   }
-  .cms-toolbar-inner {
-    padding: 10px 16px;
-    display: flex; flex-wrap: wrap; gap: 10px 12px;
-    justify-content: space-between; align-items: center;
-  }
+  .cms-toolbar-inner { padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 10px 12px; justify-content: space-between; align-items: center; }
   .tb-left, .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .tb-brand { display: flex; align-items: center; gap: 10px; }
   .cms-brand-mark {
-    width: 36px; height: 36px; flex: none; border-radius: 11px;
-    display: grid; place-items: center; font-weight: 800; font-size: 17px;
-    letter-spacing: -0.02em; color: #fff;
+    width: 36px; height: 36px; flex: none; border-radius: 11px; display: grid; place-items: center;
+    font-weight: 800; font-size: 17px; letter-spacing: -0.02em; color: #fff;
     background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9);
     box-shadow: 0 8px 18px -6px rgba(37, 99, 235, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
@@ -60,204 +46,44 @@
   .tb-title p { font-size: 11px; color: #9ca3af; margin: 2px 0 0; }
   .tb-title .amber { color: #fbbf24; margin-left: 6px; }
 
-  .demo-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-    color: #fcd34d; background: rgba(251, 191, 36, 0.12);
-    border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 999px; padding: 4px 10px;
-  }
-  .demo-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24;
-    box-shadow: 0 0 0 0 rgba(251,191,36,.6); animation: pulse 2s infinite; }
+  .demo-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fcd34d; background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 999px; padding: 4px 10px; }
+  .demo-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24; animation: pulse 2s infinite; }
   @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(251,191,36,.5)} 70%{box-shadow:0 0 0 6px rgba(251,191,36,0)} 100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} }
 
-  /* Segmented control */
-  .cms-segment {
-    display: inline-flex; align-items: center; padding: 3px; gap: 2px;
-    border-radius: 12px; background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .cms-seg-btn {
-    display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
-    border-radius: 9px; font-size: 12.5px; font-weight: 500; line-height: 1;
-    color: rgba(255, 255, 255, 0.6); background: transparent; border: none;
-    cursor: pointer; white-space: nowrap;
-    transition: background-color .15s, color .15s, box-shadow .15s;
-  }
-  .cms-seg-btn:hover:not(.is-active):not(:disabled) { color: #fff; background: rgba(255,255,255,.06); }
-  .cms-seg-btn.is-active {
-    color: #fff; background: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 2px 8px -3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
-  }
-  .cms-seg-btn:disabled { opacity: .4; cursor: default; }
-
-  /* Tool toggle pills */
-  .cms-tool {
-    display: inline-flex; align-items: center; gap: 5px; padding: 7px 11px;
-    border-radius: 10px; font-size: 12.5px; font-weight: 500; line-height: 1;
-    color: rgba(255, 255, 255, 0.66); background: rgba(255, 255, 255, 0.045);
-    border: 1px solid rgba(255, 255, 255, 0.08); cursor: pointer; white-space: nowrap;
-    transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s;
-  }
+  .cms-tool { display: inline-flex; align-items: center; gap: 5px; padding: 7px 11px; border-radius: 10px; font-size: 12.5px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.66); background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.08); cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s; }
   .cms-tool:hover:not(.is-active) { background: rgba(255,255,255,.09); color: #fff; }
-  .cms-tool.is-active {
-    color: #fff; background: var(--acc, #6366f1); border-color: transparent;
-    box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2);
-  }
-  .cms-icon-btn {
-    width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5); background: transparent; border: none; cursor: pointer;
-    transition: background-color .15s, color .15s; font-size: 15px;
-  }
+  .cms-tool.is-active { color: #fff; background: var(--acc, #6366f1); border-color: transparent; box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2); }
+  .cms-icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: rgba(255,255,255,.5); background: transparent; border: none; cursor: pointer; transition: background-color .15s, color .15s; font-size: 15px; }
   .cms-icon-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
 
-  .cms-btn-save {
-    border-radius: 11px; padding: 8px 17px; font-size: 12.5px; font-weight: 600; line-height: 1;
-    color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07);
-    cursor: pointer; transition: background-color .15s, box-shadow .15s, border-color .15s;
-  }
+  .cms-segment { display: inline-flex; align-items: center; padding: 3px; gap: 2px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+  .cms-seg-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 9px; font-size: 12.5px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.6); background: transparent; border: none; cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s; }
+  .cms-seg-btn:hover:not(:disabled) { color: #fff; background: rgba(255,255,255,.06); }
+  .cms-seg-btn:disabled { opacity: .4; cursor: default; }
+
+  .cms-btn-save { border-radius: 11px; padding: 8px 17px; font-size: 12.5px; font-weight: 600; line-height: 1; color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07); cursor: pointer; transition: background-color .15s, box-shadow .15s, border-color .15s; }
   .cms-btn-save:hover:not(:disabled) { background: rgba(255,255,255,.13); }
-  .cms-btn-save:disabled { opacity: .5; cursor: default; }
-  .cms-btn-save.is-dirty {
-    background: linear-gradient(135deg, #2563eb, #3b82f6); border-color: transparent;
-    box-shadow: 0 6px 18px -6px rgba(37,99,235,.6), inset 0 1px 0 rgba(255,255,255,.2);
-  }
-  .cms-btn-save.is-dirty:hover:not(:disabled) { filter: brightness(1.08); }
-  .cms-btn-publish {
-    border-radius: 11px; padding: 8px 18px; font-size: 12.5px; font-weight: 600; line-height: 1;
-    color: #fff; border: none; cursor: pointer;
-    background: linear-gradient(135deg, #15803d, #22c55e);
-    box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22);
-    transition: filter .15s;
-  }
-  .cms-btn-publish:hover:not(:disabled) { filter: brightness(1.08); }
-  .cms-btn-publish:disabled { opacity: .5; cursor: default; box-shadow: none; }
+  .cms-btn-save.is-dirty { background: linear-gradient(135deg, #2563eb, #3b82f6); border-color: transparent; box-shadow: 0 6px 18px -6px rgba(37,99,235,.6), inset 0 1px 0 rgba(255,255,255,.2); }
+  .cms-btn-save.is-dirty:hover { filter: brightness(1.08); }
+  .cms-btn-publish { border-radius: 11px; padding: 8px 18px; font-size: 12.5px; font-weight: 600; line-height: 1; color: #fff; border: none; cursor: pointer; background: linear-gradient(135deg, #15803d, #22c55e); box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22); transition: filter .15s; }
+  .cms-btn-publish:hover { filter: brightness(1.08); }
 
   .status-txt { font-size: 12px; }
-  .status-txt.ok { color: #86efac; }
-  .status-txt.info { color: #93c5fd; }
-  .saved-ago { font-size: 12px; color: #9ca3af; }
-
-  .back-link {
-    display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
-    color: #9ca3af; text-decoration: none; padding: 6px 10px; border-radius: 9px;
-    transition: background .15s, color .15s;
-  }
+  .status-txt.ok { color: #86efac; } .status-txt.info { color: #93c5fd; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #9ca3af; text-decoration: none; padding: 6px 10px; border-radius: 9px; transition: background .15s, color .15s; }
   .back-link:hover { background: rgba(255,255,255,.08); color: #fff; }
 
-  /* ── Preview stage ─────────────────────────────────────────── */
-  .stage { padding: 22px 16px 60px; display: flex; justify-content: center; }
-  .frame {
-    width: 100%; max-width: 1180px; border-radius: 16px; overflow: hidden;
-    background: #fff; color: #111; box-shadow: 0 40px 90px -40px rgba(0,0,0,.8);
-    border: 1px solid rgba(255,255,255,.08); transition: max-width .28s ease;
-  }
-  .frame.mobile { max-width: 390px; }
-  .frame-bar {
-    display: flex; align-items: center; gap: 8px; padding: 9px 14px;
-    background: #e9edf1; border-bottom: 1px solid #d6dce2;
-  }
-  .frame-bar i { width: 11px; height: 11px; border-radius: 50%; background: #c3ccd4; display: inline-block; }
-  .frame-bar i:nth-child(1){ background:#ff5f57 } .frame-bar i:nth-child(2){ background:#febc2e } .frame-bar i:nth-child(3){ background:#28c840 }
-  .frame-bar .url {
-    margin-left: 10px; flex: 1; font-size: 12px; color: #55606b; background: #fff;
-    border-radius: 7px; padding: 5px 12px; border: 1px solid #dfe5ea; font-family: ui-monospace, monospace;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
+  /* ── Stage / iframe ──────────────────────────────────────────── */
+  .stage { flex: 1; min-height: 0; position: relative; background: #0b0f16; overflow: auto; display: flex; }
+  .frame-wrap { flex: 1; min-height: 0; display: flex; justify-content: center; }
+  #siteFrame { width: 100%; height: 100%; border: 0; background: #fff; display: block; transition: max-width .28s ease; }
+  .stage.mobile { padding: 22px 12px; }
+  .stage.mobile #siteFrame { max-width: 390px; border-radius: 18px; box-shadow: 0 40px 90px -40px rgba(0,0,0,.9); border: 1px solid rgba(255,255,255,.08); height: 100%; }
 
-  /* ── The fake website being edited (theme-driven) ──────────── */
-  .site {
-    --accent: #c9822a; --bg: #eff1ec; --bg2: #e6e9e2; --text: #12231f; --muted: #566760;
-    background: var(--bg); color: var(--text);
-    font-family: var(--font);
-  }
-  .site .sec { position: relative; }
-  .site .container { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+  .frame-loading { position: absolute; inset: 0; display: grid; place-items: center; color: #9ca3af; font-size: 14px; pointer-events: none; text-align: center; padding: 20px; }
 
-  .site nav.topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 28px; border-bottom: 1px solid rgba(0,0,0,.06); background: var(--bg);
-  }
-  .site .brand { font-weight: 800; letter-spacing: -.02em; font-size: 18px; display:flex; align-items:center; gap:8px; }
-  .site .brand .logo { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display:inline-block; }
-  .site .navlinks { display: flex; gap: 20px; font-size: 14px; color: var(--muted); }
-  .site .navlinks span { cursor: default; }
-
-  .site .hero { padding: 74px 0 66px; background: var(--bg); text-align: left; position: relative; }
-  .site .eyebrow {
-    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-    color: #6b4a16; background: color-mix(in srgb, var(--accent) 26%, transparent);
-    padding: 6px 12px; border-radius: 999px; margin-bottom: 18px;
-  }
-  .site h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.05; margin: 0 0 18px; letter-spacing: -.02em; max-width: 16ch; }
-  .site .hero .sub { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 28px; line-height: 1.5; }
-  .site .cta {
-    display: inline-block; background: var(--accent); color: #fff; font-weight: 700; font-size: 15px;
-    padding: 13px 24px; border-radius: 11px; text-decoration: none; box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 80%, black);
-  }
-
-  .site .services { padding: 60px 0; background: var(--bg2); }
-  .site .services h2, .site .about h2, .site .contact h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.02em; }
-  .site .services .intro, .site .about p, .site .contact p { color: var(--muted); max-width: 52ch; margin: 0 0 32px; line-height: 1.55; font-size: 16px; }
-  .site .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .site .card {
-    background: var(--bg); border: 1px solid rgba(0,0,0,.07); border-radius: 14px; padding: 22px; position: relative;
-  }
-  .site .card .ico { width: 40px; height: 40px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 45%, transparent); display: grid; place-items: center; margin-bottom: 14px; font-size: 20px; }
-  .site .card h3 { margin: 0 0 8px; font-size: 18px; }
-  .site .card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
-
-  /* Highlighted dark "Local AI" block — the portfolio's key differentiator */
-  .site .localai { padding: 66px 0; background: #12231f; color: #eff1ec; }
-  .site .localai h2 { font-size: 30px; margin: 0 0 10px; letter-spacing: -.02em; color: #fff; }
-  .site .localai p { color: rgba(239,241,236,.78); max-width: 56ch; margin: 0; line-height: 1.6; font-size: 17px; }
-  .site .localai .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-  .site .localai .chips span { font-size: 13px; padding: 7px 13px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); color: #eff1ec; }
-  .site .localai .chips span.acc { background: color-mix(in srgb, var(--accent) 30%, transparent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
-
-  .site .about { padding: 66px 0; background: var(--bg2); }
-  .site .about p { font-size: 17px; max-width: 60ch; }
-
-  .site .contact { padding: 66px 0 76px; background: var(--bg); }
-  .site .contact .email { display: inline-block; margin-top: 10px; font-weight: 700; color: #6b4a16; font-size: 18px; }
-
-  .site footer { padding: 26px 28px; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid rgba(0,0,0,.06); background: var(--bg2); }
-
-  /* ── Inline edit affordances ───────────────────────────────── */
-  .editing [data-key] {
-    outline: 1.5px dashed transparent; outline-offset: 4px; border-radius: 4px;
-    transition: outline-color .12s, background .12s; cursor: text;
-  }
-  .editing [data-key]:hover { outline-color: #2563eb; background: rgba(37,99,235,.06); }
-  [data-key].is-active { outline: 2px solid #2563eb !important; background: rgba(37,99,235,.08); }
-  [contenteditable="true"] { cursor: text; }
-
-  /* ── Layout-overlay (drag to reorder sections in the preview) ─ */
-  .overlay-layout [data-section] { outline: 1.5px dashed rgba(139,92,246,.55); outline-offset: -2px; }
-  .sec-handle {
-    display: none; position: absolute; top: 8px; left: 8px; z-index: 5;
-    align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #fff;
-    background: rgba(139,92,246,.92); border-radius: 8px; padding: 5px 9px; cursor: grab;
-    box-shadow: 0 6px 16px -6px rgba(0,0,0,.5);
-  }
-  .overlay-layout .sec-handle { display: inline-flex; }
-  .overlay-layout [data-section].drag-over { box-shadow: inset 0 4px 0 #8b5cf6; }
-  [data-section].dragging { opacity: .5; }
-
-  /* ── Freeform (drag the hero CTA) ──────────────────────────── */
-  .overlay-freeform .site .cta { cursor: move; }
-  .overlay-freeform .site .cta::after {
-    content: "🎯"; position: absolute; margin: -10px 0 0 6px; font-size: 12px;
-  }
-
-  /* ── Side sheet (colors) ───────────────────────────────────── */
-  .cms-sidesheet {
-    position: fixed; top: 57px; right: 0; bottom: 0; width: 100%; max-width: 360px; z-index: 1200;
-    display: flex; flex-direction: column;
-    background: linear-gradient(180deg, rgba(32,35,44,.96), rgba(20,22,29,.98));
-    -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%);
-    border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7);
-    animation: slide-in .22s cubic-bezier(.2,.85,.25,1);
-  }
+  /* ── Colors side sheet ───────────────────────────────────────── */
+  .cms-sidesheet { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 360px; z-index: 1200; display: flex; flex-direction: column; background: linear-gradient(180deg, rgba(32,35,44,.97), rgba(20,22,29,.99)); -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%); border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7); animation: slide-in .22s cubic-bezier(.2,.85,.25,1); }
   @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
   .sidesheet-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
   .sidesheet-head h2 { font-size: 15px; font-weight: 600; margin: 0; }
@@ -272,125 +98,47 @@
   .color-row input[type=color] { height: 38px; width: 52px; flex: none; background: #374151; border: none; border-radius: 8px; cursor: pointer; padding: 3px; }
   .color-row input[type=text] { flex: 1; min-width: 0; padding: 9px 11px; background: #374151; border: none; border-radius: 8px; color: #fff; font-family: ui-monospace, monospace; font-size: 13px; }
   .color-row .desc { font-size: 11px; color: #6b7280; margin: 6px 0 0; }
-
-  /* ── Layout view (list) & Form view ────────────────────────── */
-  .panel { max-width: 900px; margin: 0 auto; padding: 22px 16px 70px; }
-  .cms-card {
-    background: linear-gradient(180deg, rgba(38,41,51,.55), rgba(26,28,36,.62));
-    border: 1px solid rgba(255,255,255,.07); border-radius: 16px;
-    box-shadow: 0 12px 32px -20px rgba(0,0,0,.6); padding: 22px; margin-bottom: 18px;
-  }
-  .cms-card h2 { font-size: 17px; font-weight: 600; margin: 0 0 16px; }
-  .lay-row {
-    display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 11px;
-    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); margin-bottom: 9px;
-  }
-  .lay-row .grip { color: #6b7280; cursor: grab; font-size: 15px; }
-  .lay-row .name { flex: 1; font-size: 14px; }
-  .lay-row.hidden-sec { opacity: .5; }
-  .lay-row .mini { width: 30px; height: 28px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #cbd5e1; cursor: pointer; display: grid; place-items: center; font-size: 13px; }
-  .lay-row .mini:hover { background: rgba(255,255,255,.12); color: #fff; }
-  .lay-row .mini:disabled { opacity: .3; cursor: default; }
-  .lay-row[draggable=true] { cursor: grab; }
-  .lay-row.drag-over { box-shadow: inset 0 3px 0 #8b5cf6; }
-
-  .field { margin-bottom: 15px; }
-  .field label { display: block; font-size: 12.5px; color: #9ca3af; margin-bottom: 6px; }
-  .field input, .field textarea {
-    width: 100%; border-radius: 10px; padding: 10px 13px; font-size: 14px; color: #fff;
-    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); resize: vertical;
-    font-family: inherit;
-  }
-  .field input:focus, .field textarea:focus { outline: none; border-color: rgba(59,130,246,.7); box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
-
-  .catalog { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  .catalog button {
-    display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #e5e7eb;
-    background: rgba(255,255,255,.05); border: 1px dashed rgba(255,255,255,.2); border-radius: 10px;
-    padding: 9px 13px; cursor: pointer; transition: background .15s, border-color .15s;
-  }
-  .catalog button:hover { background: rgba(20,184,166,.16); border-color: #14b8a6; color: #fff; }
-  .subtle { font-size: 12.5px; color: #9ca3af; line-height: 1.55; }
-  .addbtn { font-size: 12.5px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 8px 12px; cursor: pointer; }
+  .addbtn { font-size: 12.5px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 9px 12px; cursor: pointer; justify-self: start; }
   .addbtn:hover { background: rgba(16,185,129,.2); }
-  .delbtn { font-size: 12px; color: #fca5a5; background: none; border: none; cursor: pointer; }
-  .delbtn:hover { color: #fff; }
 
-  /* ── Toast ─────────────────────────────────────────────────── */
-  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
-  .toast {
-    background: rgba(17,24,39,.96); color: #fff; border: 1px solid rgba(255,255,255,.12);
-    border-radius: 12px; padding: 12px 18px; font-size: 13.5px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8);
-    display: flex; align-items: center; gap: 10px; max-width: 92vw;
-    animation: toast-in .2s ease-out;
-  }
-  .toast .ic { font-size: 16px; }
-  .toast.ok { border-color: rgba(34,197,94,.4); }
-  .toast.info { border-color: rgba(59,130,246,.4); }
+  /* ── Toast ───────────────────────────────────────────────────── */
+  .toast-wrap { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast { background: rgba(17,24,39,.97); color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 12px 18px; font-size: 13.5px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8); display: flex; align-items: center; gap: 10px; max-width: 92vw; animation: toast-in .2s ease-out; }
+  .toast.ok { border-color: rgba(34,197,94,.4); } .toast.info { border-color: rgba(59,130,246,.4); }
   @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  /* ── Intro overlay ─────────────────────────────────────────── */
-  .intro-backdrop {
-    position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px;
-    background: rgba(8,10,15,.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  }
-  .intro {
-    max-width: 460px; width: 100%; border-radius: 20px; padding: 30px 28px; text-align: center;
-    background: linear-gradient(180deg, rgba(38,41,51,.9), rgba(22,24,31,.94));
-    border: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0 30px 70px -18px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07);
-  }
-  .intro .mark { width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 15px; display: grid; place-items: center; font-weight: 800; font-size: 24px;
-    background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
+  /* ── Intro ───────────────────────────────────────────────────── */
+  .intro-backdrop { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px; background: rgba(8,10,15,.66); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .intro { max-width: 470px; width: 100%; border-radius: 20px; padding: 30px 28px; text-align: center; background: linear-gradient(180deg, rgba(38,41,51,.92), rgba(22,24,31,.96)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px -18px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07); }
+  .intro .mark { width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 15px; display: grid; place-items: center; font-weight: 800; font-size: 24px; background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
   .intro h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
   .intro p { margin: 0 0 16px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
-  .intro ul { text-align: left; margin: 0 auto 22px; padding: 0; list-style: none; display: grid; gap: 9px; max-width: 340px; }
+  .intro ul { text-align: left; margin: 0 auto 22px; padding: 0; list-style: none; display: grid; gap: 9px; max-width: 360px; }
   .intro li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #e5e7eb; }
-  .intro li .k { flex: none; }
-  .intro .start {
-    width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 600; color: #fff;
-    background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6);
-  }
+  .intro .start { width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
   .intro .start:hover { filter: brightness(1.07); }
   .intro .foot { margin: 14px 0 0; font-size: 11.5px; color: #6b7280; }
 
   .sr-hide { display: none !important; }
-
-  @media (max-width: 720px) {
-    .tb-title p .amber { display: block; margin: 2px 0 0; }
-    .hide-sm { display: none !important; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
+  @media (max-width: 720px) { .hide-sm { display: none !important; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
-<div class="app" id="app">
-  <!-- Toolbar -->
+<div class="app">
   <header class="cms-toolbar">
     <div class="cms-toolbar-inner">
       <div class="tb-left">
         <div class="tb-brand">
           <div class="cms-brand-mark" aria-hidden="true">N</div>
           <div class="tb-title">
-            <h1>Vizuális szerkesztő</h1>
-            <p id="tbSub">pr.nemes@gmail.com<span class="amber" id="dirtyInfo"></span></p>
+            <h1>Weboldal szerkesztő</h1>
+            <p id="tbSub">Bemutató mód<span class="amber" id="dirtyInfo"></span></p>
           </div>
         </div>
-
-        <span class="demo-pill hide-sm" title="Ez egy bemutató – a változtatások csak a böngésződben élnek."><span class="dot"></span>Demó</span>
-
-        <!-- Locale -->
-        <div class="cms-segment" id="localeSeg" role="group" aria-label="Nyelv"></div>
-
-        <!-- View mode -->
-        <div class="cms-segment" id="viewSeg" role="group" aria-label="Nézet"></div>
-
-        <!-- Live tools -->
-        <div class="tb-tools" id="liveTools" style="display:flex; gap:6px; align-items:center;"></div>
+        <span class="demo-pill hide-sm" title="Bemutató – a változtatások csak a böngésződben élnek."><span class="dot"></span>Demó</span>
+        <div class="tb-tools" id="tools" style="display:flex; gap:6px; align-items:center;"></div>
       </div>
-
       <div class="tb-right">
         <span id="statusSlot" class="hide-sm"></span>
         <div class="cms-segment">
@@ -399,835 +147,330 @@
         </div>
         <a class="back-link hide-sm" href="index.html" title="Vissza a portfólióhoz">← Portfólió</a>
         <button class="cms-btn-save" id="saveBtn" title="Mentés (Ctrl+S)">Mentés</button>
-        <button class="cms-btn-publish" id="publishBtn">Publikálás (HU)</button>
+        <button class="cms-btn-publish" id="publishBtn">Publikálás</button>
       </div>
     </div>
   </header>
 
-  <!-- Views get rendered here -->
-  <main id="main"></main>
+  <div class="stage" id="stage">
+    <div class="frame-wrap">
+      <iframe id="siteFrame" src="index.html" title="A portfólió szerkesztő előnézete"></iframe>
+    </div>
+    <div class="frame-loading" id="frameLoading">Portfólió betöltése…</div>
+  </div>
 
-  <!-- Colors side sheet -->
   <aside class="cms-sidesheet sr-hide" id="colorSheet" aria-label="Színek">
     <div class="sidesheet-head">
       <h2>🎨 Színek</h2>
       <button class="cms-icon-btn" id="closeColors" title="Bezárás">✕</button>
     </div>
     <div class="sidesheet-body">
-      <p class="hint">A színek azonnal frissülnek az előnézetben. A mentéshez / közzétételhez használd a fenti Mentés / Publikálás gombot.</p>
+      <p class="hint">A színek azonnal frissülnek az előnézetben. A mentéshez / közzétételhez használd a fenti gombokat.</p>
       <div id="colorRows"></div>
-      <button class="addbtn" id="resetColors" style="justify-self:start">↺ Vissza az alap színekhez</button>
+      <button class="addbtn" id="resetColors">↺ Vissza az alap színekhez</button>
     </div>
   </aside>
 </div>
 
 <div class="toast-wrap" id="toasts" aria-live="polite"></div>
 
-<!-- Intro -->
 <div class="intro-backdrop" id="introBackdrop">
   <div class="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <div class="mark" aria-hidden="true">N</div>
-    <h2 id="introTitle">Vizuális szerkesztő</h2>
-    <p>Így szerkesztheted <b>kód nélkül, böngészőből</b> ezt a portfóliót — pontosan úgy, ahogy a megrendelő is kapná a saját oldalához. Próbáld ki nyugodtan, kattints bármibe.</p>
+    <h2 id="introTitle">Weboldal szerkesztő</h2>
+    <p>Ez itt a <b>saját portfóliód</b> — így szerkeszthetnéd <b>kód nélkül, böngészőből</b>, pontosan úgy, ahogy egy megrendelő is kapná a saját oldalához. Próbáld ki nyugodtan.</p>
     <ul>
-      <li><span class="k">✍️</span><span>Kattints egy szövegre és írd át — az <b>Élő szerkesztés</b> nézetben.</span></li>
-      <li><span class="k">🎨</span><span>A <b>Színek</b> gombbal állítsd az arculatot, élő előnézettel.</span></li>
-      <li><span class="k">📐</span><span>Az <b>Átrendezés</b> / <b>Elrendezés</b> nézetben húzd át a szekciókat.</span></li>
+      <li><span>✍️</span><span>Kattints <b>bármelyik szövegre</b> az oldalon, és írd át.</span></li>
+      <li><span>🎨</span><span>A <b>Színek</b> gombbal állítsd az arculatot, élő előnézettel.</span></li>
+      <li><span>📐</span><span>Az <b>Átrendezés</b> gombbal húzd más sorrendbe a szekciókat.</span></li>
     </ul>
     <button class="start" id="introStart">Kipróbálom</button>
-    <p class="foot">Bemutató mód — a változtatások csak a böngésződben élnek, és újratöltésre visszaállnak. Semmi nem kerül mentésre.</p>
+    <p class="foot">Bemutató mód — a változtatások csak a böngésződben élnek, és újratöltésre visszaállnak. Az éles oldal nem változik.</p>
   </div>
 </div>
 
 <script>
 "use strict";
 (function () {
-  // ─────────────────────────────────────────────────────────────
-  // Content model — a representative Loricatus-style site in 3 locales.
-  // (The real editor pulls the live HTML + Supabase content; here it is
-  //  seeded inline so the demo is fully self-contained.)
-  // ─────────────────────────────────────────────────────────────
-  var LOCALES = [
-    { code: "hu", flag: "🇭🇺", label: "Magyar" },
-    { code: "en", flag: "🇬🇧", label: "English" },
-    { code: "it", flag: "🇮🇹", label: "Italiano" },
+  var frame = document.getElementById("siteFrame");
+  var stage = document.getElementById("stage");
+  var toolsEl = document.getElementById("tools");
+
+  // Editor state (lives only in this page; the iframe is a throwaway copy)
+  var mode = "edit";     // "edit" (inline text) | "reorder" (drag sections)
+  var mobile = false;
+  var showColors = false;
+  var ready = false;
+
+  // Colour tokens edited on the portfolio's :root (see index.html :root)
+  var COLORS = [
+    { v: "--amber",   label: "Kiemelő szín",     hint: "Linkek, gombok, kiemelések (borostyán)" },
+    { v: "--paper",   label: "Fő háttér",         hint: "Az oldal alap háttere" },
+    { v: "--paper-2", label: "Másodlagos háttér", hint: "Váltakozó szekciók háttere" },
+    { v: "--text",    label: "Szöveg",            hint: "A fő szövegszín" },
+    { v: "--muted",   label: "Halvány szöveg",    hint: "Leírások, másodlagos feliratok" },
   ];
+  var defaults = {};     // captured from the loaded page
+  var overrides = {};    // {var: value}
 
-  // defaults per THEME_KEYS in admin/src/lib/theme.ts
-  var THEME_KEYS = [
-    { key: "accent", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések (borostyán)", def: "#c9822a" },
-    { key: "bg",     label: "Fő háttér",       hint: "Az oldal alap háttérszíne", def: "#eff1ec" },
-    { key: "bg2",    label: "Másodlagos háttér",hint: "Szolgáltatások / szekciók háttere", def: "#e6e9e2" },
-    { key: "text",   label: "Szöveg",           hint: "A fő szövegszín", def: "#12231f" },
-    { key: "muted",  label: "Halvány szöveg",   hint: "Leírások, másodlagos feliratok", def: "#566760" },
-  ];
-
-  function seed() {
-    return {
-      nav_brand: { hu: "Nemes Péter", en: "Nemes Péter", it: "Nemes Péter" },
-      hero_eyebrow: { hu: "Egyéni vállalkozó · AI-fejlesztés magánszemélyeknek és kisvállalkozásoknak", en: "Freelancer · AI development for individuals and small businesses", it: "Libero professionista · sviluppo AI per privati e piccole imprese" },
-      hero_title: {
-        hu: "A weboldaltól a saját, lokálisan futó AI-ig.",
-        en: "From your website to your own, locally running AI.",
-        it: "Dal sito web alla tua AI in locale.",
-      },
-      hero_sub: {
-        hu: "Weboldal és hosting, egyedi webalkalmazások, és saját AI a te gépeden vagy felhődben. Válaszd ki, mi érdekel — minden projektnél működő demó.",
-        en: "Websites and hosting, custom web apps, and your own AI on your machine or cloud. Pick what interests you — every project ships with a working demo.",
-        it: "Siti web e hosting, web app su misura e la tua AI sul tuo computer o cloud. Scegli ciò che ti interessa — ogni progetto con demo funzionante.",
-      },
-      hero_cta: { hu: "Kérj ingyenes ajánlatot", en: "Request a free quote", it: "Richiedi un preventivo gratuito" },
-
-      svc_title: { hu: "Amiben segíteni tudok", en: "How I can help", it: "Come posso aiutarti" },
-      svc_intro: {
-        hu: "Közvetlen egyeztetéssel dolgozom, és minden megoldáshoz átadás meg rövid betanítás jár, hogy utána magad is könnyen elboldogulj vele.",
-        en: "I work with you directly, and every solution comes with handover and a short training session so you can manage it yourself afterwards.",
-        it: "Lavoro a diretto contatto con te e ogni soluzione include consegna e una breve formazione, così poi te la gestisci da solo.",
-      },
-      localai_title: { hu: "Lokális, privát AI — a te gépeden", en: "Local, private AI — on your own machine", it: "AI locale e privata — sul tuo computer" },
-      localai_text: {
-        hu: "Saját „ChatGPT” és bármilyen nyílt modell a te hardvereden vagy felhődben. Az adat végig nálad marad — ezt kevés versenytárs kínálja.",
-        en: "Your own “ChatGPT” and any open model on your hardware or cloud. Your data stays with you the whole time — few competitors offer this.",
-        it: "Il tuo “ChatGPT” e qualsiasi modello aperto sul tuo hardware o cloud. I tuoi dati restano sempre con te — pochi concorrenti lo offrono.",
-      },
-      about_title: { hu: "Rólam", en: "About me", it: "Chi sono" },
-      about_text: {
-        hu: "AI-megoldásokkal foglalkozom, műszaki és projektmenedzsment háttérrel. Egyéni vállalkozóként főként magánszemélyeknek és kisvállalkozásoknak dolgozom, közvetlen egyeztetéssel, a te tempódban.",
-        en: "I build AI solutions, with an engineering and project-management background. As a freelancer I mostly work with individuals and small businesses, in direct contact, at your pace.",
-        it: "Realizzo soluzioni AI, con un background tecnico e di project management. Come libero professionista lavoro soprattutto con privati e piccole imprese, a contatto diretto e al tuo ritmo.",
-      },
-      contact_title: { hu: "Dolgozzunk együtt", en: "Let's work together", it: "Lavoriamo insieme" },
-      contact_text: {
-        hu: "Írj pár sort arról, mire lenne szükséged — a weboldaltól a saját lokális AI-ig bármiben. Az első, 30 perces egyeztetés díjmentes.",
-        en: "Drop me a few lines about what you need — anything from a website to your own local AI. The first 30-minute call is free.",
-        it: "Scrivimi due righe su ciò che ti serve — dal sito web alla tua AI locale. La prima chiamata di 30 minuti è gratuita.",
-      },
-      contact_email: { hu: "pr.nemes@gmail.com", en: "pr.nemes@gmail.com", it: "pr.nemes@gmail.com" },
-      foot: { hu: "© Nemes Péter · AI-fejlesztés & oktatás", en: "© Nemes Péter · AI development & training", it: "© Nemes Péter · sviluppo AI e formazione" },
-    };
+  // Undo/redo — granular ops so the live page keeps its own behaviour.
+  var ops = [], opIdx = -1;
+  function pushOp(op) { ops = ops.slice(0, opIdx + 1); ops.push(op); if (ops.length > 60) ops.shift(); opIdx = ops.length - 1; refreshUndo(); markDirty(); }
+  function refreshUndo() { document.getElementById("undoBtn").disabled = opIdx < 0; document.getElementById("redoBtn").disabled = opIdx >= ops.length - 1; }
+  function applyOp(op, dir) {
+    if (op.type === "text") { op.el.textContent = dir > 0 ? op.next : op.prev; }
+    else if (op.type === "color") { var val = dir > 0 ? op.next : op.prev; if (val == null) clearColor(op.v, true); else setColor(op.v, val, true); syncColorInputs(); }
+    else if (op.type === "move") { reorderTo(dir > 0 ? op.after : op.before); }
   }
+  function undo() { if (opIdx < 0) return; applyOp(ops[opIdx], -1); opIdx--; refreshUndo(); markDirty(); }
+  function redo() { if (opIdx >= ops.length - 1) return; opIdx++; applyOp(ops[opIdx], 1); refreshUndo(); markDirty(); }
 
-  function seedServices() {
-    return [
-      { id: "svc1", ico: "🌐",
-        title: { hu: "Weboldal & hosting", en: "Website & hosting", it: "Sito web & hosting" },
-        desc:  { hu: "Bemutatkozó és céges oldalak, saját kézzel, a tárhely beállításával együtt.", en: "Personal and business sites, hand-built, hosting setup included.", it: "Siti personali e aziendali, fatti a mano, con configurazione dell'hosting." } },
-      { id: "svc2", ico: "⚙️",
-        title: { hu: "Egyedi webalkalmazás", en: "Custom web app", it: "Web app su misura" },
-        desc:  { hu: "Foglaló, nyilvántartó, vezérlő vagy játék, pontosan a te folyamatodra szabva.", en: "A booking tool, registry, dashboard or game — tailored to your workflow.", it: "Prenotazioni, gestionale, dashboard o gioco — su misura per il tuo flusso." } },
-      { id: "svc3", ico: "🔒",
-        title: { hu: "Lokális / privát AI", en: "Local / private AI", it: "AI locale / privata" },
-        desc:  { hu: "Saját „ChatGPT” és bármilyen nyílt modell a te gépeden. Az adat nálad marad.", en: "Your own “ChatGPT” and any open model on your machine. Your data stays with you.", it: "Il tuo “ChatGPT” e qualsiasi modello aperto sul tuo computer. I dati restano con te." } },
-      { id: "svc4", ico: "🎓",
-        title: { hu: "Oktatás", en: "Training", it: "Formazione" },
-        desc:  { hu: "1:1 mentorálás és céges workshop, az alapoktól a haladó, lokális AI-setupokig.", en: "One-on-one mentoring and company workshops, from basics to advanced local AI.", it: "Mentoring 1:1 e workshop aziendali, dalle basi ai setup AI locali avanzati." } },
-    ];
+  // Dirty flag
+  var savedIdx = -1, savedColors = "{}";
+  function isDirty() { return opIdx !== savedIdx || JSON.stringify(overrides) !== savedColors; }
+  function markDirty() {
+    var el2 = document.getElementById("dirtyInfo");
+    var n = 0; for (var i = 0; i <= opIdx; i++) if (ops[i].type === "text") n++;
+    var bits = [];
+    if (n) bits.push("· " + n + " módosított szöveg");
+    if (Object.keys(overrides).length) bits.push("· színek módosítva");
+    el2.textContent = bits.length ? " " + bits.join(" ") : "";
+    document.getElementById("saveBtn").classList.toggle("is-dirty", isDirty());
   }
-
-  function seedStats() {
-    return [
-      { id: "st1", num: "±2 cm", label: { hu: "pontosság", en: "accuracy", it: "precisione" } },
-      { id: "st2", num: "48 óra", label: { hu: "átadási idő", en: "turnaround", it: "consegna" } },
-      { id: "st3", num: "120+", label: { hu: "projekt", en: "projects", it: "progetti" } },
-    ];
-  }
-
-  var SECTION_LABELS = {
-    hero:     { hu: "Fejléc + hero", en: "Header + hero", it: "Intestazione + hero" },
-    services: { hu: "Amiben segítek", en: "Services", it: "Servizi" },
-    localai:  { hu: "Lokális AI (kiemelt)", en: "Local AI (highlight)", it: "AI locale (in evidenza)" },
-    about:    { hu: "Rólam", en: "About", it: "Chi sono" },
-    contact:  { hu: "Kapcsolat + lábléc", en: "Contact + footer", it: "Contatti + footer" },
-  };
-
-  var CATALOG = [
-    { tpl: "reviews", label: { hu: "Vélemények", en: "Testimonials", it: "Recensioni" } },
-    { tpl: "faq",     label: { hu: "GYIK", en: "FAQ", it: "FAQ" } },
-    { tpl: "gallery", label: { hu: "Galéria", en: "Gallery", it: "Galleria" } },
-  ];
-
-  // ── State ────────────────────────────────────────────────────
-  var S;
-  function freshState() {
-    return {
-      locale: "hu",
-      view: "live",            // live | layout | form
-      overlay: "edit",         // edit | layout | freeform
-      mobile: false,
-      showColors: false,
-      data: seed(),
-      services: seedServices(),
-      stats: seedStats(),
-      theme: {},               // overrides {accent,bg,...}
-      order: ["hero", "services", "localai", "about", "contact"],
-      hidden: {},              // {sectionId:true}
-      added: {},               // {sectionId:{tpl,label}}
-      heroPos: null,           // {x,y} freeform
-      lastSavedAt: null,
-    };
-  }
-
-  // ── Undo/redo history ────────────────────────────────────────
-  var history = [], hIdx = -1, skipSnap = false, snapTimer = null;
-  function snapshotObj() {
-    return JSON.stringify({
-      data: S.data, services: S.services, stats: S.stats, theme: S.theme,
-      order: S.order, hidden: S.hidden, added: S.added, heroPos: S.heroPos,
-    });
-  }
-  function pushHistory() {
-    if (skipSnap) { skipSnap = false; return; }
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(function () {
-      var snap = snapshotObj();
-      if (history[hIdx] === snap) return;
-      history = history.slice(0, hIdx + 1);
-      history.push(snap);
-      if (history.length > 50) history.shift();
-      hIdx = history.length - 1;
-      refreshUndoButtons();
-    }, 350);
-  }
-  function restore(snap) {
-    var o = JSON.parse(snap);
-    S.data = o.data; S.services = o.services; S.stats = o.stats; S.theme = o.theme;
-    S.order = o.order; S.hidden = o.hidden; S.added = o.added; S.heroPos = o.heroPos;
-    skipSnap = true;
-    renderAll();
-  }
-  function undo() { if (hIdx > 0) { hIdx--; restore(history[hIdx]); refreshUndoButtons(); } }
-  function redo() { if (hIdx < history.length - 1) { hIdx++; restore(history[hIdx]); refreshUndoButtons(); } }
-  function refreshUndoButtons() {
-    document.getElementById("undoBtn").disabled = hIdx <= 0;
-    document.getElementById("redoBtn").disabled = hIdx >= history.length - 1;
-  }
-
-  // ── Dirty tracking (against the last "save") ─────────────────
-  var savedSnapshot = null;
-  function isDirty() { return savedSnapshot !== null && snapshotObj() !== savedSnapshot; }
 
   // ── Helpers ──────────────────────────────────────────────────
-  function el(tag, attrs, children) {
+  function doc() { return frame.contentDocument; }
+  function root() { return doc().documentElement; }
+  function el(tag, attrs, kids) {
     var e = document.createElement(tag);
-    if (attrs) for (var k in attrs) {
-      if (k === "class") e.className = attrs[k];
-      else if (k === "html") e.innerHTML = attrs[k];
-      else if (k === "text") e.textContent = attrs[k];
-      else if (k.slice(0, 2) === "on" && typeof attrs[k] === "function") e.addEventListener(k.slice(2), attrs[k]);
-      else if (attrs[k] != null) e.setAttribute(k, attrs[k]);
-    }
-    if (children) (Array.isArray(children) ? children : [children]).forEach(function (c) {
-      if (c == null) return;
-      e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
-    });
+    if (attrs) for (var k in attrs) { if (k === "class") e.className = attrs[k]; else if (k === "text") e.textContent = attrs[k]; else if (k.slice(0,2)==="on" && typeof attrs[k]==="function") e.addEventListener(k.slice(2), attrs[k]); else if (attrs[k]!=null) e.setAttribute(k, attrs[k]); }
+    if (kids) (Array.isArray(kids)?kids:[kids]).forEach(function(c){ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });
     return e;
   }
-  function themeVal(k) { return S.theme[k] || THEME_KEYS.filter(function (t) { return t.key === k; })[0].def; }
-  function L(obj) { return (obj && (obj[S.locale] != null ? obj[S.locale] : obj.hu)) || ""; }
+  function toolBtn(label, acc, active, onclick) { var b = el("button", { class: "cms-tool" + (active?" is-active":""), onclick: onclick }, label); b.style.setProperty("--acc", acc); return b; }
 
-  // ─────────────────────────────────────────────────────────────
-  // Rendering
-  // ─────────────────────────────────────────────────────────────
-  function renderAll() {
-    renderToolbar();
-    renderMain();
-    renderColors();
-    updateDirtyUI();
-    pushHistory();
+  // ── Colour handling on the iframe :root ──────────────────────
+  function hexToRgb(h){ h=(h||"").trim().replace("#",""); if(h.length===3) h=h.split("").map(function(c){return c+c;}).join(""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+  function toHex(n){ n=Math.max(0,Math.min(255,Math.round(n))); return n.toString(16).padStart(2,"0"); }
+  function darken(hex,f){ var c=hexToRgb(hex); return "#"+toHex(c[0]*(1-f))+toHex(c[1]*(1-f))+toHex(c[2]*(1-f)); }
+  function rgba(hex,a){ var c=hexToRgb(hex); return "rgba("+c[0]+","+c[1]+","+c[2]+","+a+")"; }
+  function isHex(v){ return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test((v||"").trim()); }
+  function setColor(v, val, silent) {
+    overrides[v] = val;
+    var r = root(); r.style.setProperty(v, val);
+    if (v === "--amber" && isHex(val)) { r.style.setProperty("--amber-dark", darken(val, .12)); r.style.setProperty("--amber-soft", rgba(val, .1)); }
+    if (!silent) markDirty();
   }
+  function clearColor(v, silent) {
+    delete overrides[v];
+    var r = root(); r.style.removeProperty(v);
+    if (v === "--amber") { r.style.removeProperty("--amber-dark"); r.style.removeProperty("--amber-soft"); }
+    if (!silent) markDirty();
+  }
+  function currentColor(v) { return overrides[v] || defaults[v] || "#000000"; }
 
-  function renderToolbar() {
-    // Locale segment
-    var seg = document.getElementById("localeSeg");
-    seg.innerHTML = "";
-    LOCALES.forEach(function (l) {
-      seg.appendChild(el("button", {
-        class: "cms-seg-btn" + (S.locale === l.code ? " is-active" : ""),
-        title: "Váltás: " + l.label,
-        onclick: function () { S.locale = l.code; renderAll(); },
-      }, l.flag + " " + l.code.toUpperCase()));
+  function buildColorRows() {
+    var wrap = document.getElementById("colorRows");
+    wrap.innerHTML = "";
+    COLORS.forEach(function (c) {
+      var row = el("div", { class: "color-row" });
+      var custom = overrides[c.v] != null;
+      row.appendChild(el("div", { class: "top" }, [
+        el("label", null, c.label),
+        custom ? el("button", { class: "reset", onclick: function () { var prev = overrides[c.v]; clearColor(c.v); pushOp({ type:"color", v:c.v, prev: prev, next: null }); buildColorRows(); } }, "alap") : null,
+      ]));
+      var color = el("input", { type: "color", value: normHex(currentColor(c.v)) });
+      var text = el("input", { type: "text", value: overrides[c.v] || "", placeholder: defaults[c.v] || "" });
+      color.addEventListener("input", function () { var prev = overrides[c.v] != null ? overrides[c.v] : null; setColor(c.v, color.value); text.value = color.value; scheduleColorOp(c.v, prev, color.value); });
+      text.addEventListener("input", function () { var prev = overrides[c.v] != null ? overrides[c.v] : null; if (text.value.trim()) { setColor(c.v, text.value.trim()); if (isHex(text.value.trim())) color.value = text.value.trim(); } else clearColor(c.v); scheduleColorOp(c.v, prev, text.value.trim() || null); });
+      row.appendChild(el("div", { class: "inputs" }, [color, text]));
+      row.appendChild(el("p", { class: "desc" }, c.hint));
+      wrap.appendChild(row);
     });
+  }
+  function normHex(v){ v=(v||"").trim(); return isHex(v) ? (v.length===4 ? "#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3] : v) : "#000000"; }
+  function syncColorInputs(){ if (showColors) buildColorRows(); }
+  var colorOpTimer = null, pendingColor = null;
+  function scheduleColorOp(v, prev, next) { pendingColor = { type:"color", v:v, prev: prev, next: next }; clearTimeout(colorOpTimer); colorOpTimer = setTimeout(function(){ if (pendingColor) { pushOp(pendingColor); pendingColor = null; } }, 450); }
 
-    // View segment
-    var vseg = document.getElementById("viewSeg");
-    vseg.innerHTML = "";
-    [["live", "Élő szerkesztés"], ["layout", "Elrendezés"], ["form", "Lista"]].forEach(function (v) {
-      vseg.appendChild(el("button", {
-        class: "cms-seg-btn" + (S.view === v[0] ? " is-active" : ""),
-        onclick: function () { S.view = v[0]; if (v[0] !== "live") S.showColors = false; renderAll(); },
-      }, v[1]));
-    });
-
-    // Live tools
-    var tools = document.getElementById("liveTools");
-    tools.innerHTML = "";
-    if (S.view === "live") {
-      tools.appendChild(toolBtn("🎨 Színek", "#ec4899", S.showColors, function () { S.showColors = !S.showColors; renderAll(); }));
-      tools.appendChild(toolBtn("📐 Átrendezés", "#8b5cf6", S.overlay === "layout", function () {
-        S.overlay = S.overlay === "layout" ? "edit" : "layout"; renderAll();
-      }));
-      tools.appendChild(toolBtn("🎯 Szabad pozíció", "#0ea5e9", S.overlay === "freeform", function () {
-        S.overlay = S.overlay === "freeform" ? "edit" : "freeform"; renderAll();
-      }));
-      if (S.overlay === "freeform" && S.heroPos) {
-        tools.appendChild(el("button", { class: "cms-tool", title: "Pozíció visszaállítása",
-          onclick: function () { if (confirm("Szabad pozíció törlése? Az elem visszaáll a helyére.")) { S.heroPos = null; renderAll(); } } }, "↺ pozíció"));
+  // ── Inline text editing inside the iframe ────────────────────
+  var EDIT_TAGS = { H1:1,H2:1,H3:1,H4:1,H5:1,H6:1,P:1,SPAN:1,A:1,LI:1,BUTTON:1,STRONG:1,EM:1,B:1,SMALL:1,BLOCKQUOTE:1,FIGCAPTION:1,LABEL:1,TD:1,TH:1,DT:1,DD:1 };
+  function editableFrom(node) {
+    var e = node, d = doc();
+    while (e && e !== d.body) {
+      if (EDIT_TAGS[e.tagName]) {
+        var elemChildren = 0;
+        for (var i=0;i<e.children.length;i++) if (!/^(BR|WBR|B|I|EM|STRONG|SMALL|SUP|SUB)$/.test(e.children[i].tagName)) elemChildren++;
+        if (elemChildren === 0 && e.textContent.trim()) return e;
       }
-      tools.appendChild(toolBtn("📱 Mobil", "#f59e0b", S.mobile, function () { S.mobile = !S.mobile; renderAll(); }));
-      tools.appendChild(el("button", { class: "cms-icon-btn", title: "Előnézet frissítése",
-        onclick: function () { S.data = mergeSeed(); renderAll(); toast("info", "↻", "Előnézet frissítve."); } }, "↻"));
+      e = e.parentElement;
     }
-    refreshUndoButtons();
+    e = node;
+    while (e && e !== d.body) { if (/^(H1|H2|H3|H4|H5|H6|P|LI|BUTTON|A)$/.test(e.tagName) && e.textContent.trim()) return e; e = e.parentElement; }
+    return null;
   }
-  function toolBtn(label, acc, active, onclick) {
-    var b = el("button", { class: "cms-tool" + (active ? " is-active" : ""), onclick: onclick }, label);
-    b.style.setProperty("--acc", acc);
-    return b;
-  }
-  function mergeSeed() {
-    // "reload" keeps edited values (like the real iframe reload) — no-op merge kept simple
-    return S.data;
-  }
-
-  function updateDirtyUI() {
-    var changed = countChanged();
-    var info = document.getElementById("dirtyInfo");
-    var bits = [];
-    if (changed.fields) bits.push("· " + changed.fields + " módosított mező");
-    if (changed.layout) bits.push("· elrendezés módosítva");
-    if (changed.theme) bits.push("· színek módosítva");
-    info.textContent = bits.length ? " " + bits.join(" ") : "";
-    var save = document.getElementById("saveBtn");
-    save.classList.toggle("is-dirty", !!(changed.fields || changed.layout || changed.theme));
-  }
-  function countChanged() {
-    var base = seed(), out = { fields: 0, layout: 0, theme: 0 };
-    Object.keys(base).forEach(function (k) {
-      LOCALES.forEach(function (l) { if ((S.data[k] && S.data[k][l.code]) !== base[k][l.code]) out.fields++; });
-    });
-    // services/stats count changes coarsely
-    if (JSON.stringify(S.services) !== JSON.stringify(seedServices())) out.fields++;
-    if (JSON.stringify(S.stats) !== JSON.stringify(seedStats())) out.fields++;
-    out.theme = Object.keys(S.theme).length;
-    var fresh = freshState();
-    if (JSON.stringify(S.order) !== JSON.stringify(fresh.order) ||
-        Object.keys(S.hidden).length || Object.keys(S.added).length || S.heroPos) out.layout = 1;
-    return out;
-  }
-
-  function renderMain() {
-    var main = document.getElementById("main");
-    main.innerHTML = "";
-    document.getElementById("app").classList.toggle("overlay-layout", S.view === "live" && S.overlay === "layout");
-    document.getElementById("app").classList.toggle("overlay-freeform", S.view === "live" && S.overlay === "freeform");
-    if (S.view === "live") main.appendChild(renderLive());
-    else if (S.view === "layout") main.appendChild(renderLayoutView());
-    else main.appendChild(renderFormView());
-  }
-
-  // ── LIVE preview ─────────────────────────────────────────────
-  function renderLive() {
-    var stage = el("div", { class: "stage" });
-    var frame = el("div", { class: "frame" + (S.mobile ? " mobile" : "") });
-    frame.appendChild(el("div", { class: "frame-bar" }, [
-      el("i"), el("i"), el("i"),
-      el("div", { class: "url" }, "portfolio.maydayprod.app"),
-    ]));
-
-    var site = el("div", { class: "site" + (S.overlay === "edit" ? " editing" : "") });
-    applyThemeVars(site);
-
-    S.order.forEach(function (id) {
-      if (S.hidden[id]) return;
-      var sec = renderSection(id);
-      if (sec) site.appendChild(sec);
-    });
-
-    frame.appendChild(site);
-    stage.appendChild(frame);
-
-    if (S.overlay === "layout") enableSectionDrag(site);
-    if (S.overlay === "freeform") enableFreeform(site);
-    return stage;
-  }
-
-  function applyThemeVars(node) {
-    THEME_KEYS.forEach(function (t) { node.style.setProperty("--" + t.key, themeVal(t.key)); });
-  }
-
-  function editable(tag, key, opts) {
-    opts = opts || {};
-    var e = el(tag, { class: opts.class || "", "data-key": key });
-    e.textContent = L(S.data[key]);
-    if (S.view === "live" && S.overlay === "edit") {
-      e.addEventListener("click", function (ev) { ev.preventDefault(); startInline(e, key); });
-    }
-    return e;
-  }
-  function startInline(node, key) {
-    if (node.getAttribute("contenteditable") === "true") return;
+  function startEdit(target) {
+    var node = editableFrom(target);
+    if (!node) return false;
+    if (node.getAttribute("contenteditable") === "true") return true;
+    var before = node.textContent;
     node.setAttribute("contenteditable", "true");
-    node.classList.add("is-active");
     node.focus();
-    // place caret at end
-    var r = document.createRange(); r.selectNodeContents(node); r.collapse(false);
-    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    try { var range = doc().createRange(); range.selectNodeContents(node); range.collapse(false); var sel = frame.contentWindow.getSelection(); sel.removeAllRanges(); sel.addRange(range); } catch (_) {}
     function commit() {
       node.removeAttribute("contenteditable");
-      node.classList.remove("is-active");
-      var val = node.textContent.trim();
-      if (!S.data[key]) S.data[key] = {};
-      S.data[key][S.locale] = val;
-      node.removeEventListener("blur", commit);
-      node.removeEventListener("keydown", onKey);
-      updateDirtyUI(); pushHistory();
+      node.removeEventListener("blur", commit); node.removeEventListener("keydown", onKey);
+      var after = node.textContent;
+      if (after !== before) pushOp({ type:"text", el: node, prev: before, next: after });
     }
     function onKey(ev) {
-      if (ev.key === "Enter" && node.tagName !== "P") { ev.preventDefault(); node.blur(); }
-      if (ev.key === "Escape") { node.textContent = L(S.data[key]); node.blur(); }
+      if (ev.key === "Escape") { node.textContent = before; node.blur(); }
+      if (ev.key === "Enter" && !/^(P|LI|DIV|TD)$/.test(node.tagName)) { ev.preventDefault(); node.blur(); }
     }
     node.addEventListener("blur", commit);
     node.addEventListener("keydown", onKey);
+    return true;
   }
 
-  function renderSection(id) {
-    if (S.added[id]) return renderAddedSection(id);
-    switch (id) {
-      case "hero": return secHero();
-      case "services": return secServices();
-      case "localai": return secLocalAI();
-      case "about": return secAbout();
-      case "contact": return secContact();
+  // ── Section reorder inside the iframe ────────────────────────
+  var dragEl = null, orderBefore = null;
+  function sections() { return Array.prototype.slice.call(doc().body.querySelectorAll("section")); }
+  function currentOrder() { return sections().map(function (s) { return s.id || ""; }); }
+  function reorderTo(order) {
+    var map = {}, first = null;
+    sections().forEach(function (s) { if (s.id) map[s.id] = s; });
+    for (var i=0;i<order.length;i++){ if (map[order[i]]) { first = map[order[i]]; break; } }
+    if (!first) return;
+    var parent = first.parentNode;
+    order.forEach(function (id) { if (map[id]) parent.appendChild(map[id]); });
+  }
+  function enableReorder() {
+    doc().body.classList.add("__ed-reorder");
+    sections().forEach(function (sec) {
+      sec.setAttribute("draggable", "true");
+      if (doc().defaultView.getComputedStyle(sec).position === "static") { sec.style.position = "relative"; sec.dataset.edPos = "1"; }
+      if (!sec.querySelector(".__ed-handle")) { var h = doc().createElement("div"); h.className = "__ed-handle"; h.textContent = "⠿ " + sectionLabel(sec); sec.appendChild(h); }
+      sec.addEventListener("dragstart", onDragStart); sec.addEventListener("dragover", onDragOver);
+      sec.addEventListener("dragleave", onDragLeave); sec.addEventListener("drop", onDrop); sec.addEventListener("dragend", onDragEnd);
+    });
+  }
+  function disableReorder() {
+    if (!doc().body) return;
+    doc().body.classList.remove("__ed-reorder");
+    sections().forEach(function (sec) {
+      sec.removeAttribute("draggable");
+      if (sec.dataset.edPos) { sec.style.position = ""; delete sec.dataset.edPos; }
+      var h = sec.querySelector(".__ed-handle"); if (h) h.remove();
+      sec.removeEventListener("dragstart", onDragStart); sec.removeEventListener("dragover", onDragOver);
+      sec.removeEventListener("dragleave", onDragLeave); sec.removeEventListener("drop", onDrop); sec.removeEventListener("dragend", onDragEnd);
+    });
+  }
+  function sectionLabel(sec) { var h = sec.querySelector("h1,h2,h3"); var t = h ? h.textContent.trim() : (sec.id || "szekció"); return t.length > 24 ? t.slice(0, 22) + "…" : t; }
+  function onDragStart(e) { dragEl = e.currentTarget; orderBefore = currentOrder(); e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", dragEl.id || "x"); } catch(_){} dragEl.style.opacity = ".5"; }
+  function onDragOver(e) { e.preventDefault(); e.currentTarget.style.boxShadow = "inset 0 5px 0 #8b5cf6"; }
+  function onDragLeave(e) { e.currentTarget.style.boxShadow = ""; }
+  function onDrop(e) {
+    e.preventDefault(); e.currentTarget.style.boxShadow = "";
+    var target = e.currentTarget;
+    if (!dragEl || dragEl === target) return;
+    target.parentNode.insertBefore(dragEl, target);
+    var after = currentOrder();
+    if (JSON.stringify(after) !== JSON.stringify(orderBefore)) pushOp({ type:"move", before: orderBefore, after: after });
+  }
+  function onDragEnd() { if (dragEl) dragEl.style.opacity = ""; sections().forEach(function(s){ s.style.boxShadow=""; }); dragEl = null; }
+
+  // ── Inject edit affordances + delegated click into the iframe ─
+  function injectEditing() {
+    var d = doc();
+    if (!d.getElementById("__ed-style")) {
+      var st = d.createElement("style"); st.id = "__ed-style";
+      st.textContent =
+        ".ed-on :is(h1,h2,h3,h4,h5,h6,p,span,a,li,button,strong,em,small,blockquote,figcaption,td,th):hover{outline:2px dashed #2563eb;outline-offset:2px;cursor:text}" +
+        "[contenteditable='true']{outline:2px solid #2563eb !important;cursor:text;background:rgba(37,99,235,.06)}" +
+        ".__ed-reorder section{outline:1.5px dashed rgba(139,92,246,.6);outline-offset:-2px;cursor:grab}" +
+        ".__ed-handle{position:absolute;top:8px;left:8px;z-index:9;display:inline-flex;align-items:center;gap:6px;font:600 11px/1 -apple-system,Segoe UI,Roboto,sans-serif;color:#fff;background:rgba(139,92,246,.94);border-radius:8px;padding:5px 9px;box-shadow:0 6px 16px -6px rgba(0,0,0,.5);pointer-events:none}";
+      d.head.appendChild(st);
     }
-    return null;
-  }
-
-  function secWrap(id, cls, inner) {
-    var s = el("section", { class: "sec " + cls, "data-section": id });
-    s.appendChild(handleFor(id));
-    (Array.isArray(inner) ? inner : [inner]).forEach(function (n) { if (n) s.appendChild(n); });
-    return s;
-  }
-  function handleFor(id) {
-    return el("div", { class: "sec-handle", title: "Húzd a szekció áthelyezéséhez", draggable: "false" },
-      "⠿ " + L(SECTION_LABELS[id] || { hu: "Szekció" }));
-  }
-
-  function secHero() {
-    var nav = el("nav", { class: "topbar" }, [
-      el("div", { class: "brand" }, [el("span", { class: "logo" }), editSpan("nav_brand")]),
-      el("div", { class: "navlinks hide-sm" }, [
-        el("span", null, L(SECTION_LABELS.services)), el("span", null, L(SECTION_LABELS.about)), el("span", null, L(SECTION_LABELS.contact)),
-      ]),
-    ]);
-    var hero = el("div", { class: "container" }, [
-      editable("span", "hero_eyebrow", { class: "eyebrow" }),
-      editable("h1", "hero_title"),
-      editable("p", "hero_sub", { class: "sub" }),
-      ctaEl(),
-    ]);
-    var heroSec = el("div", { class: "hero" }, hero);
-    return secWrap("hero", "", [nav, heroSec]);
-  }
-  function editSpan(key) {
-    // inline editable span used inside composite elements
-    return editable("span", key);
-  }
-  function ctaEl() {
-    var a = el("a", { class: "cta", href: "#", "data-key": "hero_cta" }, L(S.data.hero_cta));
-    if (S.view === "live" && S.overlay === "edit") a.addEventListener("click", function (ev) { ev.preventDefault(); startInline(a, "hero_cta"); });
-    else a.addEventListener("click", function (ev) { ev.preventDefault(); });
-    if (S.heroPos) { a.style.position = "relative"; a.style.left = S.heroPos.x + "px"; a.style.top = S.heroPos.y + "px"; }
-    return a;
-  }
-
-  function secServices() {
-    var cards = el("div", { class: "cards" });
-    S.services.forEach(function (sv) {
-      cards.appendChild(el("div", { class: "card" }, [
-        el("div", { class: "ico" }, sv.ico),
-        svcEdit("h3", sv, "title"),
-        svcEdit("p", sv, "desc"),
-      ]));
-    });
-    return secWrap("services", "services", el("div", { class: "container" }, [
-      editable("h2", "svc_title"),
-      editable("p", "svc_intro", { class: "intro" }),
-      cards,
-    ]));
-  }
-  function svcEdit(tag, sv, field) {
-    var e = el(tag, null, L(sv[field]));
-    if (S.view === "live" && S.overlay === "edit") {
-      e.style.cursor = "text";
-      e.addEventListener("mouseenter", function () { e.style.outline = "1.5px dashed #2563eb"; e.style.outlineOffset = "3px"; });
-      e.addEventListener("mouseleave", function () { if (e.getAttribute("contenteditable") !== "true") e.style.outline = "none"; });
-      e.addEventListener("click", function () {
-        e.setAttribute("contenteditable", "true"); e.focus();
-        function commit() { e.removeAttribute("contenteditable"); e.style.outline = "none"; sv[field][S.locale] = e.textContent.trim(); e.removeEventListener("blur", commit); updateDirtyUI(); pushHistory(); }
-        e.addEventListener("blur", commit);
-      });
+    if (!d.__edBound) {
+      d.addEventListener("click", function (e) {
+        if (mode !== "edit") return;
+        if (startEdit(e.target)) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
+      d.__edBound = true;
     }
-    return e;
+    setModeClass();
+  }
+  function setModeClass() {
+    if (!ready) return;
+    root().classList.toggle("ed-on", mode === "edit");
+    if (mode === "reorder") enableReorder(); else disableReorder();
   }
 
-  function secLocalAI() {
-    var models = ["Llama", "Mistral", "Whisper", "Stable Diffusion", "Ollama"];
-    var chips = el("div", { class: "chips" }, models.map(function (m, i) {
-      return el("span", i === 0 ? { class: "acc" } : null, m);
-    }));
-    return secWrap("localai", "localai", el("div", { class: "container" }, [
-      editable("h2", "localai_title"),
-      editable("p", "localai_text"),
-      chips,
-    ]));
+  // ── Toolbar rendering ────────────────────────────────────────
+  function renderTools() {
+    toolsEl.innerHTML = "";
+    toolsEl.appendChild(toolBtn("🎨 Színek", "#ec4899", showColors, function () { showColors = !showColors; renderColors(); renderTools(); }));
+    toolsEl.appendChild(toolBtn("📐 Átrendezés", "#8b5cf6", mode === "reorder", function () { mode = mode === "reorder" ? "edit" : "reorder"; setModeClass(); renderTools(); }));
+    toolsEl.appendChild(toolBtn("📱 Mobil", "#f59e0b", mobile, function () { mobile = !mobile; stage.classList.toggle("mobile", mobile); renderTools(); }));
+    toolsEl.appendChild(el("button", { class: "cms-icon-btn", title: "Előnézet újratöltése (visszaáll az eredeti)", onclick: reloadFrame }, "↻"));
   }
-
-  function secAbout() {
-    return secWrap("about", "about", el("div", { class: "container" }, [
-      editable("h2", "about_title"),
-      editable("p", "about_text"),
-    ]));
-  }
-
-  function secContact() {
-    var email = el("a", { class: "email", href: "#", "data-key": "contact_email" }, L(S.data.contact_email));
-    if (S.view === "live" && S.overlay === "edit") email.addEventListener("click", function (ev) { ev.preventDefault(); startInline(email, "contact_email"); });
-    else email.addEventListener("click", function (ev) { ev.preventDefault(); });
-    var contact = el("div", { class: "contact" }, el("div", { class: "container" }, [
-      editable("h2", "contact_title"),
-      editable("p", "contact_text"),
-      email,
-    ]));
-    var foot = el("footer", null, editable("span", "foot"));
-    return secWrap("contact", "", [contact, foot]);
-  }
-
-  function renderAddedSection(id) {
-    var meta = S.added[id];
-    var body;
-    if (meta.tpl === "reviews") {
-      body = el("div", { class: "cards" }, [1, 2, 3].map(function (i) {
-        return el("div", { class: "card" }, [
-          el("p", { html: "„Gyors, pontos, korrekt. A pontfelhő azonnal használható volt." }),
-          el("h3", { style: "margin-top:12px;font-size:15px" }, "Ügyfél " + i + "."),
-        ]);
-      }));
-    } else if (meta.tpl === "faq") {
-      body = el("div", null, [
-        faqItem("Mennyi idő egy felmérés?", "A terület méretétől függően jellemzően 1–2 nap, plusz feldolgozás."),
-        faqItem("Milyen formátumban kapom az adatot?", "LAS/LAZ pontfelhő, GeoTIFF, DXF és igény szerint IFC/BIM."),
-      ]);
-    } else {
-      body = el("div", { class: "cards" }, [1, 2, 3, 4].map(function () {
-        return el("div", { class: "card", style: "aspect-ratio:4/3;background:color-mix(in srgb,var(--accent) 25%,var(--bg2))" });
-      }));
-    }
-    return secWrap(id, "services", el("div", { class: "container" }, [
-      el("h2", null, L(meta.label)),
-      body,
-    ]));
-  }
-  function faqItem(q, a) {
-    return el("div", { style: "border-bottom:1px solid rgba(0,0,0,.08);padding:14px 0" }, [
-      el("h3", { style: "margin:0 0 6px;font-size:17px" }, q),
-      el("p", { style: "margin:0;color:var(--muted)" }, a),
-    ]);
-  }
-
-  // ── Section drag (layout overlay) ────────────────────────────
-  function enableSectionDrag(site) {
-    var dragId = null;
-    site.querySelectorAll("[data-section]").forEach(function (node) {
-      var handle = node.querySelector(".sec-handle");
-      node.setAttribute("draggable", "false");
-      handle.setAttribute("draggable", "true");
-      handle.addEventListener("dragstart", function (e) { dragId = node.getAttribute("data-section"); node.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragId); });
-      handle.addEventListener("dragend", function () { node.classList.remove("dragging"); site.querySelectorAll(".drag-over").forEach(function (n) { n.classList.remove("drag-over"); }); });
-      node.addEventListener("dragover", function (e) { e.preventDefault(); node.classList.add("drag-over"); });
-      node.addEventListener("dragleave", function () { node.classList.remove("drag-over"); });
-      node.addEventListener("drop", function (e) {
-        e.preventDefault(); node.classList.remove("drag-over");
-        var targetId = node.getAttribute("data-section");
-        if (!dragId || dragId === targetId) return;
-        var from = S.order.indexOf(dragId), to = S.order.indexOf(targetId);
-        S.order.splice(from, 1); S.order.splice(to, 0, dragId);
-        renderAll();
-      });
-    });
-  }
-
-  // ── Freeform drag of the hero CTA ────────────────────────────
-  function enableFreeform(site) {
-    var cta = site.querySelector(".cta");
-    if (!cta) return;
-    cta.style.position = "relative";
-    var startX, startY, ox, oy, dragging = false;
-    cta.addEventListener("pointerdown", function (e) {
-      e.preventDefault(); dragging = true; cta.setPointerCapture(e.pointerId);
-      startX = e.clientX; startY = e.clientY;
-      ox = (S.heroPos && S.heroPos.x) || 0; oy = (S.heroPos && S.heroPos.y) || 0;
-    });
-    cta.addEventListener("pointermove", function (e) {
-      if (!dragging) return;
-      var nx = ox + (e.clientX - startX), ny = oy + (e.clientY - startY);
-      cta.style.left = nx + "px"; cta.style.top = ny + "px";
-      S.heroPos = { x: Math.round(nx), y: Math.round(ny) };
-    });
-    cta.addEventListener("pointerup", function () { if (dragging) { dragging = false; renderToolbar(); updateDirtyUI(); pushHistory(); } });
-  }
-
-  // ── LAYOUT view (section list + catalog) ─────────────────────
-  function renderLayoutView() {
-    var panel = el("div", { class: "panel" });
-
-    var secCard = el("div", { class: "cms-card" });
-    secCard.appendChild(el("h2", null, "Szekciók sorrendje és láthatósága"));
-    secCard.appendChild(el("p", { class: "subtle", style: "margin:-8px 0 14px" }, "Húzd a fogantyút az átrendezéshez, vagy használd a nyilakat. A szemmel elrejtheted a szekciót az oldalról."));
-    var list = el("div");
-    S.order.forEach(function (id, i) {
-      var label = S.added[id] ? L(S.added[id].label) + " · beszúrt" : L(SECTION_LABELS[id]);
-      var row = el("div", { class: "lay-row" + (S.hidden[id] ? " hidden-sec" : ""), draggable: "true", "data-lid": id }, [
-        el("span", { class: "grip" }, "⠿"),
-        el("span", { class: "name" }, label),
-        el("button", { class: "mini", title: "Fel", disabled: i === 0 ? "" : null, onclick: function () { moveSection(id, -1); } }, "▲"),
-        el("button", { class: "mini", title: "Le", disabled: i === S.order.length - 1 ? "" : null, onclick: function () { moveSection(id, 1); } }, "▼"),
-        el("button", { class: "mini", title: S.hidden[id] ? "Megjelenítés" : "Elrejtés", onclick: function () { if (S.hidden[id]) delete S.hidden[id]; else S.hidden[id] = true; renderAll(); } }, S.hidden[id] ? "🙈" : "👁"),
-        S.added[id] ? el("button", { class: "mini", title: "Törlés", onclick: function () { if (confirm("Törlöd ezt a beszúrt szekciót?")) { S.order = S.order.filter(function (x) { return x !== id; }); delete S.added[id]; delete S.hidden[id]; renderAll(); } } }, "🗑") : null,
-      ]);
-      list.appendChild(row);
-    });
-    enableRowDrag(list);
-    secCard.appendChild(list);
-
-    // Catalog
-    secCard.appendChild(el("p", { class: "subtle", style: "margin:16px 0 4px" }, "Új szekció beszúrása:"));
-    var cat = el("div", { class: "catalog" });
-    CATALOG.forEach(function (c) {
-      cat.appendChild(el("button", { onclick: function () { addSection(c); } }, "＋ " + L(c.label)));
-    });
-    secCard.appendChild(cat);
-    panel.appendChild(secCard);
-
-    // Services list management
-    var svcCard = el("div", { class: "cms-card" });
-    svcCard.appendChild(el("h2", null, "Szolgáltatás-kártyák"));
-    S.services.forEach(function (sv, i) {
-      svcCard.appendChild(el("div", { class: "lay-row" }, [
-        el("span", { class: "grip" }, sv.ico),
-        el("span", { class: "name" }, L(sv.title)),
-        el("button", { class: "mini", title: "Fel", disabled: i === 0 ? "" : null, onclick: function () { var a = S.services; a.splice(i - 1, 0, a.splice(i, 1)[0]); renderAll(); } }, "▲"),
-        el("button", { class: "mini", title: "Le", disabled: i === S.services.length - 1 ? "" : null, onclick: function () { var a = S.services; a.splice(i + 1, 0, a.splice(i, 1)[0]); renderAll(); } }, "▼"),
-        el("button", { class: "mini", title: "Törlés", onclick: function () { S.services.splice(i, 1); renderAll(); } }, "🗑"),
-      ]));
-    });
-    svcCard.appendChild(el("button", { class: "addbtn", style: "margin-top:6px", onclick: addService }, "＋ Új szolgáltatás-kártya"));
-    panel.appendChild(svcCard);
-
-    return panel;
-  }
-  function moveSection(id, dir) {
-    var i = S.order.indexOf(id), j = i + dir;
-    if (j < 0 || j >= S.order.length) return;
-    S.order.splice(j, 0, S.order.splice(i, 1)[0]);
-    renderAll();
-  }
-  function enableRowDrag(list) {
-    var dragId = null;
-    list.querySelectorAll("[data-lid]").forEach(function (row) {
-      row.addEventListener("dragstart", function (e) { dragId = row.getAttribute("data-lid"); e.dataTransfer.effectAllowed = "move"; });
-      row.addEventListener("dragover", function (e) { e.preventDefault(); row.classList.add("drag-over"); });
-      row.addEventListener("dragleave", function () { row.classList.remove("drag-over"); });
-      row.addEventListener("drop", function (e) {
-        e.preventDefault(); row.classList.remove("drag-over");
-        var tId = row.getAttribute("data-lid");
-        if (!dragId || dragId === tId) return;
-        var from = S.order.indexOf(dragId), to = S.order.indexOf(tId);
-        S.order.splice(from, 1); S.order.splice(to, 0, dragId);
-        renderAll();
-      });
-    });
-  }
-  function addSection(c) {
-    var id = "sec_" + Math.abs(hash(c.tpl + S.order.length + Object.keys(S.added).length));
-    S.added[id] = { tpl: c.tpl, label: c.label };
-    S.order.push(id);
-    renderAll();
-    toast("ok", "＋", "„" + L(c.label) + "" + "" + "" + "" + "” szekció beszúrva — rendezd át és mentsd el.");
-  }
-  function addService() {
-    var n = S.services.length + 1;
-    S.services.push({ id: "svc_" + n + "_" + Math.abs(hash("" + n + Date0())), ico: "✨",
-      title: { hu: "Új szolgáltatás", en: "New service", it: "Nuovo servizio" },
-      desc: { hu: "Írd át a leírást a Lista nézetben vagy az élő előnézeten.", en: "Edit this text in the List view or in the live preview.", it: "Modifica questo testo nella vista Elenco o nell'anteprima." } });
-    renderAll();
-  }
-  function hash(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; } return h; }
-  var _seq = 0; function Date0() { return (_seq++); } // deterministic id source (no Date/random)
-
-  // ── FORM view (grouped fields + colors) ──────────────────────
-  function renderFormView() {
-    var panel = el("div", { class: "panel" });
-
-    // colors first (like the real form view)
-    var colorCard = el("div", { class: "cms-card" });
-    colorCard.appendChild(el("h2", null, "Téma színek"));
-    colorCard.appendChild(colorGrid());
-    panel.appendChild(colorCard);
-
-    var groups = [
-      ["Fejléc + hero", [["nav_brand", "Márkanév", "text"], ["hero_eyebrow", "Felső címke", "text"], ["hero_title", "Cím", "textarea"], ["hero_sub", "Alcím", "textarea"], ["hero_cta", "Gomb felirata", "text"]]],
-      ["Szolgáltatások (szöveg)", [["svc_title", "Cím", "text"], ["svc_intro", "Bevezető", "textarea"]]],
-      ["Rólunk", [["about_title", "Cím", "text"], ["about_text", "Szöveg", "textarea"]]],
-      ["Kapcsolat + lábléc", [["contact_title", "Cím", "text"], ["contact_text", "Szöveg", "textarea"], ["contact_email", "E-mail", "text"], ["foot", "Lábléc", "text"]]],
-    ];
-    groups.forEach(function (g) {
-      var card = el("div", { class: "cms-card" });
-      card.appendChild(el("h2", null, g[0]));
-      g[1].forEach(function (f) { card.appendChild(fieldEditor(f[0], f[1], f[2])); });
-      panel.appendChild(card);
-    });
-
-    // services text editor
-    var sc = el("div", { class: "cms-card" });
-    sc.appendChild(el("h2", null, "Szolgáltatás-kártyák szövege"));
-    S.services.forEach(function (sv) {
-      sc.appendChild(el("div", { style: "border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;margin-bottom:12px" }, [
-        listField(sv, "title", "Kártya címe", "text"),
-        listField(sv, "desc", "Kártya leírása", "textarea"),
-      ]));
-    });
-    panel.appendChild(sc);
-
-    return panel;
-  }
-  function fieldEditor(key, label, type) {
-    var wrap = el("div", { class: "field" });
-    wrap.appendChild(el("label", null, label + " · " + S.locale.toUpperCase()));
-    var input = el(type === "textarea" ? "textarea" : "input", { value: type === "textarea" ? null : L(S.data[key]) });
-    if (type === "textarea") { input.rows = 3; input.value = L(S.data[key]); }
-    input.addEventListener("input", function () { if (!S.data[key]) S.data[key] = {}; S.data[key][S.locale] = input.value; updateDirtyUI(); pushHistory(); });
-    wrap.appendChild(input);
-    return wrap;
-  }
-  function listField(obj, field, label, type) {
-    var wrap = el("div", { class: "field" });
-    wrap.appendChild(el("label", null, label + " · " + S.locale.toUpperCase()));
-    var input = el(type === "textarea" ? "textarea" : "input", {});
-    input.value = L(obj[field]);
-    if (type === "textarea") input.rows = 2;
-    input.addEventListener("input", function () { obj[field][S.locale] = input.value; updateDirtyUI(); pushHistory(); });
-    wrap.appendChild(input);
-    return wrap;
-  }
-
-  // ── Colors (side sheet + form grid share the row builder) ────
-  function colorGrid() {
-    var grid = el("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px" });
-    THEME_KEYS.forEach(function (t) { grid.appendChild(colorRow(t)); });
-    return grid;
-  }
-  function colorRow(t) {
-    var cur = themeVal(t.key);
-    var custom = !!S.theme[t.key];
-    var row = el("div", { class: "color-row" });
-    var top = el("div", { class: "top" }, [
-      el("label", null, t.label),
-      custom ? el("button", { class: "reset", title: "Vissza az alap színre", onclick: function () { delete S.theme[t.key]; renderAll(); } }, "alap") : null,
-    ]);
-    var color = el("input", { type: "color", value: cur });
-    var text = el("input", { type: "text", value: S.theme[t.key] || "", placeholder: t.def });
-    color.addEventListener("input", function () { S.theme[t.key] = color.value; text.value = color.value; liveTheme(); scheduleDirty(); });
-    text.addEventListener("input", function () { if (text.value.trim()) S.theme[t.key] = text.value.trim(); else delete S.theme[t.key]; liveTheme(); scheduleDirty(); });
-    row.appendChild(top);
-    row.appendChild(el("div", { class: "inputs" }, [color, text]));
-    row.appendChild(el("p", { class: "desc" }, t.hint));
-    return row;
-  }
-  function liveTheme() {
-    // repaint the preview instantly without a full re-render (keeps color focus)
-    var site = document.querySelector(".site");
-    if (site) applyThemeVars(site);
-    updateDirtyUI();
-  }
-  var dirtyTimer = null;
-  function scheduleDirty() { clearTimeout(dirtyTimer); dirtyTimer = setTimeout(pushHistory, 400); }
-
   function renderColors() {
     var sheet = document.getElementById("colorSheet");
-    var show = S.showColors && S.view === "live";
-    sheet.classList.toggle("sr-hide", !show);
-    if (!show) return;
-    var rows = document.getElementById("colorRows");
-    rows.innerHTML = "";
-    rows.appendChild(colorGrid());
+    sheet.classList.toggle("sr-hide", !showColors);
+    if (showColors) buildColorRows();
   }
 
   // ── Save / Publish (mock) ────────────────────────────────────
-  function doSave(silent) {
-    savedSnapshot = snapshotObj();
-    S.lastSavedAt = Date0();
-    updateDirtyUI();
-    setStatus("ok", "Mentve (" + S.locale.toUpperCase() + ").");
-    if (!silent) toast("ok", "💾", "Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek.");
-    return true;
-  }
-  function doPublish() {
-    doSave(true);
-    setStatus("info", "Publikálás elindítva (" + S.locale.toUpperCase() + ").");
-    toast("info", "🚀", "Publikálás elindítva (demó). Az éles rendszerben a weboldal kb. 1 perc múlva frissülne.");
-  }
-  var statusTimer = null;
-  function setStatus(kind, txt) {
-    var slot = document.getElementById("statusSlot");
-    slot.innerHTML = "";
-    slot.appendChild(el("span", { class: "status-txt " + kind }, txt));
-    clearTimeout(statusTimer);
-    statusTimer = setTimeout(function () { slot.innerHTML = ""; }, 4000);
-  }
+  function setStatus(kind, txt) { var s = document.getElementById("statusSlot"); s.innerHTML = ""; s.appendChild(el("span", { class: "status-txt " + kind }, txt)); clearTimeout(setStatus._t); setStatus._t = setTimeout(function(){ s.innerHTML = ""; }, 4000); }
+  function doSave(silent) { savedIdx = opIdx; savedColors = JSON.stringify(overrides); markDirty(); setStatus("ok", "Mentve."); if (!silent) toast("ok", "💾", "Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek."); }
+  function doPublish() { doSave(true); setStatus("info", "Publikálás elindítva."); toast("info", "🚀", "Publikálás elindítva (demó). Az éles rendszerben az oldal kb. 1 perc múlva frissülne."); }
 
-  function toast(kind, ic, msg) {
-    var wrap = document.getElementById("toasts");
-    var t = el("div", { class: "toast " + kind }, [el("span", { class: "ic" }, ic), el("span", null, msg)]);
-    wrap.appendChild(t);
-    setTimeout(function () { t.style.transition = "opacity .3s, transform .3s"; t.style.opacity = "0"; t.style.transform = "translateY(8px)"; setTimeout(function () { t.remove(); }, 320); }, 3200);
+  function toast(kind, ic, msg) { var w = document.getElementById("toasts"); var t = el("div", { class: "toast " + kind }, [el("span", null, ic), el("span", null, msg)]); w.appendChild(t); setTimeout(function(){ t.style.transition = "opacity .3s, transform .3s"; t.style.opacity = "0"; t.style.transform = "translateY(8px)"; setTimeout(function(){ t.remove(); }, 320); }, 3300); }
+
+  // ── Frame lifecycle ──────────────────────────────────────────
+  function reloadFrame() { ready = false; document.getElementById("frameLoading").style.display = "grid"; document.getElementById("frameLoading").textContent = "Portfólió újratöltése…"; overrides = {}; ops = []; opIdx = -1; savedIdx = -1; savedColors = "{}"; mode = "edit"; renderTools(); frame.contentWindow.location.reload(); }
+  function onFrameLoad() {
+    try {
+      var d = doc();
+      if (!d || !d.body) throw new Error("no body");
+      document.getElementById("frameLoading").style.display = "none";
+      defaults = {}; var cs = doc().defaultView.getComputedStyle(root());
+      COLORS.forEach(function (c) { defaults[c.v] = (cs.getPropertyValue(c.v) || "").trim(); });
+      ready = true;
+      injectEditing();
+      refreshUndo(); markDirty();
+    } catch (err) {
+      document.getElementById("frameLoading").style.display = "grid";
+      document.getElementById("frameLoading").textContent = "Az előnézet csak webkiszolgálóról (https / localhost) szerkeszthető — az éles oldalon rendben működik.";
+    }
   }
+  frame.addEventListener("load", onFrameLoad);
 
-  // ── Wire up static controls ──────────────────────────────────
-  function bind() {
-    document.getElementById("saveBtn").addEventListener("click", function () { doSave(false); });
-    document.getElementById("publishBtn").addEventListener("click", doPublish);
-    document.getElementById("undoBtn").addEventListener("click", undo);
-    document.getElementById("redoBtn").addEventListener("click", redo);
-    document.getElementById("closeColors").addEventListener("click", function () { S.showColors = false; renderAll(); });
-    document.getElementById("resetColors").addEventListener("click", function () { if (Object.keys(S.theme).length && confirm("Minden szín visszaáll az alap színekre?")) { S.theme = {}; renderAll(); } });
+  // ── Static wiring ────────────────────────────────────────────
+  document.getElementById("saveBtn").addEventListener("click", function () { doSave(false); });
+  document.getElementById("publishBtn").addEventListener("click", doPublish);
+  document.getElementById("undoBtn").addEventListener("click", undo);
+  document.getElementById("redoBtn").addEventListener("click", redo);
+  document.getElementById("closeColors").addEventListener("click", function () { showColors = false; renderColors(); renderTools(); });
+  document.getElementById("resetColors").addEventListener("click", function () {
+    if (Object.keys(overrides).length && confirm("Minden szín visszaáll az alap színekre?")) {
+      Object.keys(overrides).slice().forEach(function (v) { clearColor(v, true); });
+      overrides = {}; ops = ops.slice(0, opIdx + 1); ops.push({ type:"color", v:"__all", prev:null, next:null }); opIdx = ops.length - 1;
+      refreshUndo(); buildColorRows(); markDirty();
+    }
+  });
+  document.addEventListener("keydown", function (e) {
+    var mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key.toLowerCase() === "s") { e.preventDefault(); doSave(false); return; }
+    if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); return; }
+    if (mod && ((e.key.toLowerCase() === "z" && e.shiftKey) || e.key.toLowerCase() === "y")) { e.preventDefault(); redo(); return; }
+  });
+  var intro = document.getElementById("introBackdrop");
+  document.getElementById("introStart").addEventListener("click", function () { intro.style.display = "none"; });
+  intro.addEventListener("click", function (e) { if (e.target === intro) intro.style.display = "none"; });
 
-    document.addEventListener("keydown", function (e) {
-      var mod = e.ctrlKey || e.metaKey;
-      var tgt = e.target;
-      var typing = tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.isContentEditable);
-      if (mod && e.key.toLowerCase() === "s") { e.preventDefault(); doSave(false); return; }
-      if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); return; }
-      if (mod && ((e.key.toLowerCase() === "z" && e.shiftKey) || e.key.toLowerCase() === "y")) { e.preventDefault(); redo(); return; }
-      if (typing) return;
-      if (e.key === "1") { S.view = "live"; renderAll(); }
-      else if (e.key === "2") { S.view = "layout"; renderAll(); }
-      else if (e.key === "3") { S.view = "form"; renderAll(); }
-    });
-
-    var intro = document.getElementById("introBackdrop");
-    document.getElementById("introStart").addEventListener("click", function () { intro.style.display = "none"; });
-    intro.addEventListener("click", function (e) { if (e.target === intro) intro.style.display = "none"; });
-  }
-
-  // ── Boot ─────────────────────────────────────────────────────
-  S = freshState();
-  bind();
-  renderAll();
-  // establish saved baseline so a freshly loaded page is not "dirty"
-  savedSnapshot = snapshotObj();
-  history = [snapshotObj()]; hIdx = 0; refreshUndoButtons();
-  updateDirtyUI();
+  renderTools();
+  refreshUndo();
 })();
 </script>
 </body>

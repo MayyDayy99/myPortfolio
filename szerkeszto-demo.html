@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loricatus Editor — bemutató</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Vizuális, kód nélküli tartalomszerkesztő bemutatója — kattints, írj át szöveget, állíts színt, rendezd át a szekciókat. A változtatások csak a böngésződben élnek.">
+<style>
+  /* ============================================================
+     Loricatus Editor — önálló bemutató (demo)
+     Egyetlen fájl, build és háttér nélkül. A valódi szerkesztő
+     Vite + React + Tailwind + Supabase; ez a látvány és az
+     interakció hű mása, de minden csak a böngésződben él és
+     újratöltésre visszaáll — nincs mentés, nincs adatbázis.
+     ============================================================ */
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  :root {
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+      "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  }
+  body {
+    font-family: var(--font);
+    background: #0f1116;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+
+  /* ── App shell ─────────────────────────────────────────────── */
+  .app { min-height: 100vh; background: #111827; color: #fff; }
+
+  /* ── Toolbar (premium glass) — ported from admin/src/index.css ─ */
+  .cms-toolbar {
+    position: sticky; top: 0; z-index: 20;
+    background: linear-gradient(180deg, rgba(30, 33, 42, 0.9), rgba(19, 21, 28, 0.92));
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    backdrop-filter: blur(22px) saturate(150%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.75);
+  }
+  .cms-toolbar-inner {
+    padding: 10px 16px;
+    display: flex; flex-wrap: wrap; gap: 10px 12px;
+    justify-content: space-between; align-items: center;
+  }
+  .tb-left, .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tb-brand { display: flex; align-items: center; gap: 10px; }
+  .cms-brand-mark {
+    width: 36px; height: 36px; flex: none; border-radius: 11px;
+    display: grid; place-items: center; font-weight: 800; font-size: 17px;
+    letter-spacing: -0.02em; color: #fff;
+    background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9);
+    box-shadow: 0 8px 18px -6px rgba(37, 99, 235, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  .tb-title { line-height: 1.15; }
+  .tb-title h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+  .tb-title p { font-size: 11px; color: #9ca3af; margin: 2px 0 0; }
+  .tb-title .amber { color: #fbbf24; margin-left: 6px; }
+
+  .demo-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    color: #fcd34d; background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 999px; padding: 4px 10px;
+  }
+  .demo-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24;
+    box-shadow: 0 0 0 0 rgba(251,191,36,.6); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(251,191,36,.5)} 70%{box-shadow:0 0 0 6px rgba(251,191,36,0)} 100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} }
+
+  /* Segmented control */
+  .cms-segment {
+    display: inline-flex; align-items: center; padding: 3px; gap: 2px;
+    border-radius: 12px; background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .cms-seg-btn {
+    display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
+    border-radius: 9px; font-size: 12.5px; font-weight: 500; line-height: 1;
+    color: rgba(255, 255, 255, 0.6); background: transparent; border: none;
+    cursor: pointer; white-space: nowrap;
+    transition: background-color .15s, color .15s, box-shadow .15s;
+  }
+  .cms-seg-btn:hover:not(.is-active):not(:disabled) { color: #fff; background: rgba(255,255,255,.06); }
+  .cms-seg-btn.is-active {
+    color: #fff; background: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 2px 8px -3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
+  }
+  .cms-seg-btn:disabled { opacity: .4; cursor: default; }
+
+  /* Tool toggle pills */
+  .cms-tool {
+    display: inline-flex; align-items: center; gap: 5px; padding: 7px 11px;
+    border-radius: 10px; font-size: 12.5px; font-weight: 500; line-height: 1;
+    color: rgba(255, 255, 255, 0.66); background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.08); cursor: pointer; white-space: nowrap;
+    transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s;
+  }
+  .cms-tool:hover:not(.is-active) { background: rgba(255,255,255,.09); color: #fff; }
+  .cms-tool.is-active {
+    color: #fff; background: var(--acc, #6366f1); border-color: transparent;
+    box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  .cms-icon-btn {
+    width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px;
+    color: rgba(255, 255, 255, 0.5); background: transparent; border: none; cursor: pointer;
+    transition: background-color .15s, color .15s; font-size: 15px;
+  }
+  .cms-icon-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+  .cms-btn-save {
+    border-radius: 11px; padding: 8px 17px; font-size: 12.5px; font-weight: 600; line-height: 1;
+    color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07);
+    cursor: pointer; transition: background-color .15s, box-shadow .15s, border-color .15s;
+  }
+  .cms-btn-save:hover:not(:disabled) { background: rgba(255,255,255,.13); }
+  .cms-btn-save:disabled { opacity: .5; cursor: default; }
+  .cms-btn-save.is-dirty {
+    background: linear-gradient(135deg, #2563eb, #3b82f6); border-color: transparent;
+    box-shadow: 0 6px 18px -6px rgba(37,99,235,.6), inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  .cms-btn-save.is-dirty:hover:not(:disabled) { filter: brightness(1.08); }
+  .cms-btn-publish {
+    border-radius: 11px; padding: 8px 18px; font-size: 12.5px; font-weight: 600; line-height: 1;
+    color: #fff; border: none; cursor: pointer;
+    background: linear-gradient(135deg, #15803d, #22c55e);
+    box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22);
+    transition: filter .15s;
+  }
+  .cms-btn-publish:hover:not(:disabled) { filter: brightness(1.08); }
+  .cms-btn-publish:disabled { opacity: .5; cursor: default; box-shadow: none; }
+
+  .status-txt { font-size: 12px; }
+  .status-txt.ok { color: #86efac; }
+  .status-txt.info { color: #93c5fd; }
+  .saved-ago { font-size: 12px; color: #9ca3af; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
+    color: #9ca3af; text-decoration: none; padding: 6px 10px; border-radius: 9px;
+    transition: background .15s, color .15s;
+  }
+  .back-link:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+  /* ── Preview stage ─────────────────────────────────────────── */
+  .stage { padding: 22px 16px 60px; display: flex; justify-content: center; }
+  .frame {
+    width: 100%; max-width: 1180px; border-radius: 16px; overflow: hidden;
+    background: #fff; color: #111; box-shadow: 0 40px 90px -40px rgba(0,0,0,.8);
+    border: 1px solid rgba(255,255,255,.08); transition: max-width .28s ease;
+  }
+  .frame.mobile { max-width: 390px; }
+  .frame-bar {
+    display: flex; align-items: center; gap: 8px; padding: 9px 14px;
+    background: #e9edf1; border-bottom: 1px solid #d6dce2;
+  }
+  .frame-bar i { width: 11px; height: 11px; border-radius: 50%; background: #c3ccd4; display: inline-block; }
+  .frame-bar i:nth-child(1){ background:#ff5f57 } .frame-bar i:nth-child(2){ background:#febc2e } .frame-bar i:nth-child(3){ background:#28c840 }
+  .frame-bar .url {
+    margin-left: 10px; flex: 1; font-size: 12px; color: #55606b; background: #fff;
+    border-radius: 7px; padding: 5px 12px; border: 1px solid #dfe5ea; font-family: ui-monospace, monospace;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ── The fake website being edited (theme-driven) ──────────── */
+  .site {
+    --accent: #c7d540; --bg: #f8f6f2; --bg2: #eeeae3; --text: #111316; --muted: #737e88;
+    background: var(--bg); color: var(--text);
+    font-family: var(--font);
+  }
+  .site .sec { position: relative; }
+  .site .container { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+
+  .site nav.topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 28px; border-bottom: 1px solid rgba(0,0,0,.06); background: var(--bg);
+  }
+  .site .brand { font-weight: 800; letter-spacing: -.02em; font-size: 18px; display:flex; align-items:center; gap:8px; }
+  .site .brand .logo { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display:inline-block; }
+  .site .navlinks { display: flex; gap: 20px; font-size: 14px; color: var(--muted); }
+  .site .navlinks span { cursor: default; }
+
+  .site .hero { padding: 74px 0 66px; background: var(--bg); text-align: left; position: relative; }
+  .site .eyebrow {
+    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: #5b6b2e; background: color-mix(in srgb, var(--accent) 30%, transparent);
+    padding: 6px 12px; border-radius: 999px; margin-bottom: 18px;
+  }
+  .site h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.05; margin: 0 0 18px; letter-spacing: -.02em; max-width: 16ch; }
+  .site .hero .sub { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 28px; line-height: 1.5; }
+  .site .cta {
+    display: inline-block; background: var(--accent); color: #1a1d10; font-weight: 700; font-size: 15px;
+    padding: 13px 24px; border-radius: 11px; text-decoration: none; box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 80%, black);
+  }
+
+  .site .services { padding: 60px 0; background: var(--bg2); }
+  .site .services h2, .site .about h2, .site .contact h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.02em; }
+  .site .services .intro, .site .about p, .site .contact p { color: var(--muted); max-width: 52ch; margin: 0 0 32px; line-height: 1.55; font-size: 16px; }
+  .site .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .site .card {
+    background: var(--bg); border: 1px solid rgba(0,0,0,.07); border-radius: 14px; padding: 22px; position: relative;
+  }
+  .site .card .ico { width: 40px; height: 40px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 45%, transparent); display: grid; place-items: center; margin-bottom: 14px; font-size: 20px; }
+  .site .card h3 { margin: 0 0 8px; font-size: 18px; }
+  .site .card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
+
+  .site .stats { padding: 50px 0; background: var(--bg); }
+  .site .stats .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 20px; text-align: center; }
+  .site .stats .num { font-size: 38px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
+  .site .stats .lbl { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+  .site .about { padding: 66px 0; background: var(--bg2); }
+  .site .about p { font-size: 17px; max-width: 60ch; }
+
+  .site .contact { padding: 66px 0 76px; background: var(--bg); }
+  .site .contact .email { display: inline-block; margin-top: 10px; font-weight: 700; color: #4a5720; font-size: 18px; }
+
+  .site footer { padding: 26px 28px; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid rgba(0,0,0,.06); background: var(--bg2); }
+
+  /* ── Inline edit affordances ───────────────────────────────── */
+  .editing [data-key] {
+    outline: 1.5px dashed transparent; outline-offset: 4px; border-radius: 4px;
+    transition: outline-color .12s, background .12s; cursor: text;
+  }
+  .editing [data-key]:hover { outline-color: #2563eb; background: rgba(37,99,235,.06); }
+  [data-key].is-active { outline: 2px solid #2563eb !important; background: rgba(37,99,235,.08); }
+  [contenteditable="true"] { cursor: text; }
+
+  /* ── Layout-overlay (drag to reorder sections in the preview) ─ */
+  .overlay-layout [data-section] { outline: 1.5px dashed rgba(139,92,246,.55); outline-offset: -2px; }
+  .sec-handle {
+    display: none; position: absolute; top: 8px; left: 8px; z-index: 5;
+    align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #fff;
+    background: rgba(139,92,246,.92); border-radius: 8px; padding: 5px 9px; cursor: grab;
+    box-shadow: 0 6px 16px -6px rgba(0,0,0,.5);
+  }
+  .overlay-layout .sec-handle { display: inline-flex; }
+  .overlay-layout [data-section].drag-over { box-shadow: inset 0 4px 0 #8b5cf6; }
+  [data-section].dragging { opacity: .5; }
+
+  /* ── Freeform (drag the hero CTA) ──────────────────────────── */
+  .overlay-freeform .site .cta { cursor: move; }
+  .overlay-freeform .site .cta::after {
+    content: "🎯"; position: absolute; margin: -10px 0 0 6px; font-size: 12px;
+  }
+
+  /* ── Side sheet (colors) ───────────────────────────────────── */
+  .cms-sidesheet {
+    position: fixed; top: 57px; right: 0; bottom: 0; width: 100%; max-width: 360px; z-index: 1200;
+    display: flex; flex-direction: column;
+    background: linear-gradient(180deg, rgba(32,35,44,.96), rgba(20,22,29,.98));
+    -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%);
+    border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7);
+    animation: slide-in .22s cubic-bezier(.2,.85,.25,1);
+  }
+  @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+  .sidesheet-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
+  .sidesheet-head h2 { font-size: 15px; font-weight: 600; margin: 0; }
+  .sidesheet-body { padding: 18px; overflow-y: auto; display: grid; gap: 12px; }
+  .sidesheet-body .hint { font-size: 12px; color: #9ca3af; line-height: 1.5; margin: 0; }
+  .color-row { background: rgba(17,24,39,.4); border-radius: 10px; padding: 12px; }
+  .color-row .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .color-row label { font-size: 13px; color: #e5e7eb; }
+  .color-row .reset { font-size: 11px; color: #9ca3af; text-decoration: underline; background: none; border: none; cursor: pointer; }
+  .color-row .reset:hover { color: #fff; }
+  .color-row .inputs { display: flex; gap: 8px; align-items: center; }
+  .color-row input[type=color] { height: 38px; width: 52px; flex: none; background: #374151; border: none; border-radius: 8px; cursor: pointer; padding: 3px; }
+  .color-row input[type=text] { flex: 1; min-width: 0; padding: 9px 11px; background: #374151; border: none; border-radius: 8px; color: #fff; font-family: ui-monospace, monospace; font-size: 13px; }
+  .color-row .desc { font-size: 11px; color: #6b7280; margin: 6px 0 0; }
+
+  /* ── Layout view (list) & Form view ────────────────────────── */
+  .panel { max-width: 900px; margin: 0 auto; padding: 22px 16px 70px; }
+  .cms-card {
+    background: linear-gradient(180deg, rgba(38,41,51,.55), rgba(26,28,36,.62));
+    border: 1px solid rgba(255,255,255,.07); border-radius: 16px;
+    box-shadow: 0 12px 32px -20px rgba(0,0,0,.6); padding: 22px; margin-bottom: 18px;
+  }
+  .cms-card h2 { font-size: 17px; font-weight: 600; margin: 0 0 16px; }
+  .lay-row {
+    display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 11px;
+    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); margin-bottom: 9px;
+  }
+  .lay-row .grip { color: #6b7280; cursor: grab; font-size: 15px; }
+  .lay-row .name { flex: 1; font-size: 14px; }
+  .lay-row.hidden-sec { opacity: .5; }
+  .lay-row .mini { width: 30px; height: 28px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #cbd5e1; cursor: pointer; display: grid; place-items: center; font-size: 13px; }
+  .lay-row .mini:hover { background: rgba(255,255,255,.12); color: #fff; }
+  .lay-row .mini:disabled { opacity: .3; cursor: default; }
+  .lay-row[draggable=true] { cursor: grab; }
+  .lay-row.drag-over { box-shadow: inset 0 3px 0 #8b5cf6; }
+
+  .field { margin-bottom: 15px; }
+  .field label { display: block; font-size: 12.5px; color: #9ca3af; margin-bottom: 6px; }
+  .field input, .field textarea {
+    width: 100%; border-radius: 10px; padding: 10px 13px; font-size: 14px; color: #fff;
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); resize: vertical;
+    font-family: inherit;
+  }
+  .field input:focus, .field textarea:focus { outline: none; border-color: rgba(59,130,246,.7); box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
+
+  .catalog { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .catalog button {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #e5e7eb;
+    background: rgba(255,255,255,.05); border: 1px dashed rgba(255,255,255,.2); border-radius: 10px;
+    padding: 9px 13px; cursor: pointer; transition: background .15s, border-color .15s;
+  }
+  .catalog button:hover { background: rgba(20,184,166,.16); border-color: #14b8a6; color: #fff; }
+  .subtle { font-size: 12.5px; color: #9ca3af; line-height: 1.55; }
+  .addbtn { font-size: 12.5px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 8px 12px; cursor: pointer; }
+  .addbtn:hover { background: rgba(16,185,129,.2); }
+  .delbtn { font-size: 12px; color: #fca5a5; background: none; border: none; cursor: pointer; }
+  .delbtn:hover { color: #fff; }
+
+  /* ── Toast ─────────────────────────────────────────────────── */
+  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast {
+    background: rgba(17,24,39,.96); color: #fff; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px; padding: 12px 18px; font-size: 13.5px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8);
+    display: flex; align-items: center; gap: 10px; max-width: 92vw;
+    animation: toast-in .2s ease-out;
+  }
+  .toast .ic { font-size: 16px; }
+  .toast.ok { border-color: rgba(34,197,94,.4); }
+  .toast.info { border-color: rgba(59,130,246,.4); }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* ── Intro overlay ─────────────────────────────────────────── */
+  .intro-backdrop {
+    position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px;
+    background: rgba(8,10,15,.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .intro {
+    max-width: 460px; width: 100%; border-radius: 20px; padding: 30px 28px; text-align: center;
+    background: linear-gradient(180deg, rgba(38,41,51,.9), rgba(22,24,31,.94));
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 30px 70px -18px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07);
+  }
+  .intro .mark { width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 15px; display: grid; place-items: center; font-weight: 800; font-size: 24px;
+    background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
+  .intro h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
+  .intro p { margin: 0 0 16px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
+  .intro ul { text-align: left; margin: 0 auto 22px; padding: 0; list-style: none; display: grid; gap: 9px; max-width: 340px; }
+  .intro li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #e5e7eb; }
+  .intro li .k { flex: none; }
+  .intro .start {
+    width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 600; color: #fff;
+    background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6);
+  }
+  .intro .start:hover { filter: brightness(1.07); }
+  .intro .foot { margin: 14px 0 0; font-size: 11.5px; color: #6b7280; }
+
+  .sr-hide { display: none !important; }
+
+  @media (max-width: 720px) {
+    .tb-title p .amber { display: block; margin: 2px 0 0; }
+    .hide-sm { display: none !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- Toolbar -->
+  <header class="cms-toolbar">
+    <div class="cms-toolbar-inner">
+      <div class="tb-left">
+        <div class="tb-brand">
+          <div class="cms-brand-mark" aria-hidden="true">L</div>
+          <div class="tb-title">
+            <h1>Loricatus Editor</h1>
+            <p id="tbSub">bemutato@loricatus.hu<span class="amber" id="dirtyInfo"></span></p>
+          </div>
+        </div>
+
+        <span class="demo-pill hide-sm" title="Ez egy bemutató – a változtatások csak a böngésződben élnek."><span class="dot"></span>Demó</span>
+
+        <!-- Locale -->
+        <div class="cms-segment" id="localeSeg" role="group" aria-label="Nyelv"></div>
+
+        <!-- View mode -->
+        <div class="cms-segment" id="viewSeg" role="group" aria-label="Nézet"></div>
+
+        <!-- Live tools -->
+        <div class="tb-tools" id="liveTools" style="display:flex; gap:6px; align-items:center;"></div>
+      </div>
+
+      <div class="tb-right">
+        <span id="statusSlot" class="hide-sm"></span>
+        <div class="cms-segment">
+          <button class="cms-seg-btn" id="undoBtn" title="Visszavonás (Ctrl+Z)">↶</button>
+          <button class="cms-seg-btn" id="redoBtn" title="Újra (Ctrl+Shift+Z)">↷</button>
+        </div>
+        <a class="back-link hide-sm" href="index.html" title="Vissza a portfólióhoz">← Portfólió</a>
+        <button class="cms-btn-save" id="saveBtn" title="Mentés (Ctrl+S)">Mentés</button>
+        <button class="cms-btn-publish" id="publishBtn">Publikálás (HU)</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Views get rendered here -->
+  <main id="main"></main>
+
+  <!-- Colors side sheet -->
+  <aside class="cms-sidesheet sr-hide" id="colorSheet" aria-label="Színek">
+    <div class="sidesheet-head">
+      <h2>🎨 Színek</h2>
+      <button class="cms-icon-btn" id="closeColors" title="Bezárás">✕</button>
+    </div>
+    <div class="sidesheet-body">
+      <p class="hint">A színek azonnal frissülnek az előnézetben. A mentéshez / közzétételhez használd a fenti Mentés / Publikálás gombot.</p>
+      <div id="colorRows"></div>
+      <button class="addbtn" id="resetColors" style="justify-self:start">↺ Vissza az alap színekhez</button>
+    </div>
+  </aside>
+</div>
+
+<div class="toast-wrap" id="toasts" aria-live="polite"></div>
+
+<!-- Intro -->
+<div class="intro-backdrop" id="introBackdrop">
+  <div class="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+    <div class="mark" aria-hidden="true">L</div>
+    <h2 id="introTitle">Loricatus Editor</h2>
+    <p>Így szerkeszti a megrendelő <b>kód nélkül, böngészőből</b> a saját weboldalát. Próbáld ki nyugodtan — kattints bármibe.</p>
+    <ul>
+      <li><span class="k">✍️</span><span>Kattints egy szövegre és írd át — az <b>Élő szerkesztés</b> nézetben.</span></li>
+      <li><span class="k">🎨</span><span>A <b>Színek</b> gombbal állítsd az arculatot, élő előnézettel.</span></li>
+      <li><span class="k">📐</span><span>Az <b>Átrendezés</b> / <b>Elrendezés</b> nézetben húzd át a szekciókat.</span></li>
+    </ul>
+    <button class="start" id="introStart">Kipróbálom</button>
+    <p class="foot">Bemutató mód — a változtatások csak a böngésződben élnek, és újratöltésre visszaállnak. Semmi nem kerül mentésre.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+(function () {
+  // ─────────────────────────────────────────────────────────────
+  // Content model — a representative Loricatus-style site in 3 locales.
+  // (The real editor pulls the live HTML + Supabase content; here it is
+  //  seeded inline so the demo is fully self-contained.)
+  // ─────────────────────────────────────────────────────────────
+  var LOCALES = [
+    { code: "hu", flag: "🇭🇺", label: "Magyar" },
+    { code: "en", flag: "🇬🇧", label: "English" },
+    { code: "it", flag: "🇮🇹", label: "Italiano" },
+  ];
+
+  // defaults per THEME_KEYS in admin/src/lib/theme.ts
+  var THEME_KEYS = [
+    { key: "accent", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések", def: "#c7d540" },
+    { key: "bg",     label: "Fő háttér",       hint: "Az oldal alap háttérszíne", def: "#f8f6f2" },
+    { key: "bg2",    label: "Másodlagos háttér",hint: "Szolgáltatások / szekciók háttere", def: "#eeeae3" },
+    { key: "text",   label: "Szöveg",           hint: "A fő szövegszín", def: "#111316" },
+    { key: "muted",  label: "Halvány szöveg",   hint: "Leírások, másodlagos feliratok", def: "#737e88" },
+  ];
+
+  function seed() {
+    return {
+      nav_brand: { hu: "Loricatus", en: "Loricatus", it: "Loricatus" },
+      hero_eyebrow: { hu: "Drónos felmérés · geoinformatika", en: "Drone survey · geoinformatics", it: "Rilievo con drone · geoinformatica" },
+      hero_title: {
+        hu: "Pontos térbeli adat a levegőből, napok alatt.",
+        en: "Precise spatial data from the air, in days.",
+        it: "Dati spaziali precisi dall'alto, in pochi giorni.",
+      },
+      hero_sub: {
+        hu: "LiDAR- és fotogrammetriai felmérés építőipari és geodéziai projektekhez. Pontfelhő, digitális terepmodell és BIM-kész eredmény.",
+        en: "LiDAR and photogrammetry surveys for construction and geodesy. Point clouds, digital terrain models and BIM-ready output.",
+        it: "Rilievi LiDAR e fotogrammetrici per edilizia e geodesia. Nuvole di punti, modelli del terreno e output pronti per il BIM.",
+      },
+      hero_cta: { hu: "Kérek ajánlatot", en: "Request a quote", it: "Richiedi un preventivo" },
+
+      svc_title: { hu: "Amiben segítünk", en: "How we help", it: "Come aiutiamo" },
+      svc_intro: {
+        hu: "Felméréstől a kész, feldolgozott adatig — egy kézből.",
+        en: "From survey to finished, processed data — from a single source.",
+        it: "Dal rilievo al dato finito ed elaborato — da un'unica fonte.",
+      },
+      about_title: { hu: "Rólunk", en: "About us", it: "Chi siamo" },
+      about_text: {
+        hu: "A Loricatus csapata mérnöki pontossággal dolgozik: DJI Zenmuse L1 LiDAR, RTK-GPS és validált feldolgozási munkafolyamat. Az adat, amit átadunk, azonnal beépíthető a tervezésbe.",
+        en: "The Loricatus team works with engineering precision: DJI Zenmuse L1 LiDAR, RTK-GPS and a validated processing workflow. The data we deliver drops straight into your design.",
+        it: "Il team Loricatus lavora con precisione ingegneristica: LiDAR DJI Zenmuse L1, RTK-GPS e un flusso di elaborazione validato. I dati che consegniamo entrano subito nella progettazione.",
+      },
+      contact_title: { hu: "Beszéljünk a projektről", en: "Let's talk about your project", it: "Parliamo del tuo progetto" },
+      contact_text: {
+        hu: "Küldd el a terület méretét és a célt, és egy munkanapon belül visszajelzünk.",
+        en: "Send us the site size and your goal, and we'll get back to you within one business day.",
+        it: "Inviaci la dimensione dell'area e l'obiettivo: risponderemo entro un giorno lavorativo.",
+      },
+      contact_email: { hu: "info@loricatus.hu", en: "info@loricatus.hu", it: "info@loricatus.hu" },
+      foot: { hu: "© Loricatus — minden jog fenntartva.", en: "© Loricatus — all rights reserved.", it: "© Loricatus — tutti i diritti riservati." },
+    };
+  }
+
+  function seedServices() {
+    return [
+      { id: "svc1", ico: "🛰️",
+        title: { hu: "LiDAR-felmérés", en: "LiDAR survey", it: "Rilievo LiDAR" },
+        desc:  { hu: "Nagy pontosságú pontfelhő növényzettel fedett terepen is.", en: "High-accuracy point cloud, even under vegetation.", it: "Nuvola di punti ad alta precisione, anche sotto la vegetazione." } },
+      { id: "svc2", ico: "🗺️",
+        title: { hu: "Terepmodell (DTM/DSM)", en: "Terrain model (DTM/DSM)", it: "Modello del terreno (DTM/DSM)" },
+        desc:  { hu: "Digitális terep- és felületmodell tervezéshez, földmunkához.", en: "Digital terrain and surface models for design and earthworks.", it: "Modelli digitali del terreno e della superficie per progettazione e scavi." } },
+      { id: "svc3", ico: "🏗️",
+        title: { hu: "Építéskövetés", en: "Construction monitoring", it: "Monitoraggio cantiere" },
+        desc:  { hu: "Idősoros drónfelvételek a kivitelezés előrehaladásáról.", en: "Time-series drone captures of build progress.", it: "Riprese drone in serie temporale sull'avanzamento dei lavori." } },
+    ];
+  }
+
+  function seedStats() {
+    return [
+      { id: "st1", num: "±2 cm", label: { hu: "pontosság", en: "accuracy", it: "precisione" } },
+      { id: "st2", num: "48 óra", label: { hu: "átadási idő", en: "turnaround", it: "consegna" } },
+      { id: "st3", num: "120+", label: { hu: "projekt", en: "projects", it: "progetti" } },
+    ];
+  }
+
+  var SECTION_LABELS = {
+    hero:     { hu: "Fejléc + hero", en: "Header + hero", it: "Intestazione + hero" },
+    services: { hu: "Szolgáltatások", en: "Services", it: "Servizi" },
+    stats:    { hu: "Számok", en: "Stats", it: "Numeri" },
+    about:    { hu: "Rólunk", en: "About", it: "Chi siamo" },
+    contact:  { hu: "Kapcsolat + lábléc", en: "Contact + footer", it: "Contatti + footer" },
+  };
+
+  var CATALOG = [
+    { tpl: "reviews", label: { hu: "Vélemények", en: "Testimonials", it: "Recensioni" } },
+    { tpl: "faq",     label: { hu: "GYIK", en: "FAQ", it: "FAQ" } },
+    { tpl: "gallery", label: { hu: "Galéria", en: "Gallery", it: "Galleria" } },
+  ];
+
+  // ── State ────────────────────────────────────────────────────
+  var S;
+  function freshState() {
+    return {
+      locale: "hu",
+      view: "live",            // live | layout | form
+      overlay: "edit",         // edit | layout | freeform
+      mobile: false,
+      showColors: false,
+      data: seed(),
+      services: seedServices(),
+      stats: seedStats(),
+      theme: {},               // overrides {accent,bg,...}
+      order: ["hero", "services", "stats", "about", "contact"],
+      hidden: {},              // {sectionId:true}
+      added: {},               // {sectionId:{tpl,label}}
+      heroPos: null,           // {x,y} freeform
+      lastSavedAt: null,
+    };
+  }
+
+  // ── Undo/redo history ────────────────────────────────────────
+  var history = [], hIdx = -1, skipSnap = false, snapTimer = null;
+  function snapshotObj() {
+    return JSON.stringify({
+      data: S.data, services: S.services, stats: S.stats, theme: S.theme,
+      order: S.order, hidden: S.hidden, added: S.added, heroPos: S.heroPos,
+    });
+  }
+  function pushHistory() {
+    if (skipSnap) { skipSnap = false; return; }
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(function () {
+      var snap = snapshotObj();
+      if (history[hIdx] === snap) return;
+      history = history.slice(0, hIdx + 1);
+      history.push(snap);
+      if (history.length > 50) history.shift();
+      hIdx = history.length - 1;
+      refreshUndoButtons();
+    }, 350);
+  }
+  function restore(snap) {
+    var o = JSON.parse(snap);
+    S.data = o.data; S.services = o.services; S.stats = o.stats; S.theme = o.theme;
+    S.order = o.order; S.hidden = o.hidden; S.added = o.added; S.heroPos = o.heroPos;
+    skipSnap = true;
+    renderAll();
+  }
+  function undo() { if (hIdx > 0) { hIdx--; restore(history[hIdx]); refreshUndoButtons(); } }
+  function redo() { if (hIdx < history.length - 1) { hIdx++; restore(history[hIdx]); refreshUndoButtons(); } }
+  function refreshUndoButtons() {
+    document.getElementById("undoBtn").disabled = hIdx <= 0;
+    document.getElementById("redoBtn").disabled = hIdx >= history.length - 1;
+  }
+
+  // ── Dirty tracking (against the last "save") ─────────────────
+  var savedSnapshot = null;
+  function isDirty() { return savedSnapshot !== null && snapshotObj() !== savedSnapshot; }
+
+  // ── Helpers ──────────────────────────────────────────────────
+  function el(tag, attrs, children) {
+    var e = document.createElement(tag);
+    if (attrs) for (var k in attrs) {
+      if (k === "class") e.className = attrs[k];
+      else if (k === "html") e.innerHTML = attrs[k];
+      else if (k === "text") e.textContent = attrs[k];
+      else if (k.slice(0, 2) === "on" && typeof attrs[k] === "function") e.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] != null) e.setAttribute(k, attrs[k]);
+    }
+    if (children) (Array.isArray(children) ? children : [children]).forEach(function (c) {
+      if (c == null) return;
+      e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+    });
+    return e;
+  }
+  function themeVal(k) { return S.theme[k] || THEME_KEYS.filter(function (t) { return t.key === k; })[0].def; }
+  function L(obj) { return (obj && (obj[S.locale] != null ? obj[S.locale] : obj.hu)) || ""; }
+
+  // ─────────────────────────────────────────────────────────────
+  // Rendering
+  // ─────────────────────────────────────────────────────────────
+  function renderAll() {
+    renderToolbar();
+    renderMain();
+    renderColors();
+    updateDirtyUI();
+    pushHistory();
+  }
+
+  function renderToolbar() {
+    // Locale segment
+    var seg = document.getElementById("localeSeg");
+    seg.innerHTML = "";
+    LOCALES.forEach(function (l) {
+      seg.appendChild(el("button", {
+        class: "cms-seg-btn" + (S.locale === l.code ? " is-active" : ""),
+        title: "Váltás: " + l.label,
+        onclick: function () { S.locale = l.code; renderAll(); },
+      }, l.flag + " " + l.code.toUpperCase()));
+    });
+
+    // View segment
+    var vseg = document.getElementById("viewSeg");
+    vseg.innerHTML = "";
+    [["live", "Élő szerkesztés"], ["layout", "Elrendezés"], ["form", "Lista"]].forEach(function (v) {
+      vseg.appendChild(el("button", {
+        class: "cms-seg-btn" + (S.view === v[0] ? " is-active" : ""),
+        onclick: function () { S.view = v[0]; if (v[0] !== "live") S.showColors = false; renderAll(); },
+      }, v[1]));
+    });
+
+    // Live tools
+    var tools = document.getElementById("liveTools");
+    tools.innerHTML = "";
+    if (S.view === "live") {
+      tools.appendChild(toolBtn("🎨 Színek", "#ec4899", S.showColors, function () { S.showColors = !S.showColors; renderAll(); }));
+      tools.appendChild(toolBtn("📐 Átrendezés", "#8b5cf6", S.overlay === "layout", function () {
+        S.overlay = S.overlay === "layout" ? "edit" : "layout"; renderAll();
+      }));
+      tools.appendChild(toolBtn("🎯 Szabad pozíció", "#0ea5e9", S.overlay === "freeform", function () {
+        S.overlay = S.overlay === "freeform" ? "edit" : "freeform"; renderAll();
+      }));
+      if (S.overlay === "freeform" && S.heroPos) {
+        tools.appendChild(el("button", { class: "cms-tool", title: "Pozíció visszaállítása",
+          onclick: function () { if (confirm("Szabad pozíció törlése? Az elem visszaáll a helyére.")) { S.heroPos = null; renderAll(); } } }, "↺ pozíció"));
+      }
+      tools.appendChild(toolBtn("📱 Mobil", "#f59e0b", S.mobile, function () { S.mobile = !S.mobile; renderAll(); }));
+      tools.appendChild(el("button", { class: "cms-icon-btn", title: "Előnézet frissítése",
+        onclick: function () { S.data = mergeSeed(); renderAll(); toast("info", "↻", "Előnézet frissítve."); } }, "↻"));
+    }
+    refreshUndoButtons();
+  }
+  function toolBtn(label, acc, active, onclick) {
+    var b = el("button", { class: "cms-tool" + (active ? " is-active" : ""), onclick: onclick }, label);
+    b.style.setProperty("--acc", acc);
+    return b;
+  }
+  function mergeSeed() {
+    // "reload" keeps edited values (like the real iframe reload) — no-op merge kept simple
+    return S.data;
+  }
+
+  function updateDirtyUI() {
+    var changed = countChanged();
+    var info = document.getElementById("dirtyInfo");
+    var bits = [];
+    if (changed.fields) bits.push("· " + changed.fields + " módosított mező");
+    if (changed.layout) bits.push("· elrendezés módosítva");
+    if (changed.theme) bits.push("· színek módosítva");
+    info.textContent = bits.length ? " " + bits.join(" ") : "";
+    var save = document.getElementById("saveBtn");
+    save.classList.toggle("is-dirty", !!(changed.fields || changed.layout || changed.theme));
+  }
+  function countChanged() {
+    var base = seed(), out = { fields: 0, layout: 0, theme: 0 };
+    Object.keys(base).forEach(function (k) {
+      LOCALES.forEach(function (l) { if ((S.data[k] && S.data[k][l.code]) !== base[k][l.code]) out.fields++; });
+    });
+    // services/stats count changes coarsely
+    if (JSON.stringify(S.services) !== JSON.stringify(seedServices())) out.fields++;
+    if (JSON.stringify(S.stats) !== JSON.stringify(seedStats())) out.fields++;
+    out.theme = Object.keys(S.theme).length;
+    var fresh = freshState();
+    if (JSON.stringify(S.order) !== JSON.stringify(fresh.order) ||
+        Object.keys(S.hidden).length || Object.keys(S.added).length || S.heroPos) out.layout = 1;
+    return out;
+  }
+
+  function renderMain() {
+    var main = document.getElementById("main");
+    main.innerHTML = "";
+    document.getElementById("app").classList.toggle("overlay-layout", S.view === "live" && S.overlay === "layout");
+    document.getElementById("app").classList.toggle("overlay-freeform", S.view === "live" && S.overlay === "freeform");
+    if (S.view === "live") main.appendChild(renderLive());
+    else if (S.view === "layout") main.appendChild(renderLayoutView());
+    else main.appendChild(renderFormView());
+  }
+
+  // ── LIVE preview ─────────────────────────────────────────────
+  function renderLive() {
+    var stage = el("div", { class: "stage" });
+    var frame = el("div", { class: "frame" + (S.mobile ? " mobile" : "") });
+    frame.appendChild(el("div", { class: "frame-bar" }, [
+      el("i"), el("i"), el("i"),
+      el("div", { class: "url" }, "loricatus.hu"),
+    ]));
+
+    var site = el("div", { class: "site" + (S.overlay === "edit" ? " editing" : "") });
+    applyThemeVars(site);
+
+    S.order.forEach(function (id) {
+      if (S.hidden[id]) return;
+      var sec = renderSection(id);
+      if (sec) site.appendChild(sec);
+    });
+
+    frame.appendChild(site);
+    stage.appendChild(frame);
+
+    if (S.overlay === "layout") enableSectionDrag(site);
+    if (S.overlay === "freeform") enableFreeform(site);
+    return stage;
+  }
+
+  function applyThemeVars(node) {
+    THEME_KEYS.forEach(function (t) { node.style.setProperty("--" + t.key, themeVal(t.key)); });
+  }
+
+  function editable(tag, key, opts) {
+    opts = opts || {};
+    var e = el(tag, { class: opts.class || "", "data-key": key });
+    e.textContent = L(S.data[key]);
+    if (S.view === "live" && S.overlay === "edit") {
+      e.addEventListener("click", function (ev) { ev.preventDefault(); startInline(e, key); });
+    }
+    return e;
+  }
+  function startInline(node, key) {
+    if (node.getAttribute("contenteditable") === "true") return;
+    node.setAttribute("contenteditable", "true");
+    node.classList.add("is-active");
+    node.focus();
+    // place caret at end
+    var r = document.createRange(); r.selectNodeContents(node); r.collapse(false);
+    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    function commit() {
+      node.removeAttribute("contenteditable");
+      node.classList.remove("is-active");
+      var val = node.textContent.trim();
+      if (!S.data[key]) S.data[key] = {};
+      S.data[key][S.locale] = val;
+      node.removeEventListener("blur", commit);
+      node.removeEventListener("keydown", onKey);
+      updateDirtyUI(); pushHistory();
+    }
+    function onKey(ev) {
+      if (ev.key === "Enter" && node.tagName !== "P") { ev.preventDefault(); node.blur(); }
+      if (ev.key === "Escape") { node.textContent = L(S.data[key]); node.blur(); }
+    }
+    node.addEventListener("blur", commit);
+    node.addEventListener("keydown", onKey);
+  }
+
+  function renderSection(id) {
+    if (S.added[id]) return renderAddedSection(id);
+    switch (id) {
+      case "hero": return secHero();
+      case "services": return secServices();
+      case "stats": return secStats();
+      case "about": return secAbout();
+      case "contact": return secContact();
+    }
+    return null;
+  }
+
+  function secWrap(id, cls, inner) {
+    var s = el("section", { class: "sec " + cls, "data-section": id });
+    s.appendChild(handleFor(id));
+    (Array.isArray(inner) ? inner : [inner]).forEach(function (n) { if (n) s.appendChild(n); });
+    return s;
+  }
+  function handleFor(id) {
+    return el("div", { class: "sec-handle", title: "Húzd a szekció áthelyezéséhez", draggable: "false" },
+      "⠿ " + L(SECTION_LABELS[id] || { hu: "Szekció" }));
+  }
+
+  function secHero() {
+    var nav = el("nav", { class: "topbar" }, [
+      el("div", { class: "brand" }, [el("span", { class: "logo" }), editSpan("nav_brand")]),
+      el("div", { class: "navlinks hide-sm" }, [
+        el("span", null, L(SECTION_LABELS.services)), el("span", null, L(SECTION_LABELS.about)), el("span", null, L(SECTION_LABELS.contact)),
+      ]),
+    ]);
+    var hero = el("div", { class: "container" }, [
+      editable("span", "hero_eyebrow", { class: "eyebrow" }),
+      editable("h1", "hero_title"),
+      editable("p", "hero_sub", { class: "sub" }),
+      ctaEl(),
+    ]);
+    var heroSec = el("div", { class: "hero" }, hero);
+    return secWrap("hero", "", [nav, heroSec]);
+  }
+  function editSpan(key) {
+    // inline editable span used inside composite elements
+    return editable("span", key);
+  }
+  function ctaEl() {
+    var a = el("a", { class: "cta", href: "#", "data-key": "hero_cta" }, L(S.data.hero_cta));
+    if (S.view === "live" && S.overlay === "edit") a.addEventListener("click", function (ev) { ev.preventDefault(); startInline(a, "hero_cta"); });
+    else a.addEventListener("click", function (ev) { ev.preventDefault(); });
+    if (S.heroPos) { a.style.position = "relative"; a.style.left = S.heroPos.x + "px"; a.style.top = S.heroPos.y + "px"; }
+    return a;
+  }
+
+  function secServices() {
+    var cards = el("div", { class: "cards" });
+    S.services.forEach(function (sv) {
+      cards.appendChild(el("div", { class: "card" }, [
+        el("div", { class: "ico" }, sv.ico),
+        svcEdit("h3", sv, "title"),
+        svcEdit("p", sv, "desc"),
+      ]));
+    });
+    return secWrap("services", "services", el("div", { class: "container" }, [
+      editable("h2", "svc_title"),
+      editable("p", "svc_intro", { class: "intro" }),
+      cards,
+    ]));
+  }
+  function svcEdit(tag, sv, field) {
+    var e = el(tag, null, L(sv[field]));
+    if (S.view === "live" && S.overlay === "edit") {
+      e.style.cursor = "text";
+      e.addEventListener("mouseenter", function () { e.style.outline = "1.5px dashed #2563eb"; e.style.outlineOffset = "3px"; });
+      e.addEventListener("mouseleave", function () { if (e.getAttribute("contenteditable") !== "true") e.style.outline = "none"; });
+      e.addEventListener("click", function () {
+        e.setAttribute("contenteditable", "true"); e.focus();
+        function commit() { e.removeAttribute("contenteditable"); e.style.outline = "none"; sv[field][S.locale] = e.textContent.trim(); e.removeEventListener("blur", commit); updateDirtyUI(); pushHistory(); }
+        e.addEventListener("blur", commit);
+      });
+    }
+    return e;
+  }
+
+  function secStats() {
+    var row = el("div", { class: "row" });
+    S.stats.forEach(function (st) {
+      row.appendChild(el("div", null, [
+        el("div", { class: "num" }, st.num),
+        el("div", { class: "lbl" }, L(st.label)),
+      ]));
+    });
+    return secWrap("stats", "stats", el("div", { class: "container" }, row));
+  }
+
+  function secAbout() {
+    return secWrap("about", "about", el("div", { class: "container" }, [
+      editable("h2", "about_title"),
+      editable("p", "about_text"),
+    ]));
+  }
+
+  function secContact() {
+    var email = el("a", { class: "email", href: "#", "data-key": "contact_email" }, L(S.data.contact_email));
+    if (S.view === "live" && S.overlay === "edit") email.addEventListener("click", function (ev) { ev.preventDefault(); startInline(email, "contact_email"); });
+    else email.addEventListener("click", function (ev) { ev.preventDefault(); });
+    var contact = el("div", { class: "contact" }, el("div", { class: "container" }, [
+      editable("h2", "contact_title"),
+      editable("p", "contact_text"),
+      email,
+    ]));
+    var foot = el("footer", null, editable("span", "foot"));
+    return secWrap("contact", "", [contact, foot]);
+  }
+
+  function renderAddedSection(id) {
+    var meta = S.added[id];
+    var body;
+    if (meta.tpl === "reviews") {
+      body = el("div", { class: "cards" }, [1, 2, 3].map(function (i) {
+        return el("div", { class: "card" }, [
+          el("p", { html: "„Gyors, pontos, korrekt. A pontfelhő azonnal használható volt." }),
+          el("h3", { style: "margin-top:12px;font-size:15px" }, "Ügyfél " + i + "."),
+        ]);
+      }));
+    } else if (meta.tpl === "faq") {
+      body = el("div", null, [
+        faqItem("Mennyi idő egy felmérés?", "A terület méretétől függően jellemzően 1–2 nap, plusz feldolgozás."),
+        faqItem("Milyen formátumban kapom az adatot?", "LAS/LAZ pontfelhő, GeoTIFF, DXF és igény szerint IFC/BIM."),
+      ]);
+    } else {
+      body = el("div", { class: "cards" }, [1, 2, 3, 4].map(function () {
+        return el("div", { class: "card", style: "aspect-ratio:4/3;background:color-mix(in srgb,var(--accent) 25%,var(--bg2))" });
+      }));
+    }
+    return secWrap(id, "services", el("div", { class: "container" }, [
+      el("h2", null, L(meta.label)),
+      body,
+    ]));
+  }
+  function faqItem(q, a) {
+    return el("div", { style: "border-bottom:1px solid rgba(0,0,0,.08);padding:14px 0" }, [
+      el("h3", { style: "margin:0 0 6px;font-size:17px" }, q),
+      el("p", { style: "margin:0;color:var(--muted)" }, a),
+    ]);
+  }
+
+  // ── Section drag (layout overlay) ────────────────────────────
+  function enableSectionDrag(site) {
+    var dragId = null;
+    site.querySelectorAll("[data-section]").forEach(function (node) {
+      var handle = node.querySelector(".sec-handle");
+      node.setAttribute("draggable", "false");
+      handle.setAttribute("draggable", "true");
+      handle.addEventListener("dragstart", function (e) { dragId = node.getAttribute("data-section"); node.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragId); });
+      handle.addEventListener("dragend", function () { node.classList.remove("dragging"); site.querySelectorAll(".drag-over").forEach(function (n) { n.classList.remove("drag-over"); }); });
+      node.addEventListener("dragover", function (e) { e.preventDefault(); node.classList.add("drag-over"); });
+      node.addEventListener("dragleave", function () { node.classList.remove("drag-over"); });
+      node.addEventListener("drop", function (e) {
+        e.preventDefault(); node.classList.remove("drag-over");
+        var targetId = node.getAttribute("data-section");
+        if (!dragId || dragId === targetId) return;
+        var from = S.order.indexOf(dragId), to = S.order.indexOf(targetId);
+        S.order.splice(from, 1); S.order.splice(to, 0, dragId);
+        renderAll();
+      });
+    });
+  }
+
+  // ── Freeform drag of the hero CTA ────────────────────────────
+  function enableFreeform(site) {
+    var cta = site.querySelector(".cta");
+    if (!cta) return;
+    cta.style.position = "relative";
+    var startX, startY, ox, oy, dragging = false;
+    cta.addEventListener("pointerdown", function (e) {
+      e.preventDefault(); dragging = true; cta.setPointerCapture(e.pointerId);
+      startX = e.clientX; startY = e.clientY;
+      ox = (S.heroPos && S.heroPos.x) || 0; oy = (S.heroPos && S.heroPos.y) || 0;
+    });
+    cta.addEventListener("pointermove", function (e) {
+      if (!dragging) return;
+      var nx = ox + (e.clientX - startX), ny = oy + (e.clientY - startY);
+      cta.style.left = nx + "px"; cta.style.top = ny + "px";
+      S.heroPos = { x: Math.round(nx), y: Math.round(ny) };
+    });
+    cta.addEventListener("pointerup", function () { if (dragging) { dragging = false; renderToolbar(); updateDirtyUI(); pushHistory(); } });
+  }
+
+  // ── LAYOUT view (section list + catalog) ─────────────────────
+  function renderLayoutView() {
+    var panel = el("div", { class: "panel" });
+
+    var secCard = el("div", { class: "cms-card" });
+    secCard.appendChild(el("h2", null, "Szekciók sorrendje és láthatósága"));
+    secCard.appendChild(el("p", { class: "subtle", style: "margin:-8px 0 14px" }, "Húzd a fogantyút az átrendezéshez, vagy használd a nyilakat. A szemmel elrejtheted a szekciót az oldalról."));
+    var list = el("div");
+    S.order.forEach(function (id, i) {
+      var label = S.added[id] ? L(S.added[id].label) + " · beszúrt" : L(SECTION_LABELS[id]);
+      var row = el("div", { class: "lay-row" + (S.hidden[id] ? " hidden-sec" : ""), draggable: "true", "data-lid": id }, [
+        el("span", { class: "grip" }, "⠿"),
+        el("span", { class: "name" }, label),
+        el("button", { class: "mini", title: "Fel", disabled: i === 0 ? "" : null, onclick: function () { moveSection(id, -1); } }, "▲"),
+        el("button", { class: "mini", title: "Le", disabled: i === S.order.length - 1 ? "" : null, onclick: function () { moveSection(id, 1); } }, "▼"),
+        el("button", { class: "mini", title: S.hidden[id] ? "Megjelenítés" : "Elrejtés", onclick: function () { if (S.hidden[id]) delete S.hidden[id]; else S.hidden[id] = true; renderAll(); } }, S.hidden[id] ? "🙈" : "👁"),
+        S.added[id] ? el("button", { class: "mini", title: "Törlés", onclick: function () { if (confirm("Törlöd ezt a beszúrt szekciót?")) { S.order = S.order.filter(function (x) { return x !== id; }); delete S.added[id]; delete S.hidden[id]; renderAll(); } } }, "🗑") : null,
+      ]);
+      list.appendChild(row);
+    });
+    enableRowDrag(list);
+    secCard.appendChild(list);
+
+    // Catalog
+    secCard.appendChild(el("p", { class: "subtle", style: "margin:16px 0 4px" }, "Új szekció beszúrása:"));
+    var cat = el("div", { class: "catalog" });
+    CATALOG.forEach(function (c) {
+      cat.appendChild(el("button", { onclick: function () { addSection(c); } }, "＋ " + L(c.label)));
+    });
+    secCard.appendChild(cat);
+    panel.appendChild(secCard);
+
+    // Services list management
+    var svcCard = el("div", { class: "cms-card" });
+    svcCard.appendChild(el("h2", null, "Szolgáltatás-kártyák"));
+    S.services.forEach(function (sv, i) {
+      svcCard.appendChild(el("div", { class: "lay-row" }, [
+        el("span", { class: "grip" }, sv.ico),
+        el("span", { class: "name" }, L(sv.title)),
+        el("button", { class: "mini", title: "Fel", disabled: i === 0 ? "" : null, onclick: function () { var a = S.services; a.splice(i - 1, 0, a.splice(i, 1)[0]); renderAll(); } }, "▲"),
+        el("button", { class: "mini", title: "Le", disabled: i === S.services.length - 1 ? "" : null, onclick: function () { var a = S.services; a.splice(i + 1, 0, a.splice(i, 1)[0]); renderAll(); } }, "▼"),
+        el("button", { class: "mini", title: "Törlés", onclick: function () { S.services.splice(i, 1); renderAll(); } }, "🗑"),
+      ]));
+    });
+    svcCard.appendChild(el("button", { class: "addbtn", style: "margin-top:6px", onclick: addService }, "＋ Új szolgáltatás-kártya"));
+    panel.appendChild(svcCard);
+
+    return panel;
+  }
+  function moveSection(id, dir) {
+    var i = S.order.indexOf(id), j = i + dir;
+    if (j < 0 || j >= S.order.length) return;
+    S.order.splice(j, 0, S.order.splice(i, 1)[0]);
+    renderAll();
+  }
+  function enableRowDrag(list) {
+    var dragId = null;
+    list.querySelectorAll("[data-lid]").forEach(function (row) {
+      row.addEventListener("dragstart", function (e) { dragId = row.getAttribute("data-lid"); e.dataTransfer.effectAllowed = "move"; });
+      row.addEventListener("dragover", function (e) { e.preventDefault(); row.classList.add("drag-over"); });
+      row.addEventListener("dragleave", function () { row.classList.remove("drag-over"); });
+      row.addEventListener("drop", function (e) {
+        e.preventDefault(); row.classList.remove("drag-over");
+        var tId = row.getAttribute("data-lid");
+        if (!dragId || dragId === tId) return;
+        var from = S.order.indexOf(dragId), to = S.order.indexOf(tId);
+        S.order.splice(from, 1); S.order.splice(to, 0, dragId);
+        renderAll();
+      });
+    });
+  }
+  function addSection(c) {
+    var id = "sec_" + Math.abs(hash(c.tpl + S.order.length + Object.keys(S.added).length));
+    S.added[id] = { tpl: c.tpl, label: c.label };
+    S.order.push(id);
+    renderAll();
+    toast("ok", "＋", "„" + L(c.label) + "" + "" + "" + "" + "” szekció beszúrva — rendezd át és mentsd el.");
+  }
+  function addService() {
+    var n = S.services.length + 1;
+    S.services.push({ id: "svc_" + n + "_" + Math.abs(hash("" + n + Date0())), ico: "✨",
+      title: { hu: "Új szolgáltatás", en: "New service", it: "Nuovo servizio" },
+      desc: { hu: "Írd át a leírást a Lista nézetben vagy az élő előnézeten.", en: "Edit this text in the List view or in the live preview.", it: "Modifica questo testo nella vista Elenco o nell'anteprima." } });
+    renderAll();
+  }
+  function hash(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; } return h; }
+  var _seq = 0; function Date0() { return (_seq++); } // deterministic id source (no Date/random)
+
+  // ── FORM view (grouped fields + colors) ──────────────────────
+  function renderFormView() {
+    var panel = el("div", { class: "panel" });
+
+    // colors first (like the real form view)
+    var colorCard = el("div", { class: "cms-card" });
+    colorCard.appendChild(el("h2", null, "Téma színek"));
+    colorCard.appendChild(colorGrid());
+    panel.appendChild(colorCard);
+
+    var groups = [
+      ["Fejléc + hero", [["nav_brand", "Márkanév", "text"], ["hero_eyebrow", "Felső címke", "text"], ["hero_title", "Cím", "textarea"], ["hero_sub", "Alcím", "textarea"], ["hero_cta", "Gomb felirata", "text"]]],
+      ["Szolgáltatások (szöveg)", [["svc_title", "Cím", "text"], ["svc_intro", "Bevezető", "textarea"]]],
+      ["Rólunk", [["about_title", "Cím", "text"], ["about_text", "Szöveg", "textarea"]]],
+      ["Kapcsolat + lábléc", [["contact_title", "Cím", "text"], ["contact_text", "Szöveg", "textarea"], ["contact_email", "E-mail", "text"], ["foot", "Lábléc", "text"]]],
+    ];
+    groups.forEach(function (g) {
+      var card = el("div", { class: "cms-card" });
+      card.appendChild(el("h2", null, g[0]));
+      g[1].forEach(function (f) { card.appendChild(fieldEditor(f[0], f[1], f[2])); });
+      panel.appendChild(card);
+    });
+
+    // services text editor
+    var sc = el("div", { class: "cms-card" });
+    sc.appendChild(el("h2", null, "Szolgáltatás-kártyák szövege"));
+    S.services.forEach(function (sv) {
+      sc.appendChild(el("div", { style: "border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;margin-bottom:12px" }, [
+        listField(sv, "title", "Kártya címe", "text"),
+        listField(sv, "desc", "Kártya leírása", "textarea"),
+      ]));
+    });
+    panel.appendChild(sc);
+
+    return panel;
+  }
+  function fieldEditor(key, label, type) {
+    var wrap = el("div", { class: "field" });
+    wrap.appendChild(el("label", null, label + " · " + S.locale.toUpperCase()));
+    var input = el(type === "textarea" ? "textarea" : "input", { value: type === "textarea" ? null : L(S.data[key]) });
+    if (type === "textarea") { input.rows = 3; input.value = L(S.data[key]); }
+    input.addEventListener("input", function () { if (!S.data[key]) S.data[key] = {}; S.data[key][S.locale] = input.value; updateDirtyUI(); pushHistory(); });
+    wrap.appendChild(input);
+    return wrap;
+  }
+  function listField(obj, field, label, type) {
+    var wrap = el("div", { class: "field" });
+    wrap.appendChild(el("label", null, label + " · " + S.locale.toUpperCase()));
+    var input = el(type === "textarea" ? "textarea" : "input", {});
+    input.value = L(obj[field]);
+    if (type === "textarea") input.rows = 2;
+    input.addEventListener("input", function () { obj[field][S.locale] = input.value; updateDirtyUI(); pushHistory(); });
+    wrap.appendChild(input);
+    return wrap;
+  }
+
+  // ── Colors (side sheet + form grid share the row builder) ────
+  function colorGrid() {
+    var grid = el("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px" });
+    THEME_KEYS.forEach(function (t) { grid.appendChild(colorRow(t)); });
+    return grid;
+  }
+  function colorRow(t) {
+    var cur = themeVal(t.key);
+    var custom = !!S.theme[t.key];
+    var row = el("div", { class: "color-row" });
+    var top = el("div", { class: "top" }, [
+      el("label", null, t.label),
+      custom ? el("button", { class: "reset", title: "Vissza az alap színre", onclick: function () { delete S.theme[t.key]; renderAll(); } }, "alap") : null,
+    ]);
+    var color = el("input", { type: "color", value: cur });
+    var text = el("input", { type: "text", value: S.theme[t.key] || "", placeholder: t.def });
+    color.addEventListener("input", function () { S.theme[t.key] = color.value; text.value = color.value; liveTheme(); scheduleDirty(); });
+    text.addEventListener("input", function () { if (text.value.trim()) S.theme[t.key] = text.value.trim(); else delete S.theme[t.key]; liveTheme(); scheduleDirty(); });
+    row.appendChild(top);
+    row.appendChild(el("div", { class: "inputs" }, [color, text]));
+    row.appendChild(el("p", { class: "desc" }, t.hint));
+    return row;
+  }
+  function liveTheme() {
+    // repaint the preview instantly without a full re-render (keeps color focus)
+    var site = document.querySelector(".site");
+    if (site) applyThemeVars(site);
+    updateDirtyUI();
+  }
+  var dirtyTimer = null;
+  function scheduleDirty() { clearTimeout(dirtyTimer); dirtyTimer = setTimeout(pushHistory, 400); }
+
+  function renderColors() {
+    var sheet = document.getElementById("colorSheet");
+    var show = S.showColors && S.view === "live";
+    sheet.classList.toggle("sr-hide", !show);
+    if (!show) return;
+    var rows = document.getElementById("colorRows");
+    rows.innerHTML = "";
+    rows.appendChild(colorGrid());
+  }
+
+  // ── Save / Publish (mock) ────────────────────────────────────
+  function doSave(silent) {
+    savedSnapshot = snapshotObj();
+    S.lastSavedAt = Date0();
+    updateDirtyUI();
+    setStatus("ok", "Mentve (" + S.locale.toUpperCase() + ").");
+    if (!silent) toast("ok", "💾", "Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek.");
+    return true;
+  }
+  function doPublish() {
+    doSave(true);
+    setStatus("info", "Publikálás elindítva (" + S.locale.toUpperCase() + ").");
+    toast("info", "🚀", "Publikálás elindítva (demó). Az éles rendszerben a weboldal kb. 1 perc múlva frissülne.");
+  }
+  var statusTimer = null;
+  function setStatus(kind, txt) {
+    var slot = document.getElementById("statusSlot");
+    slot.innerHTML = "";
+    slot.appendChild(el("span", { class: "status-txt " + kind }, txt));
+    clearTimeout(statusTimer);
+    statusTimer = setTimeout(function () { slot.innerHTML = ""; }, 4000);
+  }
+
+  function toast(kind, ic, msg) {
+    var wrap = document.getElementById("toasts");
+    var t = el("div", { class: "toast " + kind }, [el("span", { class: "ic" }, ic), el("span", null, msg)]);
+    wrap.appendChild(t);
+    setTimeout(function () { t.style.transition = "opacity .3s, transform .3s"; t.style.opacity = "0"; t.style.transform = "translateY(8px)"; setTimeout(function () { t.remove(); }, 320); }, 3200);
+  }
+
+  // ── Wire up static controls ──────────────────────────────────
+  function bind() {
+    document.getElementById("saveBtn").addEventListener("click", function () { doSave(false); });
+    document.getElementById("publishBtn").addEventListener("click", doPublish);
+    document.getElementById("undoBtn").addEventListener("click", undo);
+    document.getElementById("redoBtn").addEventListener("click", redo);
+    document.getElementById("closeColors").addEventListener("click", function () { S.showColors = false; renderAll(); });
+    document.getElementById("resetColors").addEventListener("click", function () { if (Object.keys(S.theme).length && confirm("Minden szín visszaáll az alap színekre?")) { S.theme = {}; renderAll(); } });
+
+    document.addEventListener("keydown", function (e) {
+      var mod = e.ctrlKey || e.metaKey;
+      var tgt = e.target;
+      var typing = tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.isContentEditable);
+      if (mod && e.key.toLowerCase() === "s") { e.preventDefault(); doSave(false); return; }
+      if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); return; }
+      if (mod && ((e.key.toLowerCase() === "z" && e.shiftKey) || e.key.toLowerCase() === "y")) { e.preventDefault(); redo(); return; }
+      if (typing) return;
+      if (e.key === "1") { S.view = "live"; renderAll(); }
+      else if (e.key === "2") { S.view = "layout"; renderAll(); }
+      else if (e.key === "3") { S.view = "form"; renderAll(); }
+    });
+
+    var intro = document.getElementById("introBackdrop");
+    document.getElementById("introStart").addEventListener("click", function () { intro.style.display = "none"; });
+    intro.addEventListener("click", function (e) { if (e.target === intro) intro.style.display = "none"; });
+  }
+
+  // ── Boot ─────────────────────────────────────────────────────
+  S = freshState();
+  bind();
+  renderAll();
+  // establish saved baseline so a freshly loaded page is not "dirty"
+  savedSnapshot = snapshotObj();
+  history = [snapshotObj()]; hIdx = 0; refreshUndoButtons();
+  updateDirtyUI();
+})();
+</script>
+</body>
+</html>

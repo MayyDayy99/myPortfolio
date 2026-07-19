@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Loricatus Editor — bemutató</title>
+<title>Vizuális szerkesztő — bemutató</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="Vizuális, kód nélküli tartalomszerkesztő bemutatója — kattints, írj át szöveget, állíts színt, rendezd át a szekciókat. A változtatások csak a böngésződben élnek.">
 <style>
@@ -166,7 +166,7 @@
 
   /* ── The fake website being edited (theme-driven) ──────────── */
   .site {
-    --accent: #c7d540; --bg: #f8f6f2; --bg2: #eeeae3; --text: #111316; --muted: #737e88;
+    --accent: #c9822a; --bg: #eff1ec; --bg2: #e6e9e2; --text: #12231f; --muted: #566760;
     background: var(--bg); color: var(--text);
     font-family: var(--font);
   }
@@ -185,13 +185,13 @@
   .site .hero { padding: 74px 0 66px; background: var(--bg); text-align: left; position: relative; }
   .site .eyebrow {
     display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-    color: #5b6b2e; background: color-mix(in srgb, var(--accent) 30%, transparent);
+    color: #6b4a16; background: color-mix(in srgb, var(--accent) 26%, transparent);
     padding: 6px 12px; border-radius: 999px; margin-bottom: 18px;
   }
   .site h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.05; margin: 0 0 18px; letter-spacing: -.02em; max-width: 16ch; }
   .site .hero .sub { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 28px; line-height: 1.5; }
   .site .cta {
-    display: inline-block; background: var(--accent); color: #1a1d10; font-weight: 700; font-size: 15px;
+    display: inline-block; background: var(--accent); color: #fff; font-weight: 700; font-size: 15px;
     padding: 13px 24px; border-radius: 11px; text-decoration: none; box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 80%, black);
   }
 
@@ -206,16 +206,19 @@
   .site .card h3 { margin: 0 0 8px; font-size: 18px; }
   .site .card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
 
-  .site .stats { padding: 50px 0; background: var(--bg); }
-  .site .stats .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 20px; text-align: center; }
-  .site .stats .num { font-size: 38px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
-  .site .stats .lbl { color: var(--muted); font-size: 14px; margin-top: 4px; }
+  /* Highlighted dark "Local AI" block — the portfolio's key differentiator */
+  .site .localai { padding: 66px 0; background: #12231f; color: #eff1ec; }
+  .site .localai h2 { font-size: 30px; margin: 0 0 10px; letter-spacing: -.02em; color: #fff; }
+  .site .localai p { color: rgba(239,241,236,.78); max-width: 56ch; margin: 0; line-height: 1.6; font-size: 17px; }
+  .site .localai .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .site .localai .chips span { font-size: 13px; padding: 7px 13px; border-radius: 999px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); color: #eff1ec; }
+  .site .localai .chips span.acc { background: color-mix(in srgb, var(--accent) 30%, transparent); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
 
   .site .about { padding: 66px 0; background: var(--bg2); }
   .site .about p { font-size: 17px; max-width: 60ch; }
 
   .site .contact { padding: 66px 0 76px; background: var(--bg); }
-  .site .contact .email { display: inline-block; margin-top: 10px; font-weight: 700; color: #4a5720; font-size: 18px; }
+  .site .contact .email { display: inline-block; margin-top: 10px; font-weight: 700; color: #6b4a16; font-size: 18px; }
 
   .site footer { padding: 26px 28px; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid rgba(0,0,0,.06); background: var(--bg2); }
 
@@ -369,10 +372,10 @@
     <div class="cms-toolbar-inner">
       <div class="tb-left">
         <div class="tb-brand">
-          <div class="cms-brand-mark" aria-hidden="true">L</div>
+          <div class="cms-brand-mark" aria-hidden="true">N</div>
           <div class="tb-title">
-            <h1>Loricatus Editor</h1>
-            <p id="tbSub">bemutato@loricatus.hu<span class="amber" id="dirtyInfo"></span></p>
+            <h1>Vizuális szerkesztő</h1>
+            <p id="tbSub">pr.nemes@gmail.com<span class="amber" id="dirtyInfo"></span></p>
           </div>
         </div>
 
@@ -423,9 +426,9 @@
 <!-- Intro -->
 <div class="intro-backdrop" id="introBackdrop">
   <div class="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-    <div class="mark" aria-hidden="true">L</div>
-    <h2 id="introTitle">Loricatus Editor</h2>
-    <p>Így szerkeszti a megrendelő <b>kód nélkül, böngészőből</b> a saját weboldalát. Próbáld ki nyugodtan — kattints bármibe.</p>
+    <div class="mark" aria-hidden="true">N</div>
+    <h2 id="introTitle">Vizuális szerkesztő</h2>
+    <p>Így szerkesztheted <b>kód nélkül, böngészőből</b> ezt a portfóliót — pontosan úgy, ahogy a megrendelő is kapná a saját oldalához. Próbáld ki nyugodtan, kattints bármibe.</p>
     <ul>
       <li><span class="k">✍️</span><span>Kattints egy szövegre és írd át — az <b>Élő szerkesztés</b> nézetben.</span></li>
       <li><span class="k">🎨</span><span>A <b>Színek</b> gombbal állítsd az arculatot, élő előnézettel.</span></li>
@@ -452,63 +455,72 @@
 
   // defaults per THEME_KEYS in admin/src/lib/theme.ts
   var THEME_KEYS = [
-    { key: "accent", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések", def: "#c7d540" },
-    { key: "bg",     label: "Fő háttér",       hint: "Az oldal alap háttérszíne", def: "#f8f6f2" },
-    { key: "bg2",    label: "Másodlagos háttér",hint: "Szolgáltatások / szekciók háttere", def: "#eeeae3" },
-    { key: "text",   label: "Szöveg",           hint: "A fő szövegszín", def: "#111316" },
-    { key: "muted",  label: "Halvány szöveg",   hint: "Leírások, másodlagos feliratok", def: "#737e88" },
+    { key: "accent", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések (borostyán)", def: "#c9822a" },
+    { key: "bg",     label: "Fő háttér",       hint: "Az oldal alap háttérszíne", def: "#eff1ec" },
+    { key: "bg2",    label: "Másodlagos háttér",hint: "Szolgáltatások / szekciók háttere", def: "#e6e9e2" },
+    { key: "text",   label: "Szöveg",           hint: "A fő szövegszín", def: "#12231f" },
+    { key: "muted",  label: "Halvány szöveg",   hint: "Leírások, másodlagos feliratok", def: "#566760" },
   ];
 
   function seed() {
     return {
-      nav_brand: { hu: "Loricatus", en: "Loricatus", it: "Loricatus" },
-      hero_eyebrow: { hu: "Drónos felmérés · geoinformatika", en: "Drone survey · geoinformatics", it: "Rilievo con drone · geoinformatica" },
+      nav_brand: { hu: "Nemes Péter", en: "Nemes Péter", it: "Nemes Péter" },
+      hero_eyebrow: { hu: "Egyéni vállalkozó · AI-fejlesztés magánszemélyeknek és kisvállalkozásoknak", en: "Freelancer · AI development for individuals and small businesses", it: "Libero professionista · sviluppo AI per privati e piccole imprese" },
       hero_title: {
-        hu: "Pontos térbeli adat a levegőből, napok alatt.",
-        en: "Precise spatial data from the air, in days.",
-        it: "Dati spaziali precisi dall'alto, in pochi giorni.",
+        hu: "A weboldaltól a saját, lokálisan futó AI-ig.",
+        en: "From your website to your own, locally running AI.",
+        it: "Dal sito web alla tua AI in locale.",
       },
       hero_sub: {
-        hu: "LiDAR- és fotogrammetriai felmérés építőipari és geodéziai projektekhez. Pontfelhő, digitális terepmodell és BIM-kész eredmény.",
-        en: "LiDAR and photogrammetry surveys for construction and geodesy. Point clouds, digital terrain models and BIM-ready output.",
-        it: "Rilievi LiDAR e fotogrammetrici per edilizia e geodesia. Nuvole di punti, modelli del terreno e output pronti per il BIM.",
+        hu: "Weboldal és hosting, egyedi webalkalmazások, és saját AI a te gépeden vagy felhődben. Válaszd ki, mi érdekel — minden projektnél működő demó.",
+        en: "Websites and hosting, custom web apps, and your own AI on your machine or cloud. Pick what interests you — every project ships with a working demo.",
+        it: "Siti web e hosting, web app su misura e la tua AI sul tuo computer o cloud. Scegli ciò che ti interessa — ogni progetto con demo funzionante.",
       },
-      hero_cta: { hu: "Kérek ajánlatot", en: "Request a quote", it: "Richiedi un preventivo" },
+      hero_cta: { hu: "Kérj ingyenes ajánlatot", en: "Request a free quote", it: "Richiedi un preventivo gratuito" },
 
-      svc_title: { hu: "Amiben segítünk", en: "How we help", it: "Come aiutiamo" },
+      svc_title: { hu: "Amiben segíteni tudok", en: "How I can help", it: "Come posso aiutarti" },
       svc_intro: {
-        hu: "Felméréstől a kész, feldolgozott adatig — egy kézből.",
-        en: "From survey to finished, processed data — from a single source.",
-        it: "Dal rilievo al dato finito ed elaborato — da un'unica fonte.",
+        hu: "Közvetlen egyeztetéssel dolgozom, és minden megoldáshoz átadás meg rövid betanítás jár, hogy utána magad is könnyen elboldogulj vele.",
+        en: "I work with you directly, and every solution comes with handover and a short training session so you can manage it yourself afterwards.",
+        it: "Lavoro a diretto contatto con te e ogni soluzione include consegna e una breve formazione, così poi te la gestisci da solo.",
       },
-      about_title: { hu: "Rólunk", en: "About us", it: "Chi siamo" },
+      localai_title: { hu: "Lokális, privát AI — a te gépeden", en: "Local, private AI — on your own machine", it: "AI locale e privata — sul tuo computer" },
+      localai_text: {
+        hu: "Saját „ChatGPT” és bármilyen nyílt modell a te hardvereden vagy felhődben. Az adat végig nálad marad — ezt kevés versenytárs kínálja.",
+        en: "Your own “ChatGPT” and any open model on your hardware or cloud. Your data stays with you the whole time — few competitors offer this.",
+        it: "Il tuo “ChatGPT” e qualsiasi modello aperto sul tuo hardware o cloud. I tuoi dati restano sempre con te — pochi concorrenti lo offrono.",
+      },
+      about_title: { hu: "Rólam", en: "About me", it: "Chi sono" },
       about_text: {
-        hu: "A Loricatus csapata mérnöki pontossággal dolgozik: DJI Zenmuse L1 LiDAR, RTK-GPS és validált feldolgozási munkafolyamat. Az adat, amit átadunk, azonnal beépíthető a tervezésbe.",
-        en: "The Loricatus team works with engineering precision: DJI Zenmuse L1 LiDAR, RTK-GPS and a validated processing workflow. The data we deliver drops straight into your design.",
-        it: "Il team Loricatus lavora con precisione ingegneristica: LiDAR DJI Zenmuse L1, RTK-GPS e un flusso di elaborazione validato. I dati che consegniamo entrano subito nella progettazione.",
+        hu: "AI-megoldásokkal foglalkozom, műszaki és projektmenedzsment háttérrel. Egyéni vállalkozóként főként magánszemélyeknek és kisvállalkozásoknak dolgozom, közvetlen egyeztetéssel, a te tempódban.",
+        en: "I build AI solutions, with an engineering and project-management background. As a freelancer I mostly work with individuals and small businesses, in direct contact, at your pace.",
+        it: "Realizzo soluzioni AI, con un background tecnico e di project management. Come libero professionista lavoro soprattutto con privati e piccole imprese, a contatto diretto e al tuo ritmo.",
       },
-      contact_title: { hu: "Beszéljünk a projektről", en: "Let's talk about your project", it: "Parliamo del tuo progetto" },
+      contact_title: { hu: "Dolgozzunk együtt", en: "Let's work together", it: "Lavoriamo insieme" },
       contact_text: {
-        hu: "Küldd el a terület méretét és a célt, és egy munkanapon belül visszajelzünk.",
-        en: "Send us the site size and your goal, and we'll get back to you within one business day.",
-        it: "Inviaci la dimensione dell'area e l'obiettivo: risponderemo entro un giorno lavorativo.",
+        hu: "Írj pár sort arról, mire lenne szükséged — a weboldaltól a saját lokális AI-ig bármiben. Az első, 30 perces egyeztetés díjmentes.",
+        en: "Drop me a few lines about what you need — anything from a website to your own local AI. The first 30-minute call is free.",
+        it: "Scrivimi due righe su ciò che ti serve — dal sito web alla tua AI locale. La prima chiamata di 30 minuti è gratuita.",
       },
-      contact_email: { hu: "info@loricatus.hu", en: "info@loricatus.hu", it: "info@loricatus.hu" },
-      foot: { hu: "© Loricatus — minden jog fenntartva.", en: "© Loricatus — all rights reserved.", it: "© Loricatus — tutti i diritti riservati." },
+      contact_email: { hu: "pr.nemes@gmail.com", en: "pr.nemes@gmail.com", it: "pr.nemes@gmail.com" },
+      foot: { hu: "© Nemes Péter · AI-fejlesztés & oktatás", en: "© Nemes Péter · AI development & training", it: "© Nemes Péter · sviluppo AI e formazione" },
     };
   }
 
   function seedServices() {
     return [
-      { id: "svc1", ico: "🛰️",
-        title: { hu: "LiDAR-felmérés", en: "LiDAR survey", it: "Rilievo LiDAR" },
-        desc:  { hu: "Nagy pontosságú pontfelhő növényzettel fedett terepen is.", en: "High-accuracy point cloud, even under vegetation.", it: "Nuvola di punti ad alta precisione, anche sotto la vegetazione." } },
-      { id: "svc2", ico: "🗺️",
-        title: { hu: "Terepmodell (DTM/DSM)", en: "Terrain model (DTM/DSM)", it: "Modello del terreno (DTM/DSM)" },
-        desc:  { hu: "Digitális terep- és felületmodell tervezéshez, földmunkához.", en: "Digital terrain and surface models for design and earthworks.", it: "Modelli digitali del terreno e della superficie per progettazione e scavi." } },
-      { id: "svc3", ico: "🏗️",
-        title: { hu: "Építéskövetés", en: "Construction monitoring", it: "Monitoraggio cantiere" },
-        desc:  { hu: "Idősoros drónfelvételek a kivitelezés előrehaladásáról.", en: "Time-series drone captures of build progress.", it: "Riprese drone in serie temporale sull'avanzamento dei lavori." } },
+      { id: "svc1", ico: "🌐",
+        title: { hu: "Weboldal & hosting", en: "Website & hosting", it: "Sito web & hosting" },
+        desc:  { hu: "Bemutatkozó és céges oldalak, saját kézzel, a tárhely beállításával együtt.", en: "Personal and business sites, hand-built, hosting setup included.", it: "Siti personali e aziendali, fatti a mano, con configurazione dell'hosting." } },
+      { id: "svc2", ico: "⚙️",
+        title: { hu: "Egyedi webalkalmazás", en: "Custom web app", it: "Web app su misura" },
+        desc:  { hu: "Foglaló, nyilvántartó, vezérlő vagy játék, pontosan a te folyamatodra szabva.", en: "A booking tool, registry, dashboard or game — tailored to your workflow.", it: "Prenotazioni, gestionale, dashboard o gioco — su misura per il tuo flusso." } },
+      { id: "svc3", ico: "🔒",
+        title: { hu: "Lokális / privát AI", en: "Local / private AI", it: "AI locale / privata" },
+        desc:  { hu: "Saját „ChatGPT” és bármilyen nyílt modell a te gépeden. Az adat nálad marad.", en: "Your own “ChatGPT” and any open model on your machine. Your data stays with you.", it: "Il tuo “ChatGPT” e qualsiasi modello aperto sul tuo computer. I dati restano con te." } },
+      { id: "svc4", ico: "🎓",
+        title: { hu: "Oktatás", en: "Training", it: "Formazione" },
+        desc:  { hu: "1:1 mentorálás és céges workshop, az alapoktól a haladó, lokális AI-setupokig.", en: "One-on-one mentoring and company workshops, from basics to advanced local AI.", it: "Mentoring 1:1 e workshop aziendali, dalle basi ai setup AI locali avanzati." } },
     ];
   }
 
@@ -522,9 +534,9 @@
 
   var SECTION_LABELS = {
     hero:     { hu: "Fejléc + hero", en: "Header + hero", it: "Intestazione + hero" },
-    services: { hu: "Szolgáltatások", en: "Services", it: "Servizi" },
-    stats:    { hu: "Számok", en: "Stats", it: "Numeri" },
-    about:    { hu: "Rólunk", en: "About", it: "Chi siamo" },
+    services: { hu: "Amiben segítek", en: "Services", it: "Servizi" },
+    localai:  { hu: "Lokális AI (kiemelt)", en: "Local AI (highlight)", it: "AI locale (in evidenza)" },
+    about:    { hu: "Rólam", en: "About", it: "Chi sono" },
     contact:  { hu: "Kapcsolat + lábléc", en: "Contact + footer", it: "Contatti + footer" },
   };
 
@@ -547,7 +559,7 @@
       services: seedServices(),
       stats: seedStats(),
       theme: {},               // overrides {accent,bg,...}
-      order: ["hero", "services", "stats", "about", "contact"],
+      order: ["hero", "services", "localai", "about", "contact"],
       hidden: {},              // {sectionId:true}
       added: {},               // {sectionId:{tpl,label}}
       heroPos: null,           // {x,y} freeform
@@ -719,7 +731,7 @@
     var frame = el("div", { class: "frame" + (S.mobile ? " mobile" : "") });
     frame.appendChild(el("div", { class: "frame-bar" }, [
       el("i"), el("i"), el("i"),
-      el("div", { class: "url" }, "loricatus.hu"),
+      el("div", { class: "url" }, "portfolio.maydayprod.app"),
     ]));
 
     var site = el("div", { class: "site" + (S.overlay === "edit" ? " editing" : "") });
@@ -783,7 +795,7 @@
     switch (id) {
       case "hero": return secHero();
       case "services": return secServices();
-      case "stats": return secStats();
+      case "localai": return secLocalAI();
       case "about": return secAbout();
       case "contact": return secContact();
     }
@@ -859,15 +871,16 @@
     return e;
   }
 
-  function secStats() {
-    var row = el("div", { class: "row" });
-    S.stats.forEach(function (st) {
-      row.appendChild(el("div", null, [
-        el("div", { class: "num" }, st.num),
-        el("div", { class: "lbl" }, L(st.label)),
-      ]));
-    });
-    return secWrap("stats", "stats", el("div", { class: "container" }, row));
+  function secLocalAI() {
+    var models = ["Llama", "Mistral", "Whisper", "Stable Diffusion", "Ollama"];
+    var chips = el("div", { class: "chips" }, models.map(function (m, i) {
+      return el("span", i === 0 ? { class: "acc" } : null, m);
+    }));
+    return secWrap("localai", "localai", el("div", { class: "container" }, [
+      editable("h2", "localai_title"),
+      editable("p", "localai_text"),
+      chips,
+    ]));
   }
 
   function secAbout() {

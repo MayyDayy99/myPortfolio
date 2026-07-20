@@ -5,122 +5,145 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Weboldal szerkesztő — bemutató</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Vizuális, kód nélküli weboldal-szerkesztő bemutatója — kattints bármelyik szövegbe és írd át, állíts színt, vagy rendezd át a szekciókat. A változtatások csak a böngésződben élnek.">
+<meta name="description" content="Vizuális, kód nélküli weboldal-szerkesztő teljes bemutatója: inline szöveg-, kép- és linkszerkesztés, színek, szekció-átrendezés, szabad pozíció, szekció-könyvtár, nézetek és nyelvváltás — a valódi portfólión, a böngésződben.">
 <style>
-  /* ============================================================
-     Weboldal szerkesztő — önálló bemutató (demo)
-     A szerkesztő a VALÓDI portfóliót tölti be egy iframe-be
-     (index.html), és arra ültet inline szerkesztést + színezőt +
-     szekció-átrendezést. Minden csak a böngésződben él, semmi nem
-     kerül mentésre — az éles oldal nem változik.
-     A sötét "glass" toolbar a valódi szerkesztő (Vite+React+Tailwind)
-     kinézetének hű mása.
-     ============================================================ */
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   :root { --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif; }
-  body { font-family: var(--font); background: #111827; color: #fff; -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font); background: #0b0f16; color: #fff; -webkit-font-smoothing: antialiased; }
   button { font-family: inherit; }
-
   .app { display: flex; flex-direction: column; height: 100vh; background: #0b0f16; }
 
-  /* ── Toolbar ─────────────────────────────────────────────────── */
-  .cms-toolbar {
-    flex: none;
-    background: linear-gradient(180deg, rgba(30, 33, 42, 0.92), rgba(19, 21, 28, 0.95));
-    -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.75);
-  }
-  .cms-toolbar-inner { padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 10px 12px; justify-content: space-between; align-items: center; }
-  .tb-left, .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .tb-brand { display: flex; align-items: center; gap: 10px; }
-  .cms-brand-mark {
-    width: 36px; height: 36px; flex: none; border-radius: 11px; display: grid; place-items: center;
-    font-weight: 800; font-size: 17px; letter-spacing: -0.02em; color: #fff;
-    background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9);
-    box-shadow: 0 8px 18px -6px rgba(37, 99, 235, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  }
-  .tb-title { line-height: 1.15; }
-  .tb-title h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
-  .tb-title p { font-size: 11px; color: #9ca3af; margin: 2px 0 0; }
-  .tb-title .amber { color: #fbbf24; margin-left: 6px; }
-
-  .demo-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fcd34d; background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 999px; padding: 4px 10px; }
+  /* Toolbar */
+  .cms-toolbar { flex: none; background: linear-gradient(180deg, rgba(30,33,42,.92), rgba(19,21,28,.95)); -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 10px 30px -18px rgba(0,0,0,.75); }
+  .cms-toolbar-inner { padding: 9px 14px; display: flex; flex-wrap: wrap; gap: 8px 10px; justify-content: space-between; align-items: center; }
+  .tb-left, .tb-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tb-brand { display: flex; align-items: center; gap: 9px; }
+  .cms-brand-mark { width: 34px; height: 34px; flex: none; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: 16px; color: #fff; background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 8px 18px -6px rgba(37,99,235,.65), inset 0 1px 0 rgba(255,255,255,.3); }
+  .tb-title { line-height: 1.14; }
+  .tb-title h1 { font-size: 14.5px; font-weight: 600; margin: 0; }
+  .tb-title p { font-size: 10.5px; color: #9ca3af; margin: 2px 0 0; }
+  .tb-title .amber { color: #fbbf24; margin-left: 5px; }
+  .demo-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #fcd34d; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.3); border-radius: 999px; padding: 4px 9px; }
   .demo-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24; animation: pulse 2s infinite; }
   @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(251,191,36,.5)} 70%{box-shadow:0 0 0 6px rgba(251,191,36,0)} 100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} }
 
-  .cms-tool { display: inline-flex; align-items: center; gap: 5px; padding: 7px 11px; border-radius: 10px; font-size: 12.5px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.66); background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.08); cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s; }
-  .cms-tool:hover:not(.is-active) { background: rgba(255,255,255,.09); color: #fff; }
-  .cms-tool.is-active { color: #fff; background: var(--acc, #6366f1); border-color: transparent; box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2); }
-  .cms-icon-btn { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; color: rgba(255,255,255,.5); background: transparent; border: none; cursor: pointer; transition: background-color .15s, color .15s; font-size: 15px; }
-  .cms-icon-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
-
-  .cms-segment { display: inline-flex; align-items: center; padding: 3px; gap: 2px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
-  .cms-seg-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 9px; font-size: 12.5px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.6); background: transparent; border: none; cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s; }
-  .cms-seg-btn:hover:not(:disabled) { color: #fff; background: rgba(255,255,255,.06); }
+  .cms-segment { display: inline-flex; align-items: center; padding: 3px; gap: 2px; border-radius: 11px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+  .cms-seg-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.6); background: transparent; border: none; cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s; }
+  .cms-seg-btn:hover:not(:disabled):not(.is-active) { color: #fff; background: rgba(255,255,255,.06); }
+  .cms-seg-btn.is-active { color: #fff; background: rgba(255,255,255,.14); box-shadow: 0 2px 8px -3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12); }
   .cms-seg-btn:disabled { opacity: .4; cursor: default; }
 
-  .cms-btn-save { border-radius: 11px; padding: 8px 17px; font-size: 12.5px; font-weight: 600; line-height: 1; color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07); cursor: pointer; transition: background-color .15s, box-shadow .15s, border-color .15s; }
+  .cms-tool { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border-radius: 9px; font-size: 12px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.66); background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.08); cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s; }
+  .cms-tool:hover:not(.is-active) { background: rgba(255,255,255,.09); color: #fff; }
+  .cms-tool.is-active { color: #fff; background: var(--acc, #6366f1); border-color: transparent; box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2); }
+  .cms-icon-btn { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 9px; color: rgba(255,255,255,.5); background: transparent; border: none; cursor: pointer; transition: background-color .15s, color .15s; font-size: 14px; }
+  .cms-icon-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+  .cms-btn-save { border-radius: 10px; padding: 8px 15px; font-size: 12px; font-weight: 600; line-height: 1; color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07); cursor: pointer; transition: background-color .15s, box-shadow .15s; }
   .cms-btn-save:hover:not(:disabled) { background: rgba(255,255,255,.13); }
   .cms-btn-save.is-dirty { background: linear-gradient(135deg, #2563eb, #3b82f6); border-color: transparent; box-shadow: 0 6px 18px -6px rgba(37,99,235,.6), inset 0 1px 0 rgba(255,255,255,.2); }
-  .cms-btn-save.is-dirty:hover { filter: brightness(1.08); }
-  .cms-btn-publish { border-radius: 11px; padding: 8px 18px; font-size: 12.5px; font-weight: 600; line-height: 1; color: #fff; border: none; cursor: pointer; background: linear-gradient(135deg, #15803d, #22c55e); box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22); transition: filter .15s; }
+  .cms-btn-publish { border-radius: 10px; padding: 8px 15px; font-size: 12px; font-weight: 600; line-height: 1; color: #fff; border: none; cursor: pointer; background: linear-gradient(135deg, #15803d, #22c55e); box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22); transition: filter .15s; }
   .cms-btn-publish:hover { filter: brightness(1.08); }
-
-  .status-txt { font-size: 12px; }
-  .status-txt.ok { color: #86efac; } .status-txt.info { color: #93c5fd; }
-  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #9ca3af; text-decoration: none; padding: 6px 10px; border-radius: 9px; transition: background .15s, color .15s; }
+  .status-txt { font-size: 11.5px; } .status-txt.ok { color: #86efac; } .status-txt.info { color: #93c5fd; }
+  .back-link { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: #9ca3af; text-decoration: none; padding: 6px 9px; border-radius: 8px; transition: background .15s, color .15s; }
   .back-link:hover { background: rgba(255,255,255,.08); color: #fff; }
 
-  /* ── Stage / iframe ──────────────────────────────────────────── */
+  /* Stage / iframe */
   .stage { flex: 1; min-height: 0; position: relative; background: #0b0f16; overflow: auto; display: flex; }
   .frame-wrap { flex: 1; min-height: 0; display: flex; justify-content: center; }
   #siteFrame { width: 100%; height: 100%; border: 0; background: #fff; display: block; transition: max-width .28s ease; }
-  .stage.mobile { padding: 22px 12px; }
+  .stage.mobile { padding: 20px 12px; }
   .stage.mobile #siteFrame { max-width: 390px; border-radius: 18px; box-shadow: 0 40px 90px -40px rgba(0,0,0,.9); border: 1px solid rgba(255,255,255,.08); height: 100%; }
-
   .frame-loading { position: absolute; inset: 0; display: grid; place-items: center; color: #9ca3af; font-size: 14px; pointer-events: none; text-align: center; padding: 20px; }
 
-  /* ── Colors side sheet ───────────────────────────────────────── */
-  .cms-sidesheet { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; max-width: 360px; z-index: 1200; display: flex; flex-direction: column; background: linear-gradient(180deg, rgba(32,35,44,.97), rgba(20,22,29,.99)); -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%); border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7); animation: slide-in .22s cubic-bezier(.2,.85,.25,1); }
+  /* Side sheets (colors / layout / form) */
+  .sheet { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; z-index: 1200; display: flex; flex-direction: column; background: linear-gradient(180deg, rgba(32,35,44,.98), rgba(20,22,29,.99)); -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%); border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7); animation: slide-in .22s cubic-bezier(.2,.85,.25,1); }
+  .sheet.narrow { max-width: 360px; } .sheet.wide { max-width: 420px; }
   @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
-  .sidesheet-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
-  .sidesheet-head h2 { font-size: 15px; font-weight: 600; margin: 0; }
-  .sidesheet-body { padding: 18px; overflow-y: auto; display: grid; gap: 12px; }
-  .sidesheet-body .hint { font-size: 12px; color: #9ca3af; line-height: 1.5; margin: 0; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.1); flex: none; }
+  .sheet-head h2 { font-size: 15px; font-weight: 600; margin: 0; }
+  .sheet-body { padding: 16px 18px 40px; overflow-y: auto; display: grid; gap: 12px; }
+  .sheet-body .hint { font-size: 12px; color: #9ca3af; line-height: 1.5; margin: 0; }
+
   .color-row { background: rgba(17,24,39,.4); border-radius: 10px; padding: 12px; }
   .color-row .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .color-row label { font-size: 13px; color: #e5e7eb; }
   .color-row .reset { font-size: 11px; color: #9ca3af; text-decoration: underline; background: none; border: none; cursor: pointer; }
   .color-row .reset:hover { color: #fff; }
   .color-row .inputs { display: flex; gap: 8px; align-items: center; }
-  .color-row input[type=color] { height: 38px; width: 52px; flex: none; background: #374151; border: none; border-radius: 8px; cursor: pointer; padding: 3px; }
+  .color-row input[type=color] { height: 36px; width: 50px; flex: none; background: #374151; border: none; border-radius: 8px; cursor: pointer; padding: 3px; }
   .color-row input[type=text] { flex: 1; min-width: 0; padding: 9px 11px; background: #374151; border: none; border-radius: 8px; color: #fff; font-family: ui-monospace, monospace; font-size: 13px; }
   .color-row .desc { font-size: 11px; color: #6b7280; margin: 6px 0 0; }
-  .addbtn { font-size: 12.5px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 9px 12px; cursor: pointer; justify-self: start; }
+
+  /* Layout list rows */
+  .lay-row { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); }
+  .lay-row.hidden-sec { opacity: .5; }
+  .lay-row .grip { color: #6b7280; font-size: 14px; cursor: grab; }
+  .lay-row .name { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lay-row .badge2 { font-size: 10px; color: #a78bfa; }
+  .mini { width: 29px; height: 27px; border-radius: 7px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #cbd5e1; cursor: pointer; display: grid; place-items: center; font-size: 12px; }
+  .mini:hover { background: rgba(255,255,255,.12); color: #fff; } .mini:disabled { opacity: .3; cursor: default; }
+  .lay-row.drag-over { box-shadow: inset 0 3px 0 #8b5cf6; }
+
+  .cat-item { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; padding: 11px 13px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px dashed rgba(255,255,255,.16); cursor: pointer; transition: background .15s, border-color .15s; }
+  .cat-item:hover { background: rgba(20,184,166,.14); border-color: #14b8a6; }
+  .cat-item .t { font-size: 13px; font-weight: 600; color: #e5e7eb; }
+  .cat-item .d { grid-column: 1 / -1; font-size: 11.5px; color: #8a94a3; line-height: 1.4; }
+  .cat-item .add { font-size: 16px; color: #34d399; }
+
+  .field { margin-bottom: 4px; }
+  .field label { display: block; font-size: 11.5px; color: #9ca3af; margin-bottom: 5px; }
+  .field input, .field textarea { width: 100%; border-radius: 9px; padding: 9px 11px; font-size: 13.5px; color: #fff; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); resize: vertical; font-family: inherit; }
+  .field input:focus, .field textarea:focus { outline: none; border-color: rgba(59,130,246,.7); box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
+  .grp-title { font-size: 12px; font-weight: 700; color: #c4b5fd; text-transform: uppercase; letter-spacing: .05em; margin: 8px 0 2px; }
+  .addbtn { font-size: 12px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 9px 12px; cursor: pointer; justify-self: start; }
   .addbtn:hover { background: rgba(16,185,129,.2); }
 
-  /* ── Toast ───────────────────────────────────────────────────── */
-  .toast-wrap { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
-  .toast { background: rgba(17,24,39,.97); color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 12px 18px; font-size: 13.5px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8); display: flex; align-items: center; gap: 10px; max-width: 92vw; animation: toast-in .2s ease-out; }
+  /* Modal (image / link) */
+  .modal-back { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; background: rgba(8,10,15,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .modal { width: 100%; max-width: 460px; border-radius: 18px; padding: 22px; background: linear-gradient(180deg, rgba(38,41,51,.94), rgba(22,24,31,.97)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px -18px rgba(0,0,0,.7); }
+  .modal h3 { margin: 0 0 4px; font-size: 17px; }
+  .modal p.sub { margin: 0 0 16px; font-size: 12.5px; color: #9ca3af; }
+  .modal .field { margin-bottom: 13px; }
+  .modal .preview { margin: 4px 0 12px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); background: #0b0f16; max-height: 160px; display: grid; place-items: center; }
+  .modal .preview img { max-width: 100%; max-height: 160px; display: block; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+  .btn-primary { border: none; cursor: pointer; border-radius: 10px; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); }
+  .btn-primary:hover { filter: brightness(1.07); }
+  .btn-ghost { border: none; cursor: pointer; border-radius: 10px; padding: 10px 14px; font-size: 13.5px; color: #d1d5db; background: transparent; }
+  .btn-ghost:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast { background: rgba(17,24,39,.97); color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 11px 17px; font-size: 13px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8); display: flex; align-items: center; gap: 10px; max-width: 92vw; animation: toast-in .2s ease-out; }
   .toast.ok { border-color: rgba(34,197,94,.4); } .toast.info { border-color: rgba(59,130,246,.4); }
   @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  /* ── Intro ───────────────────────────────────────────────────── */
-  .intro-backdrop { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px; background: rgba(8,10,15,.66); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-  .intro { max-width: 470px; width: 100%; border-radius: 20px; padding: 30px 28px; text-align: center; background: linear-gradient(180deg, rgba(38,41,51,.92), rgba(22,24,31,.96)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px -18px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07); }
-  .intro .mark { width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 15px; display: grid; place-items: center; font-weight: 800; font-size: 24px; background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
-  .intro h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
-  .intro p { margin: 0 0 16px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
-  .intro ul { text-align: left; margin: 0 auto 22px; padding: 0; list-style: none; display: grid; gap: 9px; max-width: 360px; }
-  .intro li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #e5e7eb; }
-  .intro .start { width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
+  /* Intro + Tour */
+  .intro-back { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px; background: rgba(8,10,15,.66); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .intro { max-width: 480px; width: 100%; border-radius: 20px; padding: 28px; text-align: center; background: linear-gradient(180deg, rgba(38,41,51,.94), rgba(22,24,31,.97)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px -18px rgba(0,0,0,.7); }
+  .intro .mark { width: 50px; height: 50px; margin: 0 auto 15px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: 22px; background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
+  .intro h2 { margin: 0 0 8px; font-size: 21px; }
+  .intro p { margin: 0 0 14px; color: #cbd5e1; font-size: 13.5px; line-height: 1.6; }
+  .intro ul { text-align: left; margin: 0 auto 20px; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 380px; }
+  .intro li { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #e5e7eb; }
+  .intro .start { width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
   .intro .start:hover { filter: brightness(1.07); }
-  .intro .foot { margin: 14px 0 0; font-size: 11.5px; color: #6b7280; }
+  .intro .foot { margin: 12px 0 0; font-size: 11px; color: #6b7280; }
+  .intro .ghost2 { margin-top: 8px; background: none; border: none; color: #9ca3af; font-size: 12px; cursor: pointer; text-decoration: underline; }
+
+  .tour-dim { position: fixed; inset: 0; z-index: 4500; background: rgba(8,10,15,.55); }
+  .tour-spot { position: fixed; z-index: 4600; border-radius: 12px; box-shadow: 0 0 0 4px rgba(59,130,246,.9), 0 0 0 9999px rgba(8,10,15,.6); transition: all .2s ease; pointer-events: none; }
+  .tour-card { position: fixed; z-index: 4700; max-width: 320px; background: linear-gradient(180deg, rgba(38,41,51,.98), rgba(22,24,31,.99)); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 16px 17px; box-shadow: 0 26px 60px -18px rgba(0,0,0,.8); }
+  .tour-card h4 { margin: 0 0 6px; font-size: 15px; } .tour-card p { margin: 0 0 14px; font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+  .tour-card .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .tour-card .dots { font-size: 11px; color: #6b7280; } .tour-card .acts { display: flex; gap: 6px; }
+  .tour-card .skip { background: none; border: none; color: #9ca3af; font-size: 12px; cursor: pointer; }
+  .tour-card .nx { border: none; cursor: pointer; border-radius: 9px; padding: 7px 13px; font-size: 12.5px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); }
 
   .sr-hide { display: none !important; }
-  @media (max-width: 720px) { .hide-sm { display: none !important; } }
+  @media (max-width: 860px) { .hide-sm { display: none !important; } }
   @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
@@ -137,17 +160,21 @@
           </div>
         </div>
         <span class="demo-pill hide-sm" title="Bemutató – a változtatások csak a böngésződben élnek."><span class="dot"></span>Demó</span>
-        <div class="tb-tools" id="tools" style="display:flex; gap:6px; align-items:center;"></div>
+        <div class="cms-segment" id="localeSeg" data-tour="locale" role="group" aria-label="Nyelv"></div>
+        <div class="cms-segment" id="pagesSeg" data-tour="pages" title="Oldal kiválasztása"></div>
+        <div class="cms-segment" id="viewSeg" data-tour="viewmodes" role="group" aria-label="Nézet"></div>
+        <div id="tools" data-tour="tools" style="display:flex; gap:6px; align-items:center;"></div>
       </div>
       <div class="tb-right">
         <span id="statusSlot" class="hide-sm"></span>
+        <button class="cms-icon-btn" id="helpBtn" title="Vezetett túra újraindítása">?</button>
         <div class="cms-segment">
           <button class="cms-seg-btn" id="undoBtn" title="Visszavonás (Ctrl+Z)">↶</button>
           <button class="cms-seg-btn" id="redoBtn" title="Újra (Ctrl+Shift+Z)">↷</button>
         </div>
         <a class="back-link hide-sm" href="index.html" title="Vissza a portfólióhoz">← Portfólió</a>
-        <button class="cms-btn-save" id="saveBtn" title="Mentés (Ctrl+S)">Mentés</button>
-        <button class="cms-btn-publish" id="publishBtn">Publikálás</button>
+        <button class="cms-btn-save" id="saveBtn" data-tour="save" title="Mentés (Ctrl+S)">Mentés</button>
+        <button class="cms-btn-publish" id="publishBtn" data-tour="publish">Publikálás</button>
       </div>
     </div>
   </header>
@@ -159,32 +186,52 @@
     <div class="frame-loading" id="frameLoading">Portfólió betöltése…</div>
   </div>
 
-  <aside class="cms-sidesheet sr-hide" id="colorSheet" aria-label="Színek">
-    <div class="sidesheet-head">
-      <h2>🎨 Színek</h2>
-      <button class="cms-icon-btn" id="closeColors" title="Bezárás">✕</button>
-    </div>
-    <div class="sidesheet-body">
-      <p class="hint">A színek azonnal frissülnek az előnézetben. A mentéshez / közzétételhez használd a fenti gombokat.</p>
+  <!-- Colors -->
+  <aside class="sheet narrow sr-hide" id="colorsSheet" aria-label="Színek">
+    <div class="sheet-head"><h2>🎨 Színek</h2><button class="cms-icon-btn" data-close="colors" title="Bezárás">✕</button></div>
+    <div class="sheet-body">
+      <p class="hint">A színek azonnal frissülnek az előnézetben. Mentés / publikálás a fenti gombokkal.</p>
       <div id="colorRows"></div>
       <button class="addbtn" id="resetColors">↺ Vissza az alap színekhez</button>
+    </div>
+  </aside>
+
+  <!-- Layout (Elrendezés) -->
+  <aside class="sheet wide sr-hide" id="layoutSheet" aria-label="Elrendezés">
+    <div class="sheet-head"><h2>📐 Elrendezés</h2><button class="cms-icon-btn" data-close="layout" title="Bezárás">✕</button></div>
+    <div class="sheet-body">
+      <p class="hint">Húzd a fogantyút vagy használd a nyilakat az átrendezéshez; a szemmel elrejtheted a szekciót. Alul új szekciót szúrhatsz be a könyvtárból.</p>
+      <div id="secList"></div>
+      <div class="grp-title">Új szekció beszúrása — szekció-könyvtár</div>
+      <div id="catalog" style="display:grid; gap:8px;"></div>
+    </div>
+  </aside>
+
+  <!-- Form (Lista) -->
+  <aside class="sheet wide sr-hide" id="formSheet" aria-label="Lista">
+    <div class="sheet-head"><h2>📝 Lista — minden mező</h2><button class="cms-icon-btn" data-close="form" title="Bezárás">✕</button></div>
+    <div class="sheet-body" id="formBody">
+      <p class="hint">Az oldal összes szövege egy helyen. Írj bele, és az előnézet azonnal frissül.</p>
     </div>
   </aside>
 </div>
 
 <div class="toast-wrap" id="toasts" aria-live="polite"></div>
+<div id="modalRoot"></div>
+<div id="tourRoot"></div>
 
-<div class="intro-backdrop" id="introBackdrop">
-  <div class="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
+<div class="intro-back" id="introBack">
+  <div class="intro" role="dialog" aria-modal="true">
     <div class="mark" aria-hidden="true">N</div>
-    <h2 id="introTitle">Weboldal szerkesztő</h2>
-    <p>Ez itt a <b>saját portfóliód</b> — így szerkeszthetnéd <b>kód nélkül, böngészőből</b>, pontosan úgy, ahogy egy megrendelő is kapná a saját oldalához. Próbáld ki nyugodtan.</p>
+    <h2>Weboldal szerkesztő</h2>
+    <p>Ez itt a <b>saját portfóliód</b> — így szerkeszthetnéd <b>kód nélkül, böngészőből</b>, pontosan úgy, ahogy egy megrendelő is kapná a saját oldalához.</p>
     <ul>
-      <li><span>✍️</span><span>Kattints <b>bármelyik szövegre</b> az oldalon, és írd át.</span></li>
-      <li><span>🎨</span><span>A <b>Színek</b> gombbal állítsd az arculatot, élő előnézettel.</span></li>
-      <li><span>📐</span><span>Az <b>Átrendezés</b> gombbal húzd más sorrendbe a szekciókat.</span></li>
+      <li><span>✍️</span><span>Kattints <b>bármelyik szövegre, képre vagy linkre</b>, és írd át.</span></li>
+      <li><span>🎨</span><span><b>Színek</b>, <b>Átrendezés</b>, <b>Szabad pozíció</b>, <b>Mobil</b> nézet — a felső eszköztárból.</span></li>
+      <li><span>🧩</span><span><b>Elrendezés</b> nézet: szekciók sorrendje + <b>szekció-könyvtár</b>. <b>Lista</b> nézet: minden mező egy helyen.</span></li>
     </ul>
     <button class="start" id="introStart">Kipróbálom</button>
+    <button class="ghost2" id="introTour">Inkább egy gyors vezetett túrát kérek</button>
     <p class="foot">Bemutató mód — a változtatások csak a böngésződben élnek, és újratöltésre visszaállnak. Az éles oldal nem változik.</p>
   </div>
 </div>
@@ -194,283 +241,458 @@
 (function () {
   var frame = document.getElementById("siteFrame");
   var stage = document.getElementById("stage");
-  var toolsEl = document.getElementById("tools");
 
-  // Editor state (lives only in this page; the iframe is a throwaway copy)
-  var mode = "edit";     // "edit" (inline text) | "reorder" (drag sections)
-  var mobile = false;
-  var showColors = false;
-  var ready = false;
+  // ── State ────────────────────────────────────────────────────
+  var view = "live";            // live | layout | form
+  var overlay = "edit";         // edit | reorder | freeform (live only)
+  var mobile = false, ready = false, panel = null; // panel: colors|layout|form|null
+  var locale = "hu";
 
-  // Colour tokens edited on the portfolio's :root (see index.html :root)
-  var COLORS = [
-    { v: "--amber",   label: "Kiemelő szín",     hint: "Linkek, gombok, kiemelések (borostyán)" },
-    { v: "--paper",   label: "Fő háttér",         hint: "Az oldal alap háttere" },
-    { v: "--paper-2", label: "Másodlagos háttér", hint: "Váltakozó szekciók háttere" },
-    { v: "--text",    label: "Szöveg",            hint: "A fő szövegszín" },
-    { v: "--muted",   label: "Halvány szöveg",    hint: "Leírások, másodlagos feliratok" },
+  var LOCALES = [
+    { code: "hu", flag: "🇭🇺" }, { code: "en", flag: "🇬🇧" }, { code: "de", flag: "🇩🇪" },
+    { code: "es", flag: "🇪🇸" }, { code: "fr", flag: "🇫🇷" }, { code: "zh", flag: "🇨🇳" },
   ];
-  var defaults = {};     // captured from the loaded page
-  var overrides = {};    // {var: value}
+  var COLORS = [
+    { v: "--amber", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések (borostyán)" },
+    { v: "--paper", label: "Fő háttér", hint: "Az oldal alap háttere" },
+    { v: "--paper-2", label: "Másodlagos háttér", hint: "Váltakozó szekciók háttere" },
+    { v: "--text", label: "Szöveg", hint: "A fő szövegszín" },
+    { v: "--muted", label: "Halvány szöveg", hint: "Leírások, másodlagos feliratok" },
+  ];
+  var defaults = {}, overrides = {};
 
-  // Undo/redo — granular ops so the live page keeps its own behaviour.
+  // Section catalog — mirrors the editor's sections/catalog.json (13 blocks).
+  var CATALOG = [
+    { t: "hero", label: "Kiemelt fejléc", d: "Nagy cím + alcím + két gomb — egy oldal tetejére." },
+    { t: "features", label: "Jellemzők (3 kártya)", d: "Három kártya ikonnal, címmel és leírással." },
+    { t: "cards", label: "Kártyarács linkkel", d: "Három kártya címmel, leírással és „Tovább” linkkel." },
+    { t: "steps", label: "Folyamat (3 lépés)", d: "Számozott lépések — „Így dolgozunk” bemutatás." },
+    { t: "stats", label: "Számok / eredmények", d: "Nagy számok felirattal — projektek, tapasztalat." },
+    { t: "checklist", label: "Előnyök (pipás lista)", d: "Pipás felsorolás címmel és leírással." },
+    { t: "testimonial", label: "Ügyfélvélemény", d: "Kiemelt idézet névvel és beosztással." },
+    { t: "mediatext", label: "Kép + szöveg", d: "Kép az egyik, szöveg és gomb a másik hasábban." },
+    { t: "video", label: "Videó (YouTube / Vimeo)", d: "Beágyazott videó — illeszd be a linket." },
+    { t: "text", label: "Szöveges szekció", d: "Cím + szabadon szerkeszthető szövegtörzs." },
+    { t: "cta", label: "Ajánlatkérő sáv", d: "Rövid felhívás egy gombbal a kapcsolat felé." },
+    { t: "contact", label: "Kapcsolati blokk", d: "Cím + rövid szöveg + e-mail és gomb." },
+    { t: "faq", label: "GYIK", d: "Gyakori kérdések, rövid válaszokkal." },
+  ];
+
+  // ── Undo/redo ────────────────────────────────────────────────
   var ops = [], opIdx = -1;
-  function pushOp(op) { ops = ops.slice(0, opIdx + 1); ops.push(op); if (ops.length > 60) ops.shift(); opIdx = ops.length - 1; refreshUndo(); markDirty(); }
+  function pushOp(op) { ops = ops.slice(0, opIdx + 1); ops.push(op); if (ops.length > 80) ops.shift(); opIdx = ops.length - 1; refreshUndo(); markDirty(); if (view !== "live") { renderLayout(); renderForm(); } }
   function refreshUndo() { document.getElementById("undoBtn").disabled = opIdx < 0; document.getElementById("redoBtn").disabled = opIdx >= ops.length - 1; }
   function applyOp(op, dir) {
-    if (op.type === "text") { op.el.textContent = dir > 0 ? op.next : op.prev; }
-    else if (op.type === "color") { var val = dir > 0 ? op.next : op.prev; if (val == null) clearColor(op.v, true); else setColor(op.v, val, true); syncColorInputs(); }
-    else if (op.type === "move") { reorderTo(dir > 0 ? op.after : op.before); }
+    var to = dir > 0 ? "next" : "prev";
+    if (op.type === "text") op.el.textContent = op[to];
+    else if (op.type === "image") op.el.setAttribute("src", op[to]);
+    else if (op.type === "link") { op.el.textContent = op[to].text; if (op.el.tagName === "A") op.el.setAttribute("href", op[to].href); }
+    else if (op.type === "color") { var val = op[to]; if (val == null) clearColor(op.v, true); else setColor(op.v, val, true); syncColors(); }
+    else if (op.type === "hide") { op.el.style.display = op[to] ? "none" : ""; }
+    else if (op.type === "pos") { var p = op[to]; op.el.style.position = p.position; op.el.style.left = p.left; op.el.style.top = p.top; }
+    else if (op.type === "add") { if (dir > 0) op.parent.insertBefore(op.el, op.ref); else op.el.remove(); }
+    else if (op.type === "del") { if (dir > 0) op.el.remove(); else op.parent.insertBefore(op.el, op.ref); }
+    else if (op.type === "move") { op.parent.insertBefore(op.el, dir > 0 ? op.nextNext : op.prevNext); }
   }
-  function undo() { if (opIdx < 0) return; applyOp(ops[opIdx], -1); opIdx--; refreshUndo(); markDirty(); }
-  function redo() { if (opIdx >= ops.length - 1) return; opIdx++; applyOp(ops[opIdx], 1); refreshUndo(); markDirty(); }
+  function undo() { if (opIdx < 0) return; applyOp(ops[opIdx], -1); opIdx--; refreshUndo(); markDirty(); if (view!=="live"){renderLayout();renderForm();} }
+  function redo() { if (opIdx >= ops.length - 1) return; opIdx++; applyOp(ops[opIdx], 1); refreshUndo(); markDirty(); if (view!=="live"){renderLayout();renderForm();} }
 
-  // Dirty flag
   var savedIdx = -1, savedColors = "{}";
   function isDirty() { return opIdx !== savedIdx || JSON.stringify(overrides) !== savedColors; }
   function markDirty() {
-    var el2 = document.getElementById("dirtyInfo");
-    var n = 0; for (var i = 0; i <= opIdx; i++) if (ops[i].type === "text") n++;
+    var n = 0; for (var i = 0; i <= opIdx; i++) if (ops[i].type === "text" || ops[i].type === "link") n++;
     var bits = [];
-    if (n) bits.push("· " + n + " módosított szöveg");
-    if (Object.keys(overrides).length) bits.push("· színek módosítva");
-    el2.textContent = bits.length ? " " + bits.join(" ") : "";
+    if (n) bits.push("· " + n + " módosítás");
+    if (Object.keys(overrides).length) bits.push("· színek");
+    document.getElementById("dirtyInfo").textContent = bits.length ? " " + bits.join(" ") : "";
     document.getElementById("saveBtn").classList.toggle("is-dirty", isDirty());
   }
 
   // ── Helpers ──────────────────────────────────────────────────
   function doc() { return frame.contentDocument; }
+  function win() { return frame.contentWindow; }
   function root() { return doc().documentElement; }
   function el(tag, attrs, kids) {
     var e = document.createElement(tag);
-    if (attrs) for (var k in attrs) { if (k === "class") e.className = attrs[k]; else if (k === "text") e.textContent = attrs[k]; else if (k.slice(0,2)==="on" && typeof attrs[k]==="function") e.addEventListener(k.slice(2), attrs[k]); else if (attrs[k]!=null) e.setAttribute(k, attrs[k]); }
+    if (attrs) for (var k in attrs) { if (k === "class") e.className = attrs[k]; else if (k === "text") e.textContent = attrs[k]; else if (k === "html") e.innerHTML = attrs[k]; else if (k.slice(0,2)==="on" && typeof attrs[k]==="function") e.addEventListener(k.slice(2), attrs[k]); else if (attrs[k]!=null) e.setAttribute(k, attrs[k]); }
     if (kids) (Array.isArray(kids)?kids:[kids]).forEach(function(c){ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });
     return e;
   }
-  function toolBtn(label, acc, active, onclick) { var b = el("button", { class: "cms-tool" + (active?" is-active":""), onclick: onclick }, label); b.style.setProperty("--acc", acc); return b; }
+  function tool(label, acc, active, onclick, tip) { var b = el("button", { class: "cms-tool" + (active?" is-active":""), onclick: onclick, title: tip||"" }, label); b.style.setProperty("--acc", acc); return b; }
 
-  // ── Colour handling on the iframe :root ──────────────────────
+  // ── Colours ──────────────────────────────────────────────────
   function hexToRgb(h){ h=(h||"").trim().replace("#",""); if(h.length===3) h=h.split("").map(function(c){return c+c;}).join(""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
   function toHex(n){ n=Math.max(0,Math.min(255,Math.round(n))); return n.toString(16).padStart(2,"0"); }
-  function darken(hex,f){ var c=hexToRgb(hex); return "#"+toHex(c[0]*(1-f))+toHex(c[1]*(1-f))+toHex(c[2]*(1-f)); }
-  function rgba(hex,a){ var c=hexToRgb(hex); return "rgba("+c[0]+","+c[1]+","+c[2]+","+a+")"; }
+  function darken(h,f){ var c=hexToRgb(h); return "#"+toHex(c[0]*(1-f))+toHex(c[1]*(1-f))+toHex(c[2]*(1-f)); }
+  function rgba(h,a){ var c=hexToRgb(h); return "rgba("+c[0]+","+c[1]+","+c[2]+","+a+")"; }
   function isHex(v){ return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test((v||"").trim()); }
-  function setColor(v, val, silent) {
-    overrides[v] = val;
-    var r = root(); r.style.setProperty(v, val);
-    if (v === "--amber" && isHex(val)) { r.style.setProperty("--amber-dark", darken(val, .12)); r.style.setProperty("--amber-soft", rgba(val, .1)); }
-    if (!silent) markDirty();
-  }
-  function clearColor(v, silent) {
-    delete overrides[v];
-    var r = root(); r.style.removeProperty(v);
-    if (v === "--amber") { r.style.removeProperty("--amber-dark"); r.style.removeProperty("--amber-soft"); }
-    if (!silent) markDirty();
-  }
-  function currentColor(v) { return overrides[v] || defaults[v] || "#000000"; }
-
-  function buildColorRows() {
-    var wrap = document.getElementById("colorRows");
-    wrap.innerHTML = "";
-    COLORS.forEach(function (c) {
-      var row = el("div", { class: "color-row" });
-      var custom = overrides[c.v] != null;
-      row.appendChild(el("div", { class: "top" }, [
-        el("label", null, c.label),
-        custom ? el("button", { class: "reset", onclick: function () { var prev = overrides[c.v]; clearColor(c.v); pushOp({ type:"color", v:c.v, prev: prev, next: null }); buildColorRows(); } }, "alap") : null,
+  function setColor(v, val, silent){ overrides[v]=val; var r=root(); r.style.setProperty(v,val); if(v==="--amber"&&isHex(val)){ r.style.setProperty("--amber-dark",darken(val,.12)); r.style.setProperty("--amber-soft",rgba(val,.1)); } if(!silent) markDirty(); }
+  function clearColor(v, silent){ delete overrides[v]; var r=root(); r.style.removeProperty(v); if(v==="--amber"){ r.style.removeProperty("--amber-dark"); r.style.removeProperty("--amber-soft"); } if(!silent) markDirty(); }
+  function curColor(v){ return overrides[v]||defaults[v]||"#000000"; }
+  function normHex(v){ v=(v||"").trim(); return isHex(v)?(v.length===4?"#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]:v):"#000000"; }
+  var colorTimer=null, pendingColor=null;
+  function schedColorOp(v,prev,next){ pendingColor={type:"color",v:v,prev:prev,next:next}; clearTimeout(colorTimer); colorTimer=setTimeout(function(){ if(pendingColor){pushOp(pendingColor);pendingColor=null;} },450); }
+  function buildColorRows(){
+    var wrap=document.getElementById("colorRows"); wrap.innerHTML="";
+    COLORS.forEach(function(c){
+      var custom=overrides[c.v]!=null;
+      var color=el("input",{type:"color",value:normHex(curColor(c.v))});
+      var text=el("input",{type:"text",value:overrides[c.v]||"",placeholder:defaults[c.v]||""});
+      color.addEventListener("input",function(){ var prev=overrides[c.v]!=null?overrides[c.v]:null; setColor(c.v,color.value); text.value=color.value; schedColorOp(c.v,prev,color.value); });
+      text.addEventListener("input",function(){ var prev=overrides[c.v]!=null?overrides[c.v]:null; if(text.value.trim()){ setColor(c.v,text.value.trim()); if(isHex(text.value.trim())) color.value=text.value.trim(); } else clearColor(c.v); schedColorOp(c.v,prev,text.value.trim()||null); });
+      wrap.appendChild(el("div",{class:"color-row"},[
+        el("div",{class:"top"},[ el("label",null,c.label), custom?el("button",{class:"reset",onclick:function(){ var prev=overrides[c.v]; clearColor(c.v); pushOp({type:"color",v:c.v,prev:prev,next:null}); buildColorRows(); }},"alap"):null ]),
+        el("div",{class:"inputs"},[color,text]),
+        el("p",{class:"desc"},c.hint),
       ]));
-      var color = el("input", { type: "color", value: normHex(currentColor(c.v)) });
-      var text = el("input", { type: "text", value: overrides[c.v] || "", placeholder: defaults[c.v] || "" });
-      color.addEventListener("input", function () { var prev = overrides[c.v] != null ? overrides[c.v] : null; setColor(c.v, color.value); text.value = color.value; scheduleColorOp(c.v, prev, color.value); });
-      text.addEventListener("input", function () { var prev = overrides[c.v] != null ? overrides[c.v] : null; if (text.value.trim()) { setColor(c.v, text.value.trim()); if (isHex(text.value.trim())) color.value = text.value.trim(); } else clearColor(c.v); scheduleColorOp(c.v, prev, text.value.trim() || null); });
-      row.appendChild(el("div", { class: "inputs" }, [color, text]));
-      row.appendChild(el("p", { class: "desc" }, c.hint));
-      wrap.appendChild(row);
     });
   }
-  function normHex(v){ v=(v||"").trim(); return isHex(v) ? (v.length===4 ? "#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3] : v) : "#000000"; }
-  function syncColorInputs(){ if (showColors) buildColorRows(); }
-  var colorOpTimer = null, pendingColor = null;
-  function scheduleColorOp(v, prev, next) { pendingColor = { type:"color", v:v, prev: prev, next: next }; clearTimeout(colorOpTimer); colorOpTimer = setTimeout(function(){ if (pendingColor) { pushOp(pendingColor); pendingColor = null; } }, 450); }
+  function syncColors(){ if(panel==="colors") buildColorRows(); }
 
-  // ── Inline text editing inside the iframe ────────────────────
-  var EDIT_TAGS = { H1:1,H2:1,H3:1,H4:1,H5:1,H6:1,P:1,SPAN:1,A:1,LI:1,BUTTON:1,STRONG:1,EM:1,B:1,SMALL:1,BLOCKQUOTE:1,FIGCAPTION:1,LABEL:1,TD:1,TH:1,DT:1,DD:1 };
-  function editableFrom(node) {
-    var e = node, d = doc();
-    while (e && e !== d.body) {
-      if (EDIT_TAGS[e.tagName]) {
-        var elemChildren = 0;
-        for (var i=0;i<e.children.length;i++) if (!/^(BR|WBR|B|I|EM|STRONG|SMALL|SUP|SUB)$/.test(e.children[i].tagName)) elemChildren++;
-        if (elemChildren === 0 && e.textContent.trim()) return e;
-      }
-      e = e.parentElement;
-    }
-    e = node;
-    while (e && e !== d.body) { if (/^(H1|H2|H3|H4|H5|H6|P|LI|BUTTON|A)$/.test(e.tagName) && e.textContent.trim()) return e; e = e.parentElement; }
-    return null;
+  // ── Inline editing (text / image / link) ─────────────────────
+  var TEXT_TAGS={H1:1,H2:1,H3:1,H4:1,H5:1,H6:1,P:1,SPAN:1,LI:1,STRONG:1,EM:1,B:1,SMALL:1,BLOCKQUOTE:1,FIGCAPTION:1,LABEL:1,TD:1,TH:1,DT:1,DD:1};
+  function textFrom(node){ var e=node,d=doc(); while(e&&e!==d.body){ if(TEXT_TAGS[e.tagName]){ var ec=0; for(var i=0;i<e.children.length;i++) if(!/^(BR|WBR|B|I|EM|STRONG|SMALL|SUP|SUB)$/.test(e.children[i].tagName)) ec++; if(ec===0&&e.textContent.trim()) return e; } e=e.parentElement; } e=node; while(e&&e!==d.body){ if(/^(H1|H2|H3|H4|H5|H6|P|LI)$/.test(e.tagName)&&e.textContent.trim()) return e; e=e.parentElement; } return null; }
+  function linkFrom(node){ var e=node,d=doc(); while(e&&e!==d.body){ if(e.tagName==="A"||e.tagName==="BUTTON") return e; e=e.parentElement; } return null; }
+  function imgFrom(node){ return node && node.tagName==="IMG" ? node : null; }
+
+  function onFrameClick(e){
+    if(!ready || view!=="live" || overlay==="reorder") return;
+    var t=e.target;
+    // Let the site's own chrome work normally (language switcher, mobile menu).
+    if(t.closest && t.closest('#lang, #langBtn, #langMenu, [data-lang], #toggle, .nav-toggle')) return;
+    if(overlay==="freeform"){ return; } // freeform uses pointer drag, see below
+    var img=imgFrom(t); if(img){ e.preventDefault(); e.stopPropagation(); openImageModal(img); return; }
+    var lnk=linkFrom(t);
+    // a link that is basically an icon/button with no meaningful text → still editable as link
+    if(lnk && (lnk.tagName==="A" && lnk.getAttribute("href")!=null || lnk.tagName==="BUTTON")){ e.preventDefault(); e.stopPropagation(); openLinkModal(lnk); return; }
+    if(startTextEdit(t)){ e.preventDefault(); e.stopPropagation(); }
   }
-  function startEdit(target) {
-    var node = editableFrom(target);
-    if (!node) return false;
-    if (node.getAttribute("contenteditable") === "true") return true;
-    var before = node.textContent;
-    node.setAttribute("contenteditable", "true");
-    node.focus();
-    try { var range = doc().createRange(); range.selectNodeContents(node); range.collapse(false); var sel = frame.contentWindow.getSelection(); sel.removeAllRanges(); sel.addRange(range); } catch (_) {}
-    function commit() {
-      node.removeAttribute("contenteditable");
-      node.removeEventListener("blur", commit); node.removeEventListener("keydown", onKey);
-      var after = node.textContent;
-      if (after !== before) pushOp({ type:"text", el: node, prev: before, next: after });
-    }
-    function onKey(ev) {
-      if (ev.key === "Escape") { node.textContent = before; node.blur(); }
-      if (ev.key === "Enter" && !/^(P|LI|DIV|TD)$/.test(node.tagName)) { ev.preventDefault(); node.blur(); }
-    }
-    node.addEventListener("blur", commit);
-    node.addEventListener("keydown", onKey);
+  function startTextEdit(target){
+    var node=textFrom(target); if(!node) return false;
+    if(node.getAttribute("contenteditable")==="true") return true;
+    var before=node.textContent;
+    node.setAttribute("contenteditable","true"); node.focus();
+    try{ var r=doc().createRange(); r.selectNodeContents(node); r.collapse(false); var s=win().getSelection(); s.removeAllRanges(); s.addRange(r); }catch(_){}
+    function commit(){ node.removeAttribute("contenteditable"); node.removeEventListener("blur",commit); node.removeEventListener("keydown",onKey); var after=node.textContent; if(after!==before) pushOp({type:"text",el:node,prev:before,next:after}); }
+    function onKey(ev){ if(ev.key==="Escape"){ node.textContent=before; node.blur(); } if(ev.key==="Enter"&&!/^(P|LI|DIV|TD)$/.test(node.tagName)){ ev.preventDefault(); node.blur(); } }
+    node.addEventListener("blur",commit); node.addEventListener("keydown",onKey);
     return true;
   }
 
-  // ── Section reorder inside the iframe ────────────────────────
-  var dragEl = null, orderBefore = null;
-  function sections() { return Array.prototype.slice.call(doc().body.querySelectorAll("section")); }
-  function currentOrder() { return sections().map(function (s) { return s.id || ""; }); }
-  function reorderTo(order) {
-    var map = {}, first = null;
-    sections().forEach(function (s) { if (s.id) map[s.id] = s; });
-    for (var i=0;i<order.length;i++){ if (map[order[i]]) { first = map[order[i]]; break; } }
-    if (!first) return;
-    var parent = first.parentNode;
-    order.forEach(function (id) { if (map[id]) parent.appendChild(map[id]); });
+  // ── Modals (image / link) ────────────────────────────────────
+  function closeModal(){ document.getElementById("modalRoot").innerHTML=""; }
+  function modalShell(title, sub, bodyKids, onOk){
+    var back=el("div",{class:"modal-back",onclick:function(e){ if(e.target===back) closeModal(); }});
+    var m=el("div",{class:"modal"},[ el("h3",null,title), el("p",{class:"sub"},sub) ].concat(bodyKids).concat([
+      el("div",{class:"modal-actions"},[ el("button",{class:"btn-ghost",onclick:closeModal},"Mégse"), el("button",{class:"btn-primary",onclick:function(){ onOk(); }},"Alkalmaz") ])
+    ]));
+    back.appendChild(m); document.getElementById("modalRoot").appendChild(back); return m;
   }
-  function enableReorder() {
-    doc().body.classList.add("__ed-reorder");
-    sections().forEach(function (sec) {
-      sec.setAttribute("draggable", "true");
-      if (doc().defaultView.getComputedStyle(sec).position === "static") { sec.style.position = "relative"; sec.dataset.edPos = "1"; }
-      if (!sec.querySelector(".__ed-handle")) { var h = doc().createElement("div"); h.className = "__ed-handle"; h.textContent = "⠿ " + sectionLabel(sec); sec.appendChild(h); }
-      sec.addEventListener("dragstart", onDragStart); sec.addEventListener("dragover", onDragOver);
-      sec.addEventListener("dragleave", onDragLeave); sec.addEventListener("drop", onDrop); sec.addEventListener("dragend", onDragEnd);
+  function openImageModal(img){
+    var prev=img.getAttribute("src")||"";
+    var input=el("input",{type:"text",value:prev,placeholder:"https://…/kep.jpg"});
+    var pv=el("div",{class:"preview"},[ el("img",{src:prev}) ]);
+    input.addEventListener("input",function(){ pv.firstChild.setAttribute("src",input.value); });
+    modalShell("Kép cseréje","Illeszd be egy kép URL-jét — az élő rendszerben feltöltés is van.",[
+      pv, el("div",{class:"field"},[ el("label",null,"Kép URL"), input ])
+    ],function(){ var next=input.value.trim(); if(next&&next!==prev){ img.setAttribute("src",next); pushOp({type:"image",el:img,prev:prev,next:next}); } closeModal(); });
+  }
+  function openLinkModal(a){
+    var prevText=a.textContent, prevHref=a.tagName==="A"?(a.getAttribute("href")||""):"";
+    var tin=el("input",{type:"text",value:prevText});
+    var hin=el("input",{type:"text",value:prevHref,placeholder:"https://… vagy #szakasz"});
+    var kids=[ el("div",{class:"field"},[ el("label",null,"Link szövege"), tin ]) ];
+    if(a.tagName==="A") kids.push(el("div",{class:"field"},[ el("label",null,"Hivatkozás (href)"), hin ]));
+    modalShell("Link szerkesztése","A gomb / hivatkozás felirata és célja.",kids,function(){
+      var nt=tin.value, nh=hin.value.trim();
+      if(nt!==prevText || (a.tagName==="A"&&nh!==prevHref)){ a.textContent=nt; if(a.tagName==="A") a.setAttribute("href",nh); pushOp({type:"link",el:a,prev:{text:prevText,href:prevHref},next:{text:nt,href:nh}}); }
+      closeModal();
     });
   }
-  function disableReorder() {
-    if (!doc().body) return;
-    doc().body.classList.remove("__ed-reorder");
-    sections().forEach(function (sec) {
-      sec.removeAttribute("draggable");
-      if (sec.dataset.edPos) { sec.style.position = ""; delete sec.dataset.edPos; }
-      var h = sec.querySelector(".__ed-handle"); if (h) h.remove();
-      sec.removeEventListener("dragstart", onDragStart); sec.removeEventListener("dragover", onDragOver);
-      sec.removeEventListener("dragleave", onDragLeave); sec.removeEventListener("drop", onDrop); sec.removeEventListener("dragend", onDragEnd);
+
+  // ── Freeform positioning ─────────────────────────────────────
+  var ffEl=null;
+  function enableFreeform(){ doc().body.classList.add("__ff"); doc().addEventListener("pointerdown",ffDown,true); }
+  function disableFreeform(){ if(!doc().body) return; doc().body.classList.remove("__ff"); doc().removeEventListener("pointerdown",ffDown,true); }
+  var ffStart=null, ffPrev=null;
+  function ffDown(e){
+    if(view!=="live"||overlay!=="freeform") return;
+    var t=e.target; if(!t||t===doc().body||t.tagName==="SECTION") return;
+    // pick a reasonably sized element to move
+    var node=t; while(node&&node.parentElement&&node.parentElement!==doc().body && node.getBoundingClientRect().width<40) node=node.parentElement;
+    ffEl=node; e.preventDefault(); e.stopPropagation();
+    var cs=win().getComputedStyle(node);
+    ffPrev={position:node.style.position||"", left:node.style.left||"", top:node.style.top||""};
+    if(cs.position==="static"||!node.style.position){ node.style.position="relative"; }
+    ffStart={x:e.clientX,y:e.clientY, ox:parseFloat(node.style.left)||0, oy:parseFloat(node.style.top)||0};
+    doc().addEventListener("pointermove",ffMove,true);
+    doc().addEventListener("pointerup",ffUp,true);
+  }
+  function ffMove(e){ if(!ffEl) return; ffEl.style.left=(ffStart.ox+(e.clientX-ffStart.x))+"px"; ffEl.style.top=(ffStart.oy+(e.clientY-ffStart.y))+"px"; }
+  function ffUp(){ doc().removeEventListener("pointermove",ffMove,true); doc().removeEventListener("pointerup",ffUp,true); if(ffEl){ var next={position:ffEl.style.position,left:ffEl.style.left,top:ffEl.style.top}; if(JSON.stringify(next)!==JSON.stringify(ffPrev)) pushOp({type:"pos",el:ffEl,prev:ffPrev,next:next}); ffEl=null; } }
+
+  // ── Section reorder (drag on the iframe) ─────────────────────
+  var dragEl=null;
+  function sections(){ return Array.prototype.slice.call(doc().body.querySelectorAll("section")); }
+  function enableReorder(){
+    doc().body.classList.add("__reo");
+    sections().forEach(function(sec){
+      sec.setAttribute("draggable","true");
+      if(win().getComputedStyle(sec).position==="static"){ sec.style.position="relative"; sec.dataset.reoPos="1"; }
+      if(!sec.querySelector(".__handle")){ var h=doc().createElement("div"); h.className="__handle"; h.textContent="⠿ "+secLabel(sec); sec.appendChild(h); }
+      sec.addEventListener("dragstart",dStart); sec.addEventListener("dragover",dOver); sec.addEventListener("dragleave",dLeave); sec.addEventListener("drop",dDrop); sec.addEventListener("dragend",dEnd);
     });
   }
-  function sectionLabel(sec) { var h = sec.querySelector("h1,h2,h3"); var t = h ? h.textContent.trim() : (sec.id || "szekció"); return t.length > 24 ? t.slice(0, 22) + "…" : t; }
-  function onDragStart(e) { dragEl = e.currentTarget; orderBefore = currentOrder(); e.dataTransfer.effectAllowed = "move"; try { e.dataTransfer.setData("text/plain", dragEl.id || "x"); } catch(_){} dragEl.style.opacity = ".5"; }
-  function onDragOver(e) { e.preventDefault(); e.currentTarget.style.boxShadow = "inset 0 5px 0 #8b5cf6"; }
-  function onDragLeave(e) { e.currentTarget.style.boxShadow = ""; }
-  function onDrop(e) {
-    e.preventDefault(); e.currentTarget.style.boxShadow = "";
-    var target = e.currentTarget;
-    if (!dragEl || dragEl === target) return;
-    target.parentNode.insertBefore(dragEl, target);
-    var after = currentOrder();
-    if (JSON.stringify(after) !== JSON.stringify(orderBefore)) pushOp({ type:"move", before: orderBefore, after: after });
-  }
-  function onDragEnd() { if (dragEl) dragEl.style.opacity = ""; sections().forEach(function(s){ s.style.boxShadow=""; }); dragEl = null; }
+  function disableReorder(){ if(!doc().body) return; doc().body.classList.remove("__reo"); sections().forEach(function(sec){ sec.removeAttribute("draggable"); if(sec.dataset.reoPos){ sec.style.position=""; delete sec.dataset.reoPos; } var h=sec.querySelector(".__handle"); if(h)h.remove(); sec.removeEventListener("dragstart",dStart); sec.removeEventListener("dragover",dOver); sec.removeEventListener("dragleave",dLeave); sec.removeEventListener("drop",dDrop); sec.removeEventListener("dragend",dEnd); }); }
+  function secLabel(sec){ var h=sec.querySelector("h1,h2,h3"); var t=h?h.textContent.trim():(sec.id||"szekció"); return t.length>26?t.slice(0,24)+"…":t; }
+  function dStart(e){ dragEl=e.currentTarget; e.dataTransfer.effectAllowed="move"; try{e.dataTransfer.setData("text/plain","x");}catch(_){ } dragEl.style.opacity=".5"; }
+  function dOver(e){ e.preventDefault(); e.currentTarget.style.boxShadow="inset 0 5px 0 #8b5cf6"; }
+  function dLeave(e){ e.currentTarget.style.boxShadow=""; }
+  function dDrop(e){ e.preventDefault(); e.currentTarget.style.boxShadow=""; var tg=e.currentTarget; if(!dragEl||dragEl===tg) return; var parent=tg.parentNode; var prevNext=dragEl.nextSibling; parent.insertBefore(dragEl,tg); var nextNext=dragEl.nextSibling; pushOp({type:"move",el:dragEl,parent:parent,prevNext:prevNext,nextNext:nextNext}); }
+  function dEnd(){ if(dragEl) dragEl.style.opacity=""; sections().forEach(function(s){s.style.boxShadow="";}); dragEl=null; }
 
-  // ── Inject edit affordances + delegated click into the iframe ─
-  function injectEditing() {
-    var d = doc();
-    if (!d.getElementById("__ed-style")) {
-      var st = d.createElement("style"); st.id = "__ed-style";
-      st.textContent =
-        ".ed-on :is(h1,h2,h3,h4,h5,h6,p,span,a,li,button,strong,em,small,blockquote,figcaption,td,th):hover{outline:2px dashed #2563eb;outline-offset:2px;cursor:text}" +
-        "[contenteditable='true']{outline:2px solid #2563eb !important;cursor:text;background:rgba(37,99,235,.06)}" +
-        ".__ed-reorder section{outline:1.5px dashed rgba(139,92,246,.6);outline-offset:-2px;cursor:grab}" +
-        ".__ed-handle{position:absolute;top:8px;left:8px;z-index:9;display:inline-flex;align-items:center;gap:6px;font:600 11px/1 -apple-system,Segoe UI,Roboto,sans-serif;color:#fff;background:rgba(139,92,246,.94);border-radius:8px;padding:5px 9px;box-shadow:0 6px 16px -6px rgba(0,0,0,.5);pointer-events:none}";
-      d.head.appendChild(st);
+  // ── Section catalog blocks (themed with the portfolio's vars) ─
+  function blockHTML(t){
+    var A="var(--amber,#c9822a)", P="var(--paper,#eff1ec)", P2="var(--paper-2,#e6e9e2)", TX="var(--text,#12231f)", MU="var(--muted,#566760)", INK="#12231f";
+    var pad="padding:60px 28px;", wrap="max-width:960px;margin:0 auto;", h="margin:0 0 12px;font-size:30px;letter-spacing:-.02em;color:"+TX;
+    var card="background:"+P+";border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:22px;";
+    var btn="display:inline-block;background:"+A+";color:#fff;font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none;";
+    switch(t){
+      case "hero": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"text-align:center'><span style='display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b4a16;background:color-mix(in srgb,"+A+" 26%,transparent);padding:6px 12px;border-radius:999px'>Új kiemelt szekció</span><h2 style='font-size:44px;margin:16px 0 12px;letter-spacing:-.02em;color:"+TX+"'>Nagy, figyelemfelkeltő cím</h2><p style='color:"+MU+";font-size:18px;max-width:44ch;margin:0 auto 22px'>Ide jön az alcím, ami egy mondatban elmondja a lényeget.</p><a href='#' style='"+btn+"'>Fő gomb</a> <a href='#' style='display:inline-block;padding:12px 22px;border-radius:11px;border:1px solid "+MU+";color:"+TX+";text-decoration:none'>Második gomb</a></div></div>";
+      case "features": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"'><h2 style='"+h+"'>Jellemzők</h2><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px'>"+[["✨","Első jellemző"],["⚡","Második jellemző"],["🎯","Harmadik jellemző"]].map(function(c){return "<div style='"+card+"'><div style='font-size:26px'>"+c[0]+"</div><h3 style='margin:10px 0 6px;color:"+TX+"'>"+c[1]+"</h3><p style='margin:0;color:"+MU+";font-size:14.5px'>Rövid leírás a jellemzőről, egy-két mondatban.</p></div>";}).join("")+"</div></div></div>";
+      case "cards": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"'><h2 style='"+h+"'>Kártyák</h2><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px'>"+[1,2,3].map(function(i){return "<div style='"+card+"'><h3 style='margin:0 0 6px;color:"+TX+"'>Kártya "+i+"</h3><p style='margin:0 0 12px;color:"+MU+";font-size:14.5px'>Rövid leírás a kártyáról.</p><a href='#' style='color:"+A+";font-weight:600;text-decoration:none'>Tovább →</a></div>";}).join("")+"</div></div></div>";
+      case "steps": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"'><h2 style='"+h+"'>Így dolgozunk</h2><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px'>"+[1,2,3].map(function(i){return "<div><div style='width:38px;height:38px;border-radius:50%;background:"+A+";color:#fff;display:grid;place-items:center;font-weight:800'>"+i+"</div><h3 style='margin:12px 0 6px;color:"+TX+"'>"+i+". lépés</h3><p style='margin:0;color:"+MU+";font-size:14.5px'>Mi történik ebben a lépésben.</p></div>";}).join("")+"</div></div></div>";
+      case "stats": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:20px;text-align:center'>"+[["120+","projekt"],["8 év","tapasztalat"],["100%","elégedettség"]].map(function(s){return "<div><div style='font-size:38px;font-weight:800;color:"+TX+"'>"+s[0]+"</div><div style='color:"+MU+";font-size:14px'>"+s[1]+"</div></div>";}).join("")+"</div></div>";
+      case "checklist": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"'><h2 style='"+h+"'>Miért minket válassz</h2><ul style='list-style:none;padding:0;margin:0;display:grid;gap:10px;max-width:52ch'>"+["Első előny","Második előny","Harmadik előny","Negyedik előny"].map(function(x){return "<li style='display:flex;gap:10px;color:"+TX+"'><span style='color:"+A+";font-weight:800'>✓</span><span>"+x+" — rövid magyarázat.</span></li>";}).join("")+"</ul></div></div>";
+      case "testimonial": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"text-align:center;max-width:640px'><p style='font-size:24px;line-height:1.4;color:"+TX+"'>„Gyors, korrekt, profi munka. Bátran ajánlom mindenkinek.”</p><p style='margin-top:14px;color:"+MU+"'><b style='color:"+TX+"'>Ügyfél Neve</b> · Cég Kft.</p></div></div>";
+      case "mediatext": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center'><div style='aspect-ratio:4/3;border-radius:14px;background:color-mix(in srgb,"+A+" 25%,"+P+")'></div><div><h2 style='"+h+"'>Kép + szöveg</h2><p style='color:"+MU+";font-size:16px;line-height:1.6'>Bal oldalon egy kép, jobb oldalon a szöveg és egy gomb.</p><a href='#' style='"+btn+"margin-top:12px'>Gomb</a></div></div></div>";
+      case "video": return "<div style='"+pad+"background:"+INK+"'><div style='"+wrap+"text-align:center'><h2 style='margin:0 0 16px;font-size:30px;color:#fff'>Videó</h2><div style='aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:14px;overflow:hidden;background:#000;display:grid;place-items:center;color:#9ca3af'><div>▶ &nbsp;YouTube / Vimeo beágyazás<br><span style='font-size:12px'>(illeszd be a linket a szerkesztőben)</span></div></div></div></div>";
+      case "text": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"max-width:680px'><h2 style='"+h+"'>Szöveges szekció</h2><p style='color:"+MU+";font-size:17px;line-height:1.7'>Ide bármilyen szabadon szerkeszthető szöveg jöhet. Több bekezdés, felsorolás, kiemelés — ahogy szükséged van rá.</p></div></div>";
+      case "cta": return "<div style='padding:44px 28px;background:"+A+"'><div style='"+wrap+"display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between'><div><h2 style='margin:0 0 4px;font-size:26px;color:#fff'>Kérj most ingyenes ajánlatot</h2><p style='margin:0;color:rgba(255,255,255,.85)'>Válaszolok egy munkanapon belül.</p></div><a href='#' style='background:#fff;color:"+TX+";font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none'>Kapcsolat</a></div></div>";
+      case "contact": return "<div style='"+pad+"background:"+INK+"'><div style='"+wrap+"text-align:center'><h2 style='margin:0 0 10px;font-size:30px;color:#fff'>Lépj kapcsolatba</h2><p style='color:rgba(255,255,255,.75);max-width:44ch;margin:0 auto 14px'>Írj pár sort, és felveszem veled a kapcsolatot.</p><p style='color:"+A+";font-weight:700;font-size:18px'>hello@example.com</p><a href='#' style='"+btn+"margin-top:8px'>Írok egy üzenetet</a></div></div>";
+      case "faq": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"max-width:680px'><h2 style='"+h+"'>Gyakori kérdések</h2>"+[["Mennyibe kerül?","Projektfüggő — az ajánlatban tételesen látod."],["Mennyi idő?","A méretétől függ, jellemzően 1–3 hét."]].map(function(q){return "<div style='border-bottom:1px solid rgba(0,0,0,.08);padding:14px 0'><h3 style='margin:0 0 6px;font-size:17px;color:"+TX+"'>"+q[0]+"</h3><p style='margin:0;color:"+MU+"'>"+q[1]+"</p></div>";}).join("")+"</div></div>";
     }
-    if (!d.__edBound) {
-      d.addEventListener("click", function (e) {
-        if (mode !== "edit") return;
-        if (startEdit(e.target)) { e.preventDefault(); e.stopPropagation(); }
-      }, true);
-      d.__edBound = true;
-    }
-    setModeClass();
+    return "<div style='"+pad+"'><div style='"+wrap+"'><h2 style='"+h+"'>Új szekció</h2></div></div>";
   }
-  function setModeClass() {
-    if (!ready) return;
-    root().classList.toggle("ed-on", mode === "edit");
-    if (mode === "reorder") enableReorder(); else disableReorder();
+  function addSection(entry){
+    var d=doc(), sec=d.createElement("section");
+    sec.setAttribute("data-added","1"); sec.className="__added";
+    sec.innerHTML=blockHTML(entry.t);
+    // insert before the last section (usually contact/footer) if any, else append
+    var secs=sections(); var ref = secs.length? secs[secs.length-1] : null;
+    var parent = ref? ref.parentNode : d.body;
+    if(ref) parent.insertBefore(sec, ref); else parent.appendChild(sec);
+    pushOp({type:"add",el:sec,parent:parent,ref: sec.nextSibling});
+    toast("ok","＋","„"+entry.label+"” szekció beszúrva — rendezd át és szerkeszd.");
+    sec.scrollIntoView({behavior:"smooth",block:"center"});
   }
 
-  // ── Toolbar rendering ────────────────────────────────────────
-  function renderTools() {
-    toolsEl.innerHTML = "";
-    toolsEl.appendChild(toolBtn("🎨 Színek", "#ec4899", showColors, function () { showColors = !showColors; renderColors(); renderTools(); }));
-    toolsEl.appendChild(toolBtn("📐 Átrendezés", "#8b5cf6", mode === "reorder", function () { mode = mode === "reorder" ? "edit" : "reorder"; setModeClass(); renderTools(); }));
-    toolsEl.appendChild(toolBtn("📱 Mobil", "#f59e0b", mobile, function () { mobile = !mobile; stage.classList.toggle("mobile", mobile); renderTools(); }));
-    toolsEl.appendChild(el("button", { class: "cms-icon-btn", title: "Előnézet újratöltése (visszaáll az eredeti)", onclick: reloadFrame }, "↻"));
+  // ── Layout panel (Elrendezés) ────────────────────────────────
+  function renderLayout(){
+    if(panel!=="layout"||!ready) return;
+    var list=document.getElementById("secList"); list.innerHTML="";
+    var secs=sections();
+    secs.forEach(function(sec,i){
+      var hidden = sec.style.display==="none";
+      var added = sec.hasAttribute("data-added");
+      var row=el("div",{class:"lay-row"+(hidden?" hidden-sec":""),draggable:"true"},[
+        el("span",{class:"grip"},"⠿"),
+        el("span",{class:"name"},secLabel(sec)),
+        added?el("span",{class:"badge2"},"beszúrt"):null,
+        el("button",{class:"mini",title:"Fel",disabled:i===0?"":null,onclick:function(){ moveSec(sec,-1); }},"▲"),
+        el("button",{class:"mini",title:"Le",disabled:i===secs.length-1?"":null,onclick:function(){ moveSec(sec,1); }},"▼"),
+        el("button",{class:"mini",title:hidden?"Megjelenítés":"Elrejtés",onclick:function(){ var wasHidden=sec.style.display==="none"; sec.style.display=wasHidden?"":"none"; pushOp({type:"hide",el:sec,prev:wasHidden,next:!wasHidden}); renderLayout(); }},hidden?"🙈":"👁"),
+        added?el("button",{class:"mini",title:"Törlés",onclick:function(){ var parent=sec.parentNode, ref=sec.nextSibling; sec.remove(); pushOp({type:"del",el:sec,parent:parent,ref:ref}); renderLayout(); }},"🗑"):null,
+      ]);
+      // drag reorder within the list
+      row.addEventListener("dragstart",function(e){ dragEl=sec; e.dataTransfer.effectAllowed="move"; });
+      row.addEventListener("dragover",function(e){ e.preventDefault(); row.classList.add("drag-over"); });
+      row.addEventListener("dragleave",function(){ row.classList.remove("drag-over"); });
+      row.addEventListener("drop",function(e){ e.preventDefault(); row.classList.remove("drag-over"); if(!dragEl||dragEl===sec) return; var parent=sec.parentNode, prevNext=dragEl.nextSibling; parent.insertBefore(dragEl,sec); var nextNext=dragEl.nextSibling; pushOp({type:"move",el:dragEl,parent:parent,prevNext:prevNext,nextNext:nextNext}); renderLayout(); });
+      list.appendChild(row);
+    });
+    var cat=document.getElementById("catalog"); cat.innerHTML="";
+    CATALOG.forEach(function(entry){
+      cat.appendChild(el("div",{class:"cat-item",onclick:function(){ addSection(entry); }},[
+        el("span",{class:"t"},entry.label), el("span",{class:"add"},"＋"), el("span",{class:"d"},entry.d),
+      ]));
+    });
   }
-  function renderColors() {
-    var sheet = document.getElementById("colorSheet");
-    sheet.classList.toggle("sr-hide", !showColors);
-    if (showColors) buildColorRows();
+  function moveSec(sec,dir){ var parent=sec.parentNode; var prevNext=sec.nextSibling; if(dir<0){ var p=sec.previousElementSibling; while(p&&p.tagName!=="SECTION") p=p.previousElementSibling; if(!p) return; parent.insertBefore(sec,p); } else { var n=sec.nextElementSibling; while(n&&n.tagName!=="SECTION") n=n.nextElementSibling; if(!n) return; parent.insertBefore(sec,n.nextSibling); } var nextNext=sec.nextSibling; pushOp({type:"move",el:sec,parent:parent,prevNext:prevNext,nextNext:nextNext}); renderLayout(); }
+
+  // ── Form panel (Lista) ───────────────────────────────────────
+  function renderForm(){
+    if(panel!=="form"||!ready) return;
+    var body=document.getElementById("formBody");
+    body.innerHTML="";
+    body.appendChild(el("p",{class:"hint"},"Az oldal szövegei szekciónként. Írj bele, az előnézet azonnal frissül."));
+    var secs=sections();
+    secs.forEach(function(sec){
+      if(sec.style.display==="none") return;
+      var fields=collectTextFields(sec);
+      if(!fields.length) return;
+      body.appendChild(el("div",{class:"grp-title"},secLabel(sec)));
+      fields.forEach(function(node){
+        var isLong=node.textContent.length>60||node.tagName==="P";
+        var inp=el(isLong?"textarea":"input",{});
+        inp.value=node.textContent;
+        if(isLong) inp.rows=2;
+        inp.addEventListener("focus",function(){ var before=node.textContent; inp.dataset.before=before; });
+        inp.addEventListener("input",function(){ node.textContent=inp.value; markDirty(); });
+        inp.addEventListener("change",function(){ var before=inp.dataset.before!=null?inp.dataset.before:node.textContent; if(before!==inp.value){ pushOp({type:"text",el:node,prev:before,next:inp.value}); inp.dataset.before=inp.value; } });
+        body.appendChild(el("div",{class:"field"},[ inp ]));
+      });
+    });
+  }
+  function collectTextFields(sec){
+    var out=[], seen=new Set();
+    var nodes=sec.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,a.btn,button");
+    nodes.forEach(function(n){
+      if(!n.textContent.trim()) return;
+      var ec=0; for(var i=0;i<n.children.length;i++) if(!/^(BR|B|I|EM|STRONG|SMALL|SUP|SUB|SPAN)$/.test(n.children[i].tagName)) ec++;
+      if(ec>0) return; // skip containers
+      if(seen.has(n)) return; seen.add(n);
+      if(out.length<14) out.push(n);
+    });
+    return out;
+  }
+
+  // ── Locale (drive the portfolio's own switcher) ──────────────
+  function setLocale(code){
+    locale=code;
+    try{ var b=doc().querySelector('#langMenu button[data-lang="'+code+'"]'); if(b) b.click(); }catch(_){}
+    renderLocale();
+  }
+  function renderLocale(){
+    var seg=document.getElementById("localeSeg"); seg.innerHTML="";
+    LOCALES.forEach(function(l){ seg.appendChild(el("button",{class:"cms-seg-btn"+(locale===l.code?" is-active":""),title:"Nyelv: "+l.code.toUpperCase(),onclick:function(){ setLocale(l.code); }}, l.flag+" "+l.code.toUpperCase())); });
+  }
+  function renderPages(){
+    var seg=document.getElementById("pagesSeg"); seg.innerHTML="";
+    seg.appendChild(el("button",{class:"cms-seg-btn is-active",title:"Ez a portfólió egyetlen oldalból áll"},"📄 Főoldal"));
+  }
+
+  // ── Views + tools ────────────────────────────────────────────
+  function setView(v){ view=v; if(v!=="live"){ overlay="edit"; setModeClass(); } openPanel(v==="layout"?"layout":v==="form"?"form":null); renderTools(); renderViews(); }
+  function renderViews(){
+    var seg=document.getElementById("viewSeg"); seg.innerHTML="";
+    [["live","Élő szerkesztés"],["layout","Elrendezés"],["form","Lista"]].forEach(function(v){ seg.appendChild(el("button",{class:"cms-seg-btn"+(view===v[0]?" is-active":""),onclick:function(){ setView(v[0]); }},v[1])); });
+  }
+  function renderTools(){
+    var t=document.getElementById("tools"); t.innerHTML="";
+    if(view!=="live"){ return; }
+    t.appendChild(tool("🎨 Színek","#ec4899",panel==="colors",function(){ openPanel(panel==="colors"?null:"colors"); },"Téma színek"));
+    t.appendChild(tool("📐 Átrendezés","#8b5cf6",overlay==="reorder",function(){ overlay=overlay==="reorder"?"edit":"reorder"; setModeClass(); renderTools(); },"Húzd-rendezd a szekciókat"));
+    t.appendChild(tool("🎯 Szabad pozíció","#0ea5e9",overlay==="freeform",function(){ overlay=overlay==="freeform"?"edit":"freeform"; setModeClass(); renderTools(); },"Pixel-pontos áthelyezés"));
+    t.appendChild(tool("📱 Mobil","#f59e0b",mobile,function(){ mobile=!mobile; stage.classList.toggle("mobile",mobile); renderTools(); },"Mobil nézet"));
+    t.appendChild(el("button",{class:"cms-icon-btn",title:"Előnézet újratöltése (visszaáll az eredeti)",onclick:reloadFrame},"↻"));
+  }
+  function setModeClass(){ if(!ready) return; root().classList.toggle("ed-on", view==="live"&&overlay==="edit"); if(view==="live"&&overlay==="reorder") enableReorder(); else disableReorder(); if(view==="live"&&overlay==="freeform") enableFreeform(); else disableFreeform(); }
+
+  function openPanel(which){
+    panel=which;
+    ["colors","layout","form"].forEach(function(k){ document.getElementById(k+"Sheet").classList.toggle("sr-hide", panel!==k); });
+    if(panel==="colors") buildColorRows();
+    if(panel==="layout") renderLayout();
+    if(panel==="form") renderForm();
+    renderTools();
   }
 
   // ── Save / Publish (mock) ────────────────────────────────────
-  function setStatus(kind, txt) { var s = document.getElementById("statusSlot"); s.innerHTML = ""; s.appendChild(el("span", { class: "status-txt " + kind }, txt)); clearTimeout(setStatus._t); setStatus._t = setTimeout(function(){ s.innerHTML = ""; }, 4000); }
-  function doSave(silent) { savedIdx = opIdx; savedColors = JSON.stringify(overrides); markDirty(); setStatus("ok", "Mentve."); if (!silent) toast("ok", "💾", "Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek."); }
-  function doPublish() { doSave(true); setStatus("info", "Publikálás elindítva."); toast("info", "🚀", "Publikálás elindítva (demó). Az éles rendszerben az oldal kb. 1 perc múlva frissülne."); }
+  function setStatus(kind,txt){ var s=document.getElementById("statusSlot"); s.innerHTML=""; s.appendChild(el("span",{class:"status-txt "+kind},txt)); clearTimeout(setStatus._t); setStatus._t=setTimeout(function(){ s.innerHTML=""; },4000); }
+  function doSave(silent){ savedIdx=opIdx; savedColors=JSON.stringify(overrides); markDirty(); setStatus("ok","Mentve."); if(!silent) toast("ok","💾","Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek."); }
+  function doPublish(){ doSave(true); setStatus("info","Publikálás elindítva."); toast("info","🚀","Publikálás elindítva (demó). Az éles rendszerben az oldal kb. 1 perc múlva frissülne."); }
+  function toast(kind,ic,msg){ var w=document.getElementById("toasts"); var el2=el("div",{class:"toast "+kind},[el("span",null,ic),el("span",null,msg)]); w.appendChild(el2); setTimeout(function(){ el2.style.transition="opacity .3s, transform .3s"; el2.style.opacity="0"; el2.style.transform="translateY(8px)"; setTimeout(function(){ el2.remove(); },320); },3300); }
 
-  function toast(kind, ic, msg) { var w = document.getElementById("toasts"); var t = el("div", { class: "toast " + kind }, [el("span", null, ic), el("span", null, msg)]); w.appendChild(t); setTimeout(function(){ t.style.transition = "opacity .3s, transform .3s"; t.style.opacity = "0"; t.style.transform = "translateY(8px)"; setTimeout(function(){ t.remove(); }, 320); }, 3300); }
+  // ── Guided tour ──────────────────────────────────────────────
+  var TOUR=[
+    { title:"Üdv a szerkesztőben! 👋", body:"Egy perc alatt megmutatom a lényeget. A jobb felső ? gombbal bármikor újraindíthatod." },
+    { target:"locale", title:"Nyelvek", body:"Válts a nyelvek között — minden nyelvet külön szerkeszthetsz és publikálhatsz." },
+    { target:"pages", title:"Oldalak", body:"Itt választod ki, melyik oldalt szerkeszted. (Ez a portfólió egyetlen oldal.)" },
+    { target:"viewmodes", title:"Nézetek", body:"Élő szerkesztés · Elrendezés (szekciók sorrendje + könyvtár) · Lista (minden mező egy helyen)." },
+    { target:"tools", title:"Eszközök", body:"Színek, szekció-átrendezés, szabad pozíció és mobil nézet — élő előnézettel." },
+    { target:"save", title:"Mentés", body:"Piszkozatba ment — bátran ments gyakran, nem tudsz elrontani semmit." },
+    { target:"publish", title:"Publikálás", body:"Közzététel: az élő rendszerben ~1 perc múlva megjelenne a weboldalon." },
+    { title:"Kész! ✓", body:"Próbáld ki nyugodtan. A ? gombbal (jobb fent) bármikor újraindítod ezt." },
+  ];
+  var tourIdx=0;
+  function startTour(){ tourIdx=0; renderTour(); }
+  function endTour(){ document.getElementById("tourRoot").innerHTML=""; }
+  function renderTour(){
+    var root2=document.getElementById("tourRoot"); root2.innerHTML="";
+    var step=TOUR[tourIdx]; if(!step) return;
+    root2.appendChild(el("div",{class:"tour-dim",onclick:endTour}));
+    var card=el("div",{class:"tour-card"});
+    var top=40, left=window.innerWidth/2-160;
+    if(step.target){ var tg=document.querySelector('[data-tour="'+step.target+'"]'); if(tg){ var r=tg.getBoundingClientRect(); var spot=el("div",{class:"tour-spot"}); spot.style.top=(r.top-6)+"px"; spot.style.left=(r.left-6)+"px"; spot.style.width=(r.width+12)+"px"; spot.style.height=(r.height+12)+"px"; root2.appendChild(spot); top=Math.min(r.bottom+12, window.innerHeight-160); left=Math.max(12, Math.min(r.left, window.innerWidth-332)); } }
+    card.style.top=top+"px"; card.style.left=left+"px";
+    card.appendChild(el("h4",null,step.title));
+    card.appendChild(el("p",null,step.body));
+    card.appendChild(el("div",{class:"row"},[
+      el("span",{class:"dots"},(tourIdx+1)+" / "+TOUR.length),
+      el("div",{class:"acts"},[
+        el("button",{class:"skip",onclick:endTour},"Kihagyom"),
+        el("button",{class:"nx",onclick:function(){ if(tourIdx>=TOUR.length-1) endTour(); else { tourIdx++; renderTour(); } }}, tourIdx>=TOUR.length-1?"Kész":"Tovább →"),
+      ]),
+    ]));
+    root2.appendChild(card);
+  }
 
-  // ── Frame lifecycle ──────────────────────────────────────────
-  function reloadFrame() { ready = false; document.getElementById("frameLoading").style.display = "grid"; document.getElementById("frameLoading").textContent = "Portfólió újratöltése…"; overrides = {}; ops = []; opIdx = -1; savedIdx = -1; savedColors = "{}"; mode = "edit"; renderTools(); frame.contentWindow.location.reload(); }
-  function onFrameLoad() {
-    try {
-      var d = doc();
-      if (!d || !d.body) throw new Error("no body");
-      document.getElementById("frameLoading").style.display = "none";
-      defaults = {}; var cs = doc().defaultView.getComputedStyle(root());
-      COLORS.forEach(function (c) { defaults[c.v] = (cs.getPropertyValue(c.v) || "").trim(); });
-      ready = true;
-      injectEditing();
-      refreshUndo(); markDirty();
-    } catch (err) {
-      document.getElementById("frameLoading").style.display = "grid";
-      document.getElementById("frameLoading").textContent = "Az előnézet csak webkiszolgálóról (https / localhost) szerkeszthető — az éles oldalon rendben működik.";
+  // ── Inject editing into the iframe ───────────────────────────
+  function injectEditing(){
+    var d=doc();
+    if(!d.getElementById("__ed-style")){
+      var st=d.createElement("style"); st.id="__ed-style";
+      st.textContent=
+        ".ed-on :is(h1,h2,h3,h4,h5,h6,p,span,a,li,button,strong,em,small,blockquote,figcaption,td,th):hover{outline:2px dashed #2563eb;outline-offset:2px;cursor:text}"+
+        ".ed-on img:hover{outline:2px dashed #ec4899;outline-offset:2px;cursor:pointer}"+
+        ".ed-on a:hover,.ed-on button:hover{cursor:pointer}"+
+        "[contenteditable='true']{outline:2px solid #2563eb !important;cursor:text;background:rgba(37,99,235,.06)}"+
+        ".__reo section{outline:1.5px dashed rgba(139,92,246,.6);outline-offset:-2px;cursor:grab}"+
+        ".__ff *:hover{outline:1.5px dashed #0ea5e9 !important;cursor:move}"+
+        ".__handle{position:absolute;top:8px;left:8px;z-index:9;display:inline-flex;align-items:center;gap:6px;font:600 11px/1 -apple-system,Segoe UI,Roboto,sans-serif;color:#fff;background:rgba(139,92,246,.94);border-radius:8px;padding:5px 9px;box-shadow:0 6px 16px -6px rgba(0,0,0,.5);pointer-events:none}";
+      d.head.appendChild(st);
+    }
+    if(!d.__edBound){ d.addEventListener("click",onFrameClick,true); d.__edBound=true; }
+    setModeClass();
+  }
+
+  function reloadFrame(){ ready=false; var fl=document.getElementById("frameLoading"); fl.style.display="grid"; fl.textContent="Portfólió újratöltése…"; overrides={}; ops=[]; opIdx=-1; savedIdx=-1; savedColors="{}"; overlay="edit"; view="live"; openPanel(null); renderViews(); renderTools(); win().location.reload(); }
+  function onFrameLoad(){
+    try{
+      var d=doc(); if(!d||!d.body) throw new Error("no body");
+      document.getElementById("frameLoading").style.display="none";
+      defaults={}; var cs=win().getComputedStyle(root());
+      COLORS.forEach(function(c){ defaults[c.v]=(cs.getPropertyValue(c.v)||"").trim(); });
+      ready=true; injectEditing(); refreshUndo(); markDirty(); renderLocale();
+      if(panel) openPanel(panel);
+    }catch(err){
+      var fl=document.getElementById("frameLoading"); fl.style.display="grid";
+      fl.textContent="Az előnézet csak webkiszolgálóról (https / localhost) szerkeszthető — az éles oldalon rendben működik.";
     }
   }
-  frame.addEventListener("load", onFrameLoad);
+  frame.addEventListener("load",onFrameLoad);
 
-  // ── Static wiring ────────────────────────────────────────────
-  document.getElementById("saveBtn").addEventListener("click", function () { doSave(false); });
-  document.getElementById("publishBtn").addEventListener("click", doPublish);
-  document.getElementById("undoBtn").addEventListener("click", undo);
-  document.getElementById("redoBtn").addEventListener("click", redo);
-  document.getElementById("closeColors").addEventListener("click", function () { showColors = false; renderColors(); renderTools(); });
-  document.getElementById("resetColors").addEventListener("click", function () {
-    if (Object.keys(overrides).length && confirm("Minden szín visszaáll az alap színekre?")) {
-      Object.keys(overrides).slice().forEach(function (v) { clearColor(v, true); });
-      overrides = {}; ops = ops.slice(0, opIdx + 1); ops.push({ type:"color", v:"__all", prev:null, next:null }); opIdx = ops.length - 1;
-      refreshUndo(); buildColorRows(); markDirty();
-    }
+  // ── Wiring ───────────────────────────────────────────────────
+  document.getElementById("saveBtn").addEventListener("click",function(){ doSave(false); });
+  document.getElementById("publishBtn").addEventListener("click",doPublish);
+  document.getElementById("undoBtn").addEventListener("click",undo);
+  document.getElementById("redoBtn").addEventListener("click",redo);
+  document.getElementById("helpBtn").addEventListener("click",startTour);
+  document.getElementById("resetColors").addEventListener("click",function(){ if(Object.keys(overrides).length&&confirm("Minden szín visszaáll az alap színekre?")){ Object.keys(overrides).slice().forEach(function(v){ clearColor(v,true); }); overrides={}; ops=ops.slice(0,opIdx+1); ops.push({type:"color",v:"__all",prev:null,next:null}); opIdx=ops.length-1; refreshUndo(); buildColorRows(); markDirty(); } });
+  document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click",function(){ openPanel(null); if(view!=="live") setView("live"); }); });
+  document.addEventListener("keydown",function(e){
+    var mod=e.ctrlKey||e.metaKey;
+    if(mod&&e.key.toLowerCase()==="s"){ e.preventDefault(); doSave(false); return; }
+    if(mod&&e.key.toLowerCase()==="z"&&!e.shiftKey){ e.preventDefault(); undo(); return; }
+    if(mod&&((e.key.toLowerCase()==="z"&&e.shiftKey)||e.key.toLowerCase()==="y")){ e.preventDefault(); redo(); return; }
   });
-  document.addEventListener("keydown", function (e) {
-    var mod = e.ctrlKey || e.metaKey;
-    if (mod && e.key.toLowerCase() === "s") { e.preventDefault(); doSave(false); return; }
-    if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); return; }
-    if (mod && ((e.key.toLowerCase() === "z" && e.shiftKey) || e.key.toLowerCase() === "y")) { e.preventDefault(); redo(); return; }
-  });
-  var intro = document.getElementById("introBackdrop");
-  document.getElementById("introStart").addEventListener("click", function () { intro.style.display = "none"; });
-  intro.addEventListener("click", function (e) { if (e.target === intro) intro.style.display = "none"; });
+  var intro=document.getElementById("introBack");
+  document.getElementById("introStart").addEventListener("click",function(){ intro.style.display="none"; });
+  document.getElementById("introTour").addEventListener("click",function(){ intro.style.display="none"; setTimeout(startTour,250); });
+  intro.addEventListener("click",function(e){ if(e.target===intro) intro.style.display="none"; });
 
-  renderTools();
-  refreshUndo();
+  renderLocale(); renderPages(); renderViews(); renderTools(); refreshUndo();
 })();
 </script>
 </body>

@@ -419,10 +419,11 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 #welcome.gone{display:none}
 #welcome .w-ink{position:absolute;inset:0;z-index:1;pointer-events:none;display:block}
 #welcome .w-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;will-change:opacity,transform}
-#welcome .w-lang{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:22px;pointer-events:auto}
-#welcome .w-lang button{font-family:"Space Mono",ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.04em;color:rgba(242,244,239,.62);background:rgba(255,255,255,.05);border:1px solid rgba(201,130,42,.22);border-radius:var(--r-full,999px);padding:7px 13px;cursor:pointer;transition:background .18s,color .18s,border-color .18s}
-#welcome .w-lang button:hover{color:#f2f4ef;border-color:rgba(201,130,42,.5)}
-#welcome .w-lang button[aria-pressed="true"]{background:var(--amber);color:#fff;border-color:transparent}
+/* Tömör hátterű, szegmentált nyelvválasztó — saját doboza van, így a tinta-effekt nem tár fel semmit körülötte (mint a köszöntő kártya) */
+#welcome .w-lang{display:inline-flex;gap:3px;justify-content:center;margin-bottom:22px;padding:5px;background:#16281f;border:1px solid rgba(201,130,42,.22);border-radius:var(--r-full,999px);box-shadow:0 26px 60px -34px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);pointer-events:auto}
+#welcome .w-lang button{font-family:"Space Mono",ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.04em;color:rgba(242,244,239,.6);background:transparent;border:0;border-radius:var(--r-full,999px);padding:7px 13px;cursor:pointer;transition:background .18s,color .18s}
+#welcome .w-lang button:hover{color:#f2f4ef;background:rgba(255,255,255,.07)}
+#welcome .w-lang button[aria-pressed="true"]{background:var(--amber);color:#fff}
 #welcome .w-card{background:#16281f;border:1px solid rgba(201,130,42,.22);border-radius:24px;padding:30px 40px;box-shadow:0 40px 90px -40px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05);max-width:min(720px,92vw);margin-bottom:26px}
 #welcome .w-hi{font-family:"Bricolage Grotesque","Hanken Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,5.4vw,52px);letter-spacing:-.02em;line-height:1.07;margin:0;color:#f2f4ef}
 #welcome .w-q{font-size:clamp(16px,2.4vw,22px);color:rgba(242,244,239,.72);margin:12px 0 0}
@@ -435,8 +436,8 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 /* Telefon: minden férjen el a látható területen (URL-sáv / notch), tömörebb elrendezés */
 @media (max-width:680px){
   #welcome .w-content{padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px))}
-  #welcome .w-lang{margin-bottom:16px;gap:5px}
-  #welcome .w-lang button{font-size:11px;padding:6px 11px}
+  #welcome .w-lang{margin-bottom:16px;gap:2px;padding:4px}
+  #welcome .w-lang button{font-size:11px;padding:6px 9px}
   #welcome .w-card{padding:22px 20px;margin-bottom:18px;border-radius:20px}
   #welcome .w-hi{font-size:clamp(23px,7.4vw,34px)}
   #welcome .w-q{font-size:15px;margin-top:8px}
@@ -3128,8 +3129,8 @@ const triggerOfficeWorkflow = (function () {
     for(var i=0;i<=36;i++){ var a=i/36*6.2832; var wob=0.78+0.14*Math.sin(a*3+seed)+0.08*Math.sin(a*5+seed*2.1)+0.05*Math.sin(a*7+seed*0.7); var px=x+Math.cos(a)*r*wob, py=y+Math.sin(a)*r*wob; if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
     ctx.closePath(); ctx.fill();
   }
-  function addStamp(x,y){ if(stamps.length>=220) stamps.shift(); stamps.push({x:x,y:y,born:performance.now(),seed:Math.random()*6.2832,rmax:128*(0.55+Math.random()*0.45)}); }
-  function stampAlong(x,y){ var last=lastPos; if(!last){ addStamp(x,y); } else { var dx=x-last.x,dy=y-last.y,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d/10)); for(var i=1;i<=n;i++) addStamp(last.x+dx*i/n,last.y+dy*i/n); } lastPos={x:x,y:y}; }
+  function addStamp(x,y){ if(stamps.length>=160) stamps.shift(); stamps.push({x:x,y:y,born:performance.now(),seed:Math.random()*6.2832,rmax:72*(0.5+Math.random()*0.4)}); }
+  function stampAlong(x,y){ var last=lastPos; if(!last){ addStamp(x,y); } else { var dx=x-last.x,dy=y-last.y,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d/14)); for(var i=1;i<=n;i++) addStamp(last.x+dx*i/n,last.y+dy*i/n); } lastPos={x:x,y:y}; }
   function frame(){
     if(dismissed) return;
     var now=performance.now();

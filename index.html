@@ -413,12 +413,9 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .track{scroll-behavior:auto}
 }
 /* ── Fogadó réteg (welcome + görgetés-vezérelt tinta-eltűnés) ─────────── */
-#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;--reveal:0;--mx:-300px;--my:-300px}
+#welcome{position:fixed;inset:0;z-index:500;pointer-events:none}
 #welcome.gone{display:none}
-#welcome .w-paper{position:absolute;inset:0;z-index:1;pointer-events:none;background:#f2f1ea;--r:calc(var(--reveal) * 135vmax);--f:calc(var(--reveal) * 12vmax + 1px);
-  -webkit-mask-image:radial-gradient(circle at 22% 27%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 73% 22%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 47% 60%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 85% 66%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 28% 83%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at var(--mx) var(--my),#0000 8vmax,#000 18vmax);
-  mask-image:radial-gradient(circle at 22% 27%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 73% 22%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 47% 60%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 85% 66%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 28% 83%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at var(--mx) var(--my),#0000 8vmax,#000 18vmax);
-  -webkit-mask-composite:source-in;mask-composite:intersect}
+#welcome .w-ink{position:absolute;inset:0;z-index:1;pointer-events:none;display:block}
 #welcome .w-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;will-change:opacity,transform}
 #welcome .w-hi{font-family:"Bricolage Grotesque","Hanken Grotesk",sans-serif;font-weight:700;font-size:clamp(30px,6vw,58px);letter-spacing:-.02em;line-height:1.06;margin:0;color:var(--text)}
 #welcome .w-q{font-size:clamp(16px,2.4vw,22px);color:var(--muted);margin:12px 0 28px}
@@ -435,7 +432,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 
 <!-- ═══ FOGADÓ RÉTEG (welcome) ═══ -->
 <div id="welcome" role="region" aria-label="Köszöntő">
-  <div class="w-paper" id="welcomePaper" aria-hidden="true"></div>
+  <canvas class="w-ink" id="welcomeInk" aria-hidden="true"></canvas>
   <div class="w-content" id="welcomeContent">
     <h1 class="w-hi" data-i18n="intro_hi">Köszöntelek az oldalamon!</h1>
     <p class="w-q" data-i18n="intro_q">Mit néznél meg elsőnek?</p>
@@ -3051,21 +3048,58 @@ const triggerOfficeWorkflow = (function () {
 <script>
 (function(){
   var wrap=document.getElementById('welcome'); if(!wrap) return;
+  var canvas=document.getElementById('welcomeInk');
   var content=document.getElementById('welcomeContent');
-  var dismissed=false;
+  var ctx=canvas.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var noHover = window.matchMedia && window.matchMedia('(hover:none)').matches;
+  var MASK=[242,241,234];               // explicit paper colour (not a CSS var)
+  var dims={w:0,h:0}, dismissed=false, curP=0;
+  var scrollBlots=[], stamps=[], lastPos=null, started=false;
 
-  // No <canvas>: the "paper" is a real element (.w-paper) with a CSS mask.
-  // The mask is the union of growing blotch-holes (scroll) + a hole under the
-  // cursor — so the real page shows through the ink, and it can never render
-  // as a black canvas the way the earlier version did on some GPUs.
-  function setReveal(p){ p=p<0?0:(p>1?1:p); wrap.style.setProperty('--reveal',String(p)); content.style.opacity=String(1-Math.min(1,p*1.25)); content.style.transform='translateY('+(-p*24)+'px)'; if(p>=1 && !dismissed) dismiss(); }
-  function dismiss(){ if(dismissed) return; dismissed=true; wrap.classList.add('gone'); window.removeEventListener('scroll',onScroll); window.removeEventListener('mousemove',onMove); }
+  // ── Canvas ink reveal (faithful to the 21st.dev component) ────────────
+  // Paper mask on top of the transparent overlay; wobbly ink stamps carve
+  // holes (destination-out) to reveal the real page. The cursor paints
+  // fading stamps; scrolling grows persistent blotches — a crisp inky
+  // dissolve, not a soft blob.
+  function seedScroll(){ scrollBlots=[]; for(var i=0;i<14;i++) scrollBlots.push({x:Math.random(),y:Math.random(),seed:Math.random()*6.2832,delay:Math.random()*0.35,rf:0.55+Math.random()*0.6}); }
+  function resize(){
+    var dpr=Math.min(window.devicePixelRatio||1,1.5);
+    dims={w:window.innerWidth,h:window.innerHeight};
+    canvas.width=Math.round(dims.w*dpr); canvas.height=Math.round(dims.h*dpr);
+    canvas.style.width=dims.w+'px'; canvas.style.height=dims.h+'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    fillMask(); // paint immediately so there is never a blank/transparent flash
+  }
+  function fillMask(){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')'; ctx.fillRect(0,0,dims.w,dims.h); }
+  function carve(x,y,r,seed,alpha){
+    var g=ctx.createRadialGradient(x,y,r*0.2,x,y,r);
+    g.addColorStop(0,'rgba(0,0,0,'+(0.95*alpha)+')');
+    g.addColorStop(0.5,'rgba(0,0,0,'+(0.88*alpha)+')');
+    g.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g; ctx.beginPath();
+    for(var i=0;i<=36;i++){ var a=i/36*6.2832; var wob=0.78+0.14*Math.sin(a*3+seed)+0.08*Math.sin(a*5+seed*2.1)+0.05*Math.sin(a*7+seed*0.7); var px=x+Math.cos(a)*r*wob, py=y+Math.sin(a)*r*wob; if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+    ctx.closePath(); ctx.fill();
+  }
+  function addStamp(x,y){ if(stamps.length>=220) stamps.shift(); stamps.push({x:x,y:y,born:performance.now(),seed:Math.random()*6.2832,rmax:128*(0.55+Math.random()*0.45)}); }
+  function stampAlong(x,y){ var last=lastPos; if(!last){ addStamp(x,y); } else { var dx=x-last.x,dy=y-last.y,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d/10)); for(var i=1;i<=n;i++) addStamp(last.x+dx*i/n,last.y+dy*i/n); } lastPos={x:x,y:y}; }
+  function frame(){
+    if(dismissed) return;
+    var now=performance.now();
+    fillMask();
+    ctx.globalCompositeOperation='destination-out';
+    if(curP>0){ var maxR=Math.hypot(dims.w,dims.h)*0.52; for(var i=0;i<scrollBlots.length;i++){ var b=scrollBlots[i]; var lp=(curP-b.delay)/(1-b.delay); if(lp<=0) continue; if(lp>1)lp=1; var r=maxR*b.rf*(1-Math.pow(1-lp,2)); if(r>0.5) carve(b.x*dims.w,b.y*dims.h,r,b.seed,1); } }
+    for(var j=stamps.length-1;j>=0;j--){ var s=stamps[j]; var t=(now-s.born)/600; if(t>=1){ stamps.splice(j,1); continue; } var ease=1-Math.pow(1-t,3); var rr=10+(s.rmax-10)*ease; carve(s.x,s.y,rr,s.seed,1-t*t); }
+    ctx.globalCompositeOperation='source-over';
+    requestAnimationFrame(frame);
+  }
+  function setP(p){ p=p<0?0:(p>1?1:p); curP=p; content.style.opacity=String(1-Math.min(1,p*1.2)); content.style.transform='translateY('+(-p*24)+'px)'; if(p>=1) dismiss(); }
+  function dismiss(){ if(dismissed) return; dismissed=true; wrap.classList.add('gone'); window.removeEventListener('scroll',onScroll); window.removeEventListener('resize',resize); window.removeEventListener('mousemove',onMove); }
   var ticking=false;
-  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setReveal(window.scrollY/(window.innerHeight*0.85)); }); }
-  function onMove(e){ wrap.style.setProperty('--mx',e.clientX+'px'); wrap.style.setProperty('--my',e.clientY+'px'); }
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setP(window.scrollY/(window.innerHeight*0.85)); }); }
+  function onMove(e){ stampAlong(e.clientX,e.clientY); }
   function easeInOut(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
-  function animateOut(cb){ var start=null, from=parseFloat(wrap.style.getPropertyValue('--reveal'))||0; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/560); setReveal(from+(1-from)*easeInOut(t)); if(t<1) requestAnimationFrame(step); else { dismiss(); if(cb) cb(); } } requestAnimationFrame(step); }
+  function animateOut(cb){ var start=null, from=curP; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/560); setP(from+(1-from)*easeInOut(t)); if(t<1 && !dismissed) requestAnimationFrame(step); else if(cb) cb(); } requestAnimationFrame(step); }
 
   [].slice.call(document.querySelectorAll('#welcome .w-opt')).forEach(function(btn){
     btn.addEventListener('click',function(){ var target=document.getElementById(btn.getAttribute('data-goto')); animateOut(function(){ if(target) target.scrollIntoView({behavior:'smooth'}); }); });
@@ -3073,9 +3107,28 @@ const triggerOfficeWorkflow = (function () {
   document.getElementById('welcomeSkip').addEventListener('click',function(){ animateOut(null); });
   window.addEventListener('keydown',function(e){ if(e.key==='Escape' && !dismissed) animateOut(null); });
 
-  setReveal(0);
-  window.addEventListener('scroll',onScroll,{passive:true});
-  if(!noHover) window.addEventListener('mousemove',onMove,{passive:true});
+  if(reduce){
+    // Accessible fallback: a plain paper layer that fades on scroll, no canvas.
+    canvas.style.display='none';
+    wrap.style.background='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')';
+    window.addEventListener('scroll',function(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var p=Math.min(1,window.scrollY/(window.innerHeight*0.65)); wrap.style.opacity=String(1-p); content.style.opacity=String(1-p); if(p>=1) dismiss(); }); },{passive:true});
+  } else {
+    seedScroll(); resize();
+    // Safety net: if the 2D canvas didn't actually hold the paper fill (a
+    // broken/blocked context on some setups), fall back to a plain readable
+    // paper layer — so the backdrop can never end up black.
+    var ok=false; try{ var px=ctx.getImageData(Math.max(1,Math.floor(canvas.width/2)),Math.max(1,Math.floor(canvas.height/2)),1,1).data; ok=px[3]>200 && Math.abs(px[0]-MASK[0])<45 && Math.abs(px[2]-MASK[2])<45; }catch(e){ ok=false; }
+    if(!ok){
+      canvas.style.display='none';
+      wrap.style.background='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')';
+      window.addEventListener('scroll',function(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var p=Math.min(1,window.scrollY/(window.innerHeight*0.65)); wrap.style.opacity=String(1-p); content.style.opacity=String(1-p); if(p>=1) dismiss(); }); },{passive:true});
+    } else {
+      window.addEventListener('resize',resize);
+      window.addEventListener('scroll',onScroll,{passive:true});
+      if(!noHover) window.addEventListener('mousemove',onMove,{passive:true});
+      requestAnimationFrame(frame);
+    }
+  }
 })();
 </script>
 </body>

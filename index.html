@@ -413,7 +413,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .track{scroll-behavior:auto}
 }
 /* ── Fogadó réteg (welcome + görgetés-vezérelt tinta-eltűnés) ─────────── */
-#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;background:transparent}
+#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;background:var(--paper);will-change:opacity}
 #welcome.gone{display:none}
 #welcome .w-ink{position:absolute;inset:0;z-index:1;pointer-events:none}
 #welcome .w-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;will-change:opacity,transform}
@@ -3051,70 +3051,51 @@ const triggerOfficeWorkflow = (function () {
   var canvas=document.getElementById('welcomeInk');
   var content=document.getElementById('welcomeContent');
   var ctx=canvas.getContext('2d');
-  var reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var mask=[239,241,236], dims={w:0,h:0}, blots=[], dismissed=false, curP=0;
+  var dims={w:0,h:0}, blots=[], dismissed=false;
 
-  function hex(h){ h=(h||'').trim().replace('#',''); if(h.length===3) h=h.split('').map(function(x){return x+x;}).join(''); if(h.length!==6) return null; return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
-  function readPaper(){ try{ var v=getComputedStyle(document.documentElement).getPropertyValue('--paper'); var c=hex(v); if(c) mask=c; }catch(e){} }
-  function seed(){ blots=[]; for(var i=0;i<16;i++) blots.push({x:Math.random(),y:Math.random(),seed:Math.random()*Math.PI*2,delay:Math.random()*0.28,rf:0.7+Math.random()*0.7}); }
+  // Decorative ink blotches on the paper layer — "break up" the flat colour.
+  // The paper background is a real element background (#welcome), so the
+  // greeting is always readable; the whole layer fades on scroll to reveal
+  // the real page beneath. (Earlier a canvas paint provided the background,
+  // which some browsers/extensions rendered dark — this avoids that entirely.)
+  function seed(){ blots=[]; for(var i=0;i<11;i++) blots.push({x:Math.random(),y:Math.random(),seed:Math.random()*Math.PI*2,r:0.16+Math.random()*0.26,a:0.045+Math.random()*0.05}); }
   function resize(){
     var dpr=Math.min(window.devicePixelRatio||1,2);
     dims={w:window.innerWidth,h:window.innerHeight};
     canvas.width=Math.round(dims.w*dpr); canvas.height=Math.round(dims.h*dpr);
     canvas.style.width=dims.w+'px'; canvas.style.height=dims.h+'px';
     ctx.setTransform(dpr,0,0,dpr,0,0);
-    render(curP);
+    paint();
   }
-  function fillMask(){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle='rgb('+mask[0]+','+mask[1]+','+mask[2]+')'; ctx.fillRect(0,0,dims.w,dims.h); }
-  function carve(x,y,r,s,alpha){
-    var g=ctx.createRadialGradient(x,y,r*0.15,x,y,r);
-    g.addColorStop(0,'rgba(0,0,0,'+(0.98*alpha)+')');
-    g.addColorStop(0.55,'rgba(0,0,0,'+(0.85*alpha)+')');
-    g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g; ctx.beginPath();
-    for(var i=0;i<=30;i++){ var a=i/30*Math.PI*2; var wob=0.78+0.14*Math.sin(a*3+s)+0.08*Math.sin(a*5+s*2.1)+0.05*Math.sin(a*7+s*0.7); var px=x+Math.cos(a)*r*wob, py=y+Math.sin(a)*r*wob; if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
-    ctx.closePath(); ctx.fill();
-  }
-  function render(p){
-    curP=p; if(reduce) return;
-    var maxR=Math.hypot(dims.w,dims.h)*0.42;
-    fillMask();
-    ctx.globalCompositeOperation='destination-out';
-    for(var i=0;i<blots.length;i++){
-      var b=blots[i]; var lp=(p-b.delay)/(1-b.delay); if(lp<=0) continue; if(lp>1) lp=1;
-      var ease=1-Math.pow(1-lp,2); var r=maxR*b.rf*ease;
-      if(r>0.5) carve(b.x*dims.w, b.y*dims.h, r, b.seed, Math.min(1,lp*1.4));
-    }
-    if(p>0.9){ ctx.globalAlpha=(p-0.9)/0.1; ctx.fillStyle='#000'; ctx.fillRect(0,0,dims.w,dims.h); ctx.globalAlpha=1; }
+  function paint(){
+    ctx.clearRect(0,0,dims.w,dims.h);
     ctx.globalCompositeOperation='source-over';
+    var base=Math.hypot(dims.w,dims.h);
+    for(var i=0;i<blots.length;i++){
+      var b=blots[i], x=b.x*dims.w, y=b.y*dims.h, R=b.r*base*0.5;
+      var g=ctx.createRadialGradient(x,y,0,x,y,R);
+      g.addColorStop(0,'rgba(18,35,31,'+b.a+')'); g.addColorStop(1,'rgba(18,35,31,0)');
+      ctx.fillStyle=g; ctx.beginPath();
+      for(var j=0;j<=28;j++){ var an=j/28*Math.PI*2; var wob=0.82+0.12*Math.sin(an*3+b.seed)+0.07*Math.sin(an*5+b.seed*2.1); var px=x+Math.cos(an)*R*wob, py=y+Math.sin(an)*R*wob; if(j===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+      ctx.closePath(); ctx.fill();
+    }
   }
-  function setProgress(p){ p=p<0?0:(p>1?1:p); render(p); content.style.opacity=String(1-Math.min(1,p*1.35)); content.style.transform='translateY('+(-p*24)+'px)'; if(p>=1 && !dismissed) dismiss(); }
+  function setP(p){ p=p<0?0:(p>1?1:p); wrap.style.opacity=String(1-p); content.style.transform='translateY('+(-p*26)+'px)'; if(p>=1 && !dismissed) dismiss(); }
   function dismiss(){ if(dismissed) return; dismissed=true; wrap.classList.add('gone'); window.removeEventListener('scroll',onScroll); window.removeEventListener('resize',resize); }
   var ticking=false;
-  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setProgress(window.scrollY/(window.innerHeight*0.85)); }); }
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setP(window.scrollY/(window.innerHeight*0.85)); }); }
   function easeInOut(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
-  function animateOut(cb){ var start=null; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/520); var p=Math.max(curP,easeInOut(t)); render(p); content.style.opacity=String(1-Math.min(1,p*1.35)); if(t<1) requestAnimationFrame(step); else { dismiss(); if(cb) cb(); } } requestAnimationFrame(step); }
+  function fadeOut(cb){ var start=null, from=parseFloat(wrap.style.opacity||'1'); if(isNaN(from)) from=1; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/460); wrap.style.opacity=String(from*(1-easeInOut(t))); if(t<1) requestAnimationFrame(step); else { dismiss(); if(cb) cb(); } } requestAnimationFrame(step); }
 
   [].slice.call(document.querySelectorAll('#welcome .w-opt')).forEach(function(btn){
-    btn.addEventListener('click',function(){
-      var target=document.getElementById(btn.getAttribute('data-goto'));
-      if(reduce){ dismiss(); if(target) target.scrollIntoView(); return; }
-      animateOut(function(){ if(target) target.scrollIntoView({behavior:'smooth'}); });
-    });
+    btn.addEventListener('click',function(){ var target=document.getElementById(btn.getAttribute('data-goto')); fadeOut(function(){ if(target) target.scrollIntoView({behavior:'smooth'}); }); });
   });
-  document.getElementById('welcomeSkip').addEventListener('click',function(){ if(reduce){ dismiss(); } else { animateOut(null); } });
-  window.addEventListener('keydown',function(e){ if(e.key==='Escape' && !dismissed){ if(reduce) dismiss(); else animateOut(null); } });
+  document.getElementById('welcomeSkip').addEventListener('click',function(){ fadeOut(null); });
+  window.addEventListener('keydown',function(e){ if(e.key==='Escape' && !dismissed) fadeOut(null); });
 
-  if(reduce){
-    canvas.style.display='none';
-    wrap.style.background='var(--paper)';
-    var rt=false;
-    window.addEventListener('scroll',function(){ if(rt) return; rt=true; requestAnimationFrame(function(){ rt=false; var p=window.scrollY/(window.innerHeight*0.6); wrap.style.opacity=String(1-Math.min(1,p)); if(p>=1 && !dismissed) dismiss(); }); },{passive:true});
-  } else {
-    readPaper(); seed(); resize(); setProgress(0);
-    window.addEventListener('resize',resize);
-    window.addEventListener('scroll',onScroll,{passive:true});
-  }
+  seed(); resize(); setP(0);
+  window.addEventListener('resize',resize);
+  window.addEventListener('scroll',onScroll,{passive:true});
 })();
 </script>
 </body>

@@ -413,9 +413,12 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .track{scroll-behavior:auto}
 }
 /* ── Fogadó réteg (welcome + görgetés-vezérelt tinta-eltűnés) ─────────── */
-#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;background:var(--paper);will-change:opacity}
+#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;--reveal:0;--mx:-300px;--my:-300px}
 #welcome.gone{display:none}
-#welcome .w-ink{position:absolute;inset:0;z-index:1;pointer-events:none}
+#welcome .w-paper{position:absolute;inset:0;z-index:1;pointer-events:none;background:#f2f1ea;--r:calc(var(--reveal) * 135vmax);--f:calc(var(--reveal) * 12vmax + 1px);
+  -webkit-mask-image:radial-gradient(circle at 22% 27%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 73% 22%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 47% 60%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 85% 66%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 28% 83%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at var(--mx) var(--my),#0000 8vmax,#000 18vmax);
+  mask-image:radial-gradient(circle at 22% 27%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 73% 22%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 47% 60%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 85% 66%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at 28% 83%,#0000 var(--r),#000 calc(var(--r) + var(--f))),radial-gradient(circle at var(--mx) var(--my),#0000 8vmax,#000 18vmax);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
 #welcome .w-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;will-change:opacity,transform}
 #welcome .w-hi{font-family:"Bricolage Grotesque","Hanken Grotesk",sans-serif;font-weight:700;font-size:clamp(30px,6vw,58px);letter-spacing:-.02em;line-height:1.06;margin:0;color:var(--text)}
 #welcome .w-q{font-size:clamp(16px,2.4vw,22px);color:var(--muted);margin:12px 0 28px}
@@ -432,7 +435,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 
 <!-- ═══ FOGADÓ RÉTEG (welcome) ═══ -->
 <div id="welcome" role="region" aria-label="Köszöntő">
-  <canvas class="w-ink" id="welcomeInk" aria-hidden="true"></canvas>
+  <div class="w-paper" id="welcomePaper" aria-hidden="true"></div>
   <div class="w-content" id="welcomeContent">
     <h1 class="w-hi" data-i18n="intro_hi">Köszöntelek az oldalamon!</h1>
     <p class="w-q" data-i18n="intro_q">Mit néznél meg elsőnek?</p>
@@ -3048,54 +3051,31 @@ const triggerOfficeWorkflow = (function () {
 <script>
 (function(){
   var wrap=document.getElementById('welcome'); if(!wrap) return;
-  var canvas=document.getElementById('welcomeInk');
   var content=document.getElementById('welcomeContent');
-  var ctx=canvas.getContext('2d');
-  var dims={w:0,h:0}, blots=[], dismissed=false;
+  var dismissed=false;
+  var noHover = window.matchMedia && window.matchMedia('(hover:none)').matches;
 
-  // Decorative ink blotches on the paper layer — "break up" the flat colour.
-  // The paper background is a real element background (#welcome), so the
-  // greeting is always readable; the whole layer fades on scroll to reveal
-  // the real page beneath. (Earlier a canvas paint provided the background,
-  // which some browsers/extensions rendered dark — this avoids that entirely.)
-  function seed(){ blots=[]; for(var i=0;i<11;i++) blots.push({x:Math.random(),y:Math.random(),seed:Math.random()*Math.PI*2,r:0.16+Math.random()*0.26,a:0.045+Math.random()*0.05}); }
-  function resize(){
-    var dpr=Math.min(window.devicePixelRatio||1,2);
-    dims={w:window.innerWidth,h:window.innerHeight};
-    canvas.width=Math.round(dims.w*dpr); canvas.height=Math.round(dims.h*dpr);
-    canvas.style.width=dims.w+'px'; canvas.style.height=dims.h+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    paint();
-  }
-  function paint(){
-    ctx.clearRect(0,0,dims.w,dims.h);
-    ctx.globalCompositeOperation='source-over';
-    var base=Math.hypot(dims.w,dims.h);
-    for(var i=0;i<blots.length;i++){
-      var b=blots[i], x=b.x*dims.w, y=b.y*dims.h, R=b.r*base*0.5;
-      var g=ctx.createRadialGradient(x,y,0,x,y,R);
-      g.addColorStop(0,'rgba(18,35,31,'+b.a+')'); g.addColorStop(1,'rgba(18,35,31,0)');
-      ctx.fillStyle=g; ctx.beginPath();
-      for(var j=0;j<=28;j++){ var an=j/28*Math.PI*2; var wob=0.82+0.12*Math.sin(an*3+b.seed)+0.07*Math.sin(an*5+b.seed*2.1); var px=x+Math.cos(an)*R*wob, py=y+Math.sin(an)*R*wob; if(j===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
-      ctx.closePath(); ctx.fill();
-    }
-  }
-  function setP(p){ p=p<0?0:(p>1?1:p); wrap.style.opacity=String(1-p); content.style.transform='translateY('+(-p*26)+'px)'; if(p>=1 && !dismissed) dismiss(); }
-  function dismiss(){ if(dismissed) return; dismissed=true; wrap.classList.add('gone'); window.removeEventListener('scroll',onScroll); window.removeEventListener('resize',resize); }
+  // No <canvas>: the "paper" is a real element (.w-paper) with a CSS mask.
+  // The mask is the union of growing blotch-holes (scroll) + a hole under the
+  // cursor — so the real page shows through the ink, and it can never render
+  // as a black canvas the way the earlier version did on some GPUs.
+  function setReveal(p){ p=p<0?0:(p>1?1:p); wrap.style.setProperty('--reveal',String(p)); content.style.opacity=String(1-Math.min(1,p*1.25)); content.style.transform='translateY('+(-p*24)+'px)'; if(p>=1 && !dismissed) dismiss(); }
+  function dismiss(){ if(dismissed) return; dismissed=true; wrap.classList.add('gone'); window.removeEventListener('scroll',onScroll); window.removeEventListener('mousemove',onMove); }
   var ticking=false;
-  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setP(window.scrollY/(window.innerHeight*0.85)); }); }
+  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setReveal(window.scrollY/(window.innerHeight*0.85)); }); }
+  function onMove(e){ wrap.style.setProperty('--mx',e.clientX+'px'); wrap.style.setProperty('--my',e.clientY+'px'); }
   function easeInOut(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
-  function fadeOut(cb){ var start=null, from=parseFloat(wrap.style.opacity||'1'); if(isNaN(from)) from=1; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/460); wrap.style.opacity=String(from*(1-easeInOut(t))); if(t<1) requestAnimationFrame(step); else { dismiss(); if(cb) cb(); } } requestAnimationFrame(step); }
+  function animateOut(cb){ var start=null, from=parseFloat(wrap.style.getPropertyValue('--reveal'))||0; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/560); setReveal(from+(1-from)*easeInOut(t)); if(t<1) requestAnimationFrame(step); else { dismiss(); if(cb) cb(); } } requestAnimationFrame(step); }
 
   [].slice.call(document.querySelectorAll('#welcome .w-opt')).forEach(function(btn){
-    btn.addEventListener('click',function(){ var target=document.getElementById(btn.getAttribute('data-goto')); fadeOut(function(){ if(target) target.scrollIntoView({behavior:'smooth'}); }); });
+    btn.addEventListener('click',function(){ var target=document.getElementById(btn.getAttribute('data-goto')); animateOut(function(){ if(target) target.scrollIntoView({behavior:'smooth'}); }); });
   });
-  document.getElementById('welcomeSkip').addEventListener('click',function(){ fadeOut(null); });
-  window.addEventListener('keydown',function(e){ if(e.key==='Escape' && !dismissed) fadeOut(null); });
+  document.getElementById('welcomeSkip').addEventListener('click',function(){ animateOut(null); });
+  window.addEventListener('keydown',function(e){ if(e.key==='Escape' && !dismissed) animateOut(null); });
 
-  seed(); resize(); setP(0);
-  window.addEventListener('resize',resize);
+  setReveal(0);
   window.addEventListener('scroll',onScroll,{passive:true});
+  if(!noHover) window.addEventListener('mousemove',onMove,{passive:true});
 })();
 </script>
 </body>

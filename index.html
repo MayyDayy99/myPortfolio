@@ -21,7 +21,7 @@
 <html lang="hu">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nemes Péter · weboldal, webalkalmazás és saját AI</title>
 <meta name="description" content="Weboldalt, egyedi webalkalmazást és nálad futó, privát AI-t építek magánszemélyeknek és kisvállalkozásoknak, közérthetően, működő demókkal.">
 <meta name="theme-color" content="#eff1ec">
@@ -430,6 +430,22 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 #welcome .w-skip{margin-top:28px;font-family:"Space Mono",ui-monospace,monospace;font-size:13px;color:rgba(242,244,239,.6);background:none;border:none;cursor:pointer;pointer-events:auto;text-decoration:underline;text-underline-offset:3px}
 #welcome .w-skip:hover{color:#fff}
 #welcome .w-scroll{margin-top:12px;font-size:12px;letter-spacing:.04em;color:rgba(242,244,239,.5);pointer-events:none}
+/* Telefon: minden férjen el a látható területen (URL-sáv / notch), tömörebb elrendezés */
+@media (max-width:680px){
+  #welcome .w-content{padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px))}
+  #welcome .w-lang{margin-bottom:16px;gap:5px}
+  #welcome .w-lang button{font-size:11px;padding:6px 11px}
+  #welcome .w-card{padding:22px 20px;margin-bottom:18px;border-radius:20px}
+  #welcome .w-hi{font-size:clamp(23px,7.4vw,34px)}
+  #welcome .w-q{font-size:15px;margin-top:8px}
+  #welcome .w-opts{gap:10px;width:min(460px,94vw)}
+  #welcome .w-opt{padding:13px 18px;font-size:14px}
+  #welcome .w-skip{margin-top:18px}
+  #welcome .w-scroll{margin-top:10px}
+}
+@supports (height:100svh){
+  @media (max-width:680px){ #welcome .w-content{height:100svh;bottom:auto} }
+}
 </style>
 </head>
 <body>

@@ -415,7 +415,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .track{scroll-behavior:auto}
 }
 /* ── Fogadó réteg (welcome + görgetés-vezérelt tinta-eltűnés) ─────────── */
-#welcome{position:fixed;inset:0;z-index:500;pointer-events:none}
+#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;background:#12231f}
 #welcome.gone{display:none}
 #welcome .w-ink{position:absolute;inset:0;z-index:1;pointer-events:none;display:block}
 #welcome .w-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;will-change:opacity,transform}
@@ -3170,6 +3170,10 @@ const triggerOfficeWorkflow = (function () {
       wrap.style.background='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')';
       window.addEventListener('scroll',function(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var p=Math.min(1,window.scrollY/(window.innerHeight*0.65)); wrap.style.opacity=String(1-p); content.style.opacity=String(1-p); if(p>=1) dismiss(); }); },{passive:true});
     } else {
+      // A canvas (átlátszatlan zöld maszk) mostantól maga adja a hátteret; a
+      // #welcome CSS-háttere (ami a JS-előtti rést fedte) átlátszóra vált, hogy
+      // a tinta-kivágások a valódi oldalt tárják fel, ne a zöldet.
+      wrap.style.background='transparent';
       window.addEventListener('resize',resize);
       window.addEventListener('scroll',onScroll,{passive:true});
       if(!noHover) window.addEventListener('mousemove',onMove,{passive:true});

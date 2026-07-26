@@ -118,7 +118,8 @@ def build_jsonld(lang, dic, hu):
         "email": "mailto:pr.nemes@gmail.com",
         "telephone": "+36205493710",
         "image": SITE + "/images/profil.jpg",
-        "sameAs": ["https://github.com/MayyDayy99"],
+        "sameAs": ["https://github.com/MayyDayy99",
+                   "https://www.linkedin.com/in/p%C3%A9ter-nemes-260191237/"],
         "knowsAbout": KNOWS,
         "knowsLanguage": [{"@type": "Language", "name": l} for l in LANGS],
     }
@@ -302,6 +303,7 @@ def write_crawler_files(dic, hu):
          '- Kapcsolat: pr.nemes@gmail.com · +36 20 549 3710',
          '- Honlap: %s/' % SITE,
          '- GitHub: https://github.com/MayyDayy99',
+         '- LinkedIn: https://www.linkedin.com/in/p%C3%A9ter-nemes-260191237/',
          '- Nyelvek: magyar, angol, spanyol, kínai, német, francia', '',
          '## Szolgáltatások', '']
     for i in range(1, 6):

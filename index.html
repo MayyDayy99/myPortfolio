@@ -42,6 +42,7 @@
 <meta name="twitter:image" content="https://portfolio.maydayprod.app/images/og.jpg">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2312231f'/%3E%3Ctext x='33' y='43' font-family='monospace' font-size='29' font-weight='700' letter-spacing='1' fill='%23e2a23b' text-anchor='middle'%3EAI%3C/text%3E%3C/svg%3E">
 
+<link rel="dns-prefetch" href="https://www.clarity.ms">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap">
@@ -3213,6 +3214,35 @@ const triggerOfficeWorkflow = (function () {
       requestAnimationFrame(frame);
     }
   }
+})();
+</script>
+
+<!-- Microsoft Clarity: nem a betöltéssel egy időben indul, hanem amikor a böngésző
+     már ráér, így nem vesz sávot és processzort az oldal saját tartalmától. -->
+<script>
+(function(){
+  var ID='xteok1wsx1', started=false;
+  function boot(){
+    if(started) return; started=true;
+    (function(c,l,a,r,i,t,y){
+      c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+      t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+      y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", ID);
+  }
+  // adatspórolás vagy 2G-s kapcsolat esetén a mérés kimarad, a látogató a fontosabb
+  var c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  if(c && (c.saveData || /2g$/.test(c.effectiveType||''))) return;
+  function schedule(){
+    if('requestIdleCallback' in window) requestIdleCallback(boot,{timeout:3000});
+    else setTimeout(boot,2000);
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',schedule,{once:true});
+  else schedule();
+  // ha a látogató hamarabb hozzáér az oldalhoz, ne maradjon le a felvétel eleje
+  ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){
+    window.addEventListener(ev,boot,{once:true,passive:true});
+  });
 })();
 </script>
 </body>

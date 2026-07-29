@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://portfolio.maydayprod.app/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <xhtml:link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://portfolio.maydayprod.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://portfolio.maydayprod.app/es/"/>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/en/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <xhtml:link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://portfolio.maydayprod.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://portfolio.maydayprod.app/es/"/>
@@ -26,7 +26,7 @@
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/es/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <xhtml:link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://portfolio.maydayprod.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://portfolio.maydayprod.app/es/"/>
@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/zh/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <xhtml:link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://portfolio.maydayprod.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://portfolio.maydayprod.app/es/"/>
@@ -50,7 +50,7 @@
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/de/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <xhtml:link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://portfolio.maydayprod.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://portfolio.maydayprod.app/es/"/>
@@ -62,7 +62,7 @@
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/fr/</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <xhtml:link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://portfolio.maydayprod.app/en/"/>
     <xhtml:link rel="alternate" hreflang="es" href="https://portfolio.maydayprod.app/es/"/>
@@ -74,12 +74,12 @@
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/lokalis-ai-abra.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://portfolio.maydayprod.app/szerkeszto-demo.html</loc>
-    <lastmod>2026-07-28</lastmod>
+    <lastmod>2026-07-29</lastmod>
     <priority>0.5</priority>
   </url>
 </urlset>

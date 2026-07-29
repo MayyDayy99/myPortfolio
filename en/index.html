@@ -416,41 +416,6 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   body.reveal-ready [data-reveal]{opacity:1;transform:none}
   .track{scroll-behavior:auto}
 }
-/* ── Fogadó réteg (welcome + görgetés-vezérelt tinta-eltűnés) ─────────── */
-#welcome{position:fixed;inset:0;z-index:500;pointer-events:none;background:#12231f}
-#welcome.gone{display:none}
-#welcome .w-ink{position:absolute;inset:0;z-index:1;pointer-events:none;display:block}
-#welcome .w-content{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;will-change:opacity,transform}
-/* Tömör hátterű, szegmentált nyelvválasztó — saját doboza van, így a tinta-effekt nem tár fel semmit körülötte (mint a köszöntő kártya) */
-#welcome .w-lang{display:inline-flex;gap:3px;justify-content:center;margin-bottom:22px;padding:5px;background:#16281f;border:1px solid rgba(201,130,42,.22);border-radius:var(--r-full,999px);box-shadow:0 26px 60px -34px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.05);pointer-events:auto}
-#welcome .w-lang button{font-family:"Space Mono",ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.04em;color:rgba(242,244,239,.6);background:transparent;border:0;border-radius:var(--r-full,999px);padding:7px 13px;cursor:pointer;transition:background .18s,color .18s}
-#welcome .w-lang button:hover{color:#f2f4ef;background:rgba(255,255,255,.07)}
-#welcome .w-lang button[aria-pressed="true"]{background:var(--amber);color:#fff}
-#welcome .w-card{background:#16281f;border:1px solid rgba(201,130,42,.22);border-radius:24px;padding:30px 40px;box-shadow:0 40px 90px -40px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.05);max-width:min(720px,92vw);margin-bottom:26px}
-#welcome .w-hi{font-family:"Bricolage Grotesque","Hanken Grotesk",sans-serif;font-weight:700;font-size:clamp(28px,5.4vw,52px);letter-spacing:-.02em;line-height:1.07;margin:0;color:#f2f4ef}
-#welcome .w-q{font-size:clamp(16px,2.4vw,22px);color:rgba(242,244,239,.72);margin:12px 0 0}
-#welcome .w-opts{display:flex;flex-direction:column;gap:12px;width:min(660px,92vw);pointer-events:auto}
-#welcome .w-opt{width:100%;text-align:center;font-family:inherit;font-size:15px;font-weight:600;color:var(--text);background:var(--paper);border:1px solid transparent;border-radius:var(--r-full,999px);padding:14px 22px;cursor:pointer;transition:background .18s,border-color .18s,transform .18s,color .18s;box-shadow:0 12px 28px -14px rgba(0,0,0,.65)}
-#welcome .w-opt:hover{background:var(--amber);border-color:transparent;color:#fff;transform:translateY(-2px)}
-#welcome .w-skip{margin-top:28px;font-family:"Space Mono",ui-monospace,monospace;font-size:13px;color:rgba(242,244,239,.6);background:none;border:none;cursor:pointer;pointer-events:auto;text-decoration:underline;text-underline-offset:3px}
-#welcome .w-skip:hover{color:#fff}
-#welcome .w-scroll{margin-top:12px;font-size:12px;letter-spacing:.04em;color:rgba(242,244,239,.5);pointer-events:none}
-/* Telefon: minden férjen el a látható területen (URL-sáv / notch), tömörebb elrendezés */
-@media (max-width:680px){
-  #welcome .w-content{padding:calc(18px + env(safe-area-inset-top,0px)) 16px calc(18px + env(safe-area-inset-bottom,0px))}
-  #welcome .w-lang{margin-bottom:16px;gap:2px;padding:4px}
-  #welcome .w-lang button{font-size:11px;padding:6px 9px}
-  #welcome .w-card{padding:22px 20px;margin-bottom:18px;border-radius:20px}
-  #welcome .w-hi{font-size:clamp(23px,7.4vw,34px)}
-  #welcome .w-q{font-size:15px;margin-top:8px}
-  #welcome .w-opts{gap:10px;width:min(460px,94vw)}
-  #welcome .w-opt{padding:13px 18px;font-size:14px}
-  #welcome .w-skip{margin-top:18px}
-  #welcome .w-scroll{margin-top:10px}
-}
-@supports (height:100svh){
-  @media (max-width:680px){ #welcome .w-content{height:100svh;bottom:auto} }
-}
 </style>
 <!-- geo:start -->
 <link rel="alternate" hreflang="hu" href="https://portfolio.maydayprod.app/">
@@ -465,33 +430,6 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 </head>
 <body>
 <a class="skip" href="#munkak">Ugrás a tartalomra</a>
-
-<!-- ═══ FOGADÓ RÉTEG (welcome) ═══ -->
-<div id="welcome" role="region" aria-label="Köszöntő">
-  <canvas class="w-ink" id="welcomeInk" aria-hidden="true"></canvas>
-  <div class="w-content" id="welcomeContent">
-    <div class="w-lang" id="welcomeLang" role="group" aria-label="Nyelv / Language">
-      <button type="button" data-wlang="hu" aria-pressed="false">HU</button>
-      <button type="button" data-wlang="en" aria-pressed="true">EN</button>
-      <button type="button" data-wlang="es" aria-pressed="false">ES</button>
-      <button type="button" data-wlang="zh" aria-pressed="false">ZH</button>
-      <button type="button" data-wlang="de" aria-pressed="false">DE</button>
-      <button type="button" data-wlang="fr" aria-pressed="false">FR</button>
-    </div>
-    <div class="w-card">
-      <p class="w-hi" data-i18n="intro_hi">Welcome to my site!</p>
-      <p class="w-q" data-i18n="intro_q">What would you like to see first?</p>
-    </div>
-    <div class="w-opts">
-      <button type="button" class="w-opt" data-goto="rolam" data-i18n="intro_o_about">About me</button>
-      <button type="button" class="w-opt" data-goto="szolgaltatasok" data-i18n="intro_o_serv">My services</button>
-      <button type="button" class="w-opt" data-goto="munkak" data-i18n="intro_o_works">My work</button>
-      <button type="button" class="w-opt" data-goto="kapcsolat" data-i18n="intro_o_contact">Contact</button>
-    </div>
-    <button type="button" class="w-skip" id="welcomeSkip" data-i18n="intro_skip">Skip the greeting</button>
-    <div class="w-scroll" data-i18n="intro_scroll" aria-hidden="true">scroll down ↓</div>
-  </div>
-</div>
 
 <header class="header" id="header">
   <div class="wrap nav">
@@ -3064,102 +3002,9 @@ const triggerOfficeWorkflow = (function () {
     document.addEventListener('click',function(e){ if(!box.contains(e.target)){ box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
   }
-  var wlang=document.getElementById('welcomeLang');
-  if(wlang) wlang.addEventListener('click',function(e){ var b=e.target.closest('button[data-wlang]'); if(!b) return; go(b.getAttribute('data-wlang')); });
 })();
 </script>
 
-<!-- Fogadó réteg: görgetés-vezérelt tinta-eltűnés -->
-<script>
-(function(){
-  var wrap=document.getElementById('welcome'); if(!wrap) return;
-  var canvas=document.getElementById('welcomeInk');
-  var content=document.getElementById('welcomeContent');
-  var ctx=canvas.getContext('2d');
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var noHover = window.matchMedia && window.matchMedia('(hover:none)').matches;
-  var MASK=[18,35,31];                  // brand dark green — contrasts with the light page so the ink reveal reads
-  var dims={w:0,h:0}, dismissed=false, curP=0;
-  var scrollBlots=[], stamps=[], lastPos=null, started=false;
-
-  // ── Canvas ink reveal (faithful to the 21st.dev component) ────────────
-  // Paper mask on top of the transparent overlay; wobbly ink stamps carve
-  // holes (destination-out) to reveal the real page. The cursor paints
-  // fading stamps; scrolling grows persistent blotches — a crisp inky
-  // dissolve, not a soft blob.
-  function seedScroll(){ scrollBlots=[]; for(var i=0;i<14;i++) scrollBlots.push({x:Math.random(),y:Math.random(),seed:Math.random()*6.2832,delay:Math.random()*0.35,rf:0.55+Math.random()*0.6}); }
-  function resize(){
-    var dpr=Math.min(window.devicePixelRatio||1,1.5);
-    dims={w:window.innerWidth,h:window.innerHeight};
-    canvas.width=Math.round(dims.w*dpr); canvas.height=Math.round(dims.h*dpr);
-    canvas.style.width=dims.w+'px'; canvas.style.height=dims.h+'px';
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    fillMask(); // paint immediately so there is never a blank/transparent flash
-  }
-  function fillMask(){ ctx.globalCompositeOperation='source-over'; ctx.fillStyle='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')'; ctx.fillRect(0,0,dims.w,dims.h); }
-  function carve(x,y,r,seed,alpha){
-    var g=ctx.createRadialGradient(x,y,r*0.2,x,y,r);
-    g.addColorStop(0,'rgba(0,0,0,'+(0.95*alpha)+')');
-    g.addColorStop(0.5,'rgba(0,0,0,'+(0.88*alpha)+')');
-    g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g; ctx.beginPath();
-    for(var i=0;i<=36;i++){ var a=i/36*6.2832; var wob=0.78+0.14*Math.sin(a*3+seed)+0.08*Math.sin(a*5+seed*2.1)+0.05*Math.sin(a*7+seed*0.7); var px=x+Math.cos(a)*r*wob, py=y+Math.sin(a)*r*wob; if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
-    ctx.closePath(); ctx.fill();
-  }
-  function addStamp(x,y){ if(stamps.length>=160) stamps.shift(); stamps.push({x:x,y:y,born:performance.now(),seed:Math.random()*6.2832,rmax:72*(0.5+Math.random()*0.4)}); }
-  function stampAlong(x,y){ var last=lastPos; if(!last){ addStamp(x,y); } else { var dx=x-last.x,dy=y-last.y,d=Math.hypot(dx,dy),n=Math.max(1,Math.ceil(d/14)); for(var i=1;i<=n;i++) addStamp(last.x+dx*i/n,last.y+dy*i/n); } lastPos={x:x,y:y}; }
-  function frame(){
-    if(dismissed) return;
-    var now=performance.now();
-    fillMask();
-    ctx.globalCompositeOperation='destination-out';
-    if(curP>0){ var maxR=Math.hypot(dims.w,dims.h)*0.52; for(var i=0;i<scrollBlots.length;i++){ var b=scrollBlots[i]; var lp=(curP-b.delay)/(1-b.delay); if(lp<=0) continue; if(lp>1)lp=1; var r=maxR*b.rf*(1-Math.pow(1-lp,2)); if(r>0.5) carve(b.x*dims.w,b.y*dims.h,r,b.seed,1); } }
-    for(var j=stamps.length-1;j>=0;j--){ var s=stamps[j]; var t=(now-s.born)/600; if(t>=1){ stamps.splice(j,1); continue; } var ease=1-Math.pow(1-t,3); var rr=10+(s.rmax-10)*ease; carve(s.x,s.y,rr,s.seed,1-t*t); }
-    ctx.globalCompositeOperation='source-over';
-    requestAnimationFrame(frame);
-  }
-  function setP(p){ p=p<0?0:(p>1?1:p); curP=p; content.style.opacity=String(1-Math.min(1,p*1.2)); content.style.transform='translateY('+(-p*24)+'px)'; if(p>=1) dismiss(); }
-  function dismiss(){ if(dismissed) return; dismissed=true; wrap.classList.add('gone'); window.removeEventListener('scroll',onScroll); window.removeEventListener('resize',resize); window.removeEventListener('mousemove',onMove); }
-  var ticking=false;
-  function onScroll(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; setP(window.scrollY/(window.innerHeight*0.85)); }); }
-  function onMove(e){ stampAlong(e.clientX,e.clientY); }
-  function easeInOut(t){ return t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
-  function animateOut(cb){ var start=null, from=curP; function step(ts){ if(!start)start=ts; var t=Math.min(1,(ts-start)/560); setP(from+(1-from)*easeInOut(t)); if(t<1 && !dismissed) requestAnimationFrame(step); else if(cb) cb(); } requestAnimationFrame(step); }
-
-  [].slice.call(document.querySelectorAll('#welcome .w-opt')).forEach(function(btn){
-    btn.addEventListener('click',function(){ var target=document.getElementById(btn.getAttribute('data-goto')); animateOut(function(){ if(target) target.scrollIntoView({behavior:'smooth'}); }); });
-  });
-  document.getElementById('welcomeSkip').addEventListener('click',function(){ animateOut(null); });
-  window.addEventListener('keydown',function(e){ if(e.key==='Escape' && !dismissed) animateOut(null); });
-
-  if(reduce){
-    // Accessible fallback: a plain paper layer that fades on scroll, no canvas.
-    canvas.style.display='none';
-    wrap.style.background='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')';
-    window.addEventListener('scroll',function(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var p=Math.min(1,window.scrollY/(window.innerHeight*0.65)); wrap.style.opacity=String(1-p); content.style.opacity=String(1-p); if(p>=1) dismiss(); }); },{passive:true});
-  } else {
-    seedScroll(); resize();
-    // Safety net: if the 2D canvas didn't actually hold the paper fill (a
-    // broken/blocked context on some setups), fall back to a plain readable
-    // paper layer — so the backdrop can never end up black.
-    var ok=false; try{ var px=ctx.getImageData(Math.max(1,Math.floor(canvas.width/2)),Math.max(1,Math.floor(canvas.height/2)),1,1).data; ok=px[3]>200 && Math.abs(px[0]-MASK[0])<45 && Math.abs(px[2]-MASK[2])<45; }catch(e){ ok=false; }
-    if(!ok){
-      canvas.style.display='none';
-      wrap.style.background='rgb('+MASK[0]+','+MASK[1]+','+MASK[2]+')';
-      window.addEventListener('scroll',function(){ if(ticking) return; ticking=true; requestAnimationFrame(function(){ ticking=false; var p=Math.min(1,window.scrollY/(window.innerHeight*0.65)); wrap.style.opacity=String(1-p); content.style.opacity=String(1-p); if(p>=1) dismiss(); }); },{passive:true});
-    } else {
-      // A canvas (átlátszatlan zöld maszk) mostantól maga adja a hátteret; a
-      // #welcome CSS-háttere (ami a JS-előtti rést fedte) átlátszóra vált, hogy
-      // a tinta-kivágások a valódi oldalt tárják fel, ne a zöldet.
-      wrap.style.background='transparent';
-      window.addEventListener('resize',resize);
-      window.addEventListener('scroll',onScroll,{passive:true});
-      if(!noHover) window.addEventListener('mousemove',onMove,{passive:true});
-      requestAnimationFrame(frame);
-    }
-  }
-})();
-</script>
 
 <!-- Microsoft Clarity: nem a betöltéssel egy időben indul, hanem amikor a böngésző
      már ráér, így nem vesz sávot és processzort az oldal saját tartalmától. -->

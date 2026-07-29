@@ -183,8 +183,6 @@ NAV_SWITCHER = '''<script>
     document.addEventListener('click',function(e){ if(!box.contains(e.target)){ box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
   }
-  var wlang=document.getElementById('welcomeLang');
-  if(wlang) wlang.addEventListener('click',function(e){ var b=e.target.closest('button[data-wlang]'); if(!b) return; go(b.getAttribute('data-wlang')); });
 })();
 </script>'''
 
@@ -245,8 +243,6 @@ def build_lang_page(src, lang, dic, hu):
     h = re.sub(r'(<button type="button" data-lang="([a-z]{2})" role="option">)',
                lambda m: m.group(1).replace('role="option">',
                                             'role="option" aria-selected="%s">' % ('true' if m.group(2) == lang else 'false')), h)
-    h = re.sub(r'(<button type="button" data-wlang="([a-z]{2})">)',
-               lambda m: m.group(1).replace('">', '" aria-pressed="%s">' % ('true' if m.group(2) == lang else 'false'), 1), h)
 
     # 7) az i18n motor helyére navigáló nyelvváltó (a szótár így nem terheli az aloldalt)
     eng = re.search(r'<script>\n/\* ===== Többnyelvűség.*?\n</script>', h, re.S)

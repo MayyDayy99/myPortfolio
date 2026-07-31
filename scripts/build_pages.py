@@ -229,13 +229,9 @@ def build_lang_page(src, lang, dic, hu):
         return whole
     h = re.sub(r'<(?:img|video)\b[^>]*\bdata-pl="([a-z0-9_]+)"[^>]*>', poster, h)
 
-    # 4) beágyazott ábra nyelve
-    h = h.replace('<iframe src="lokalis-ai-abra.html"',
-                  '<iframe src="/lokalis-ai-abra.html?lang=%s"' % lang, 1)
-
     # 5) relatív útvonalak gyökér-abszolútra (az aloldal egy szinttel lejjebb van)
     h = re.sub(r'\b(src|href|data-poster)="(images/|videos/)', lambda m: '%s="/%s' % (m.group(1), m.group(2)), h)
-    h = re.sub(r'\bhref="(szerkeszto-demo|ink-demo|lokalis-ai-abra)\.html"',
+    h = re.sub(r'\bhref="(szerkeszto-demo|ink-demo)\.html"',
                lambda m: 'href="/%s.html"' % m.group(1), h)
 
     # 6) nyelvválasztó állapota beégetve
@@ -270,7 +266,7 @@ def write_crawler_files(dic, hu):
     open(os.path.join(ROOT, 'robots.txt'), 'w', encoding='utf-8').write('\n'.join(robots))
 
     urls = [(SITE + PATH[l], l) for l in LANGS]
-    extra = ['/lokalis-ai-abra.html', '/szerkeszto-demo.html']
+    extra = ['/szerkeszto-demo.html']
     sm = ['<?xml version="1.0" encoding="UTF-8"?>',
           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" '
           'xmlns:xhtml="http://www.w3.org/1999/xhtml">']

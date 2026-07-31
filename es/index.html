@@ -161,6 +161,77 @@ p{margin:0}
 .sintro{color:var(--muted);max-width:var(--prose);margin-bottom:30px}
 
 /* ── szolgáltatások ── */
+/* ── Lokális AI ábra: beágyazva, külső függőség nélkül ─────────────────── */
+.lai-fig{margin:clamp(34px,5vw,56px) 0 0;padding:0}
+.lai-flow{display:flex;align-items:center;justify-content:center;gap:clamp(14px,3vw,40px)}
+.lai-user{display:flex;flex-direction:column;align-items:center;gap:14px;flex:none}
+.lai-avatar{display:flex;flex-direction:column;align-items:center}
+.lai-avatar::before{content:"";width:32px;height:32px;border:1.7px solid rgba(239,241,236,.85);border-radius:50%}
+.lai-avatar::after{content:"";width:56px;height:27px;border:1.7px solid rgba(239,241,236,.85);border-bottom:none;border-radius:28px 28px 0 0;margin-top:7px}
+.lai-cap{font-family:"Space Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--paper)}
+.lai-wires{display:flex;flex-direction:column;gap:30px;width:clamp(140px,15vw,196px);flex:none}
+.lai-wlabel{display:block;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);text-align:center}
+.lai-wire--q .lai-wlabel{margin-bottom:9px}
+.lai-wire--a .lai-wlabel{margin-top:9px}
+.lai-line{position:relative;display:block;height:2px;border-radius:2px;background:linear-gradient(90deg,rgba(201,130,42,.14),rgba(201,130,42,.6))}
+.lai-line--back{background:linear-gradient(90deg,rgba(195,203,194,.55),rgba(195,203,194,.14))}
+.lai-head{position:absolute;top:50%;width:8px;height:8px;right:-1px;border-top:2px solid var(--amber);border-right:2px solid var(--amber);transform:translateY(-50%) rotate(45deg)}
+.lai-line--back .lai-head{right:auto;left:-1px;border:0;border-bottom:2px solid var(--paper-dim);border-left:2px solid var(--paper-dim)}
+.lai-line i{position:absolute;top:50%;margin-top:-2.5px;width:5px;height:5px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px rgba(201,130,42,.85);opacity:0}
+.lai-line--back i{background:var(--paper-dim);box-shadow:none}
+/* a szemcsék csak akkor futnak, amikor az ábra látszik */
+.lai-fig.is-live .lai-line i{animation:laiFlowR 2.6s linear infinite}
+.lai-fig.is-live .lai-line--back i{animation:laiFlowL 2.6s linear infinite}
+.lai-line i:nth-child(2){animation-delay:.87s}
+.lai-line i:nth-child(3){animation-delay:1.74s}
+@keyframes laiFlowR{0%{left:2%;opacity:0}18%{opacity:1}82%{opacity:1}100%{left:95%;opacity:0}}
+@keyframes laiFlowL{0%{left:95%;opacity:0}18%{opacity:1}82%{opacity:1}100%{left:2%;opacity:0}}
+@keyframes laiFlowD{0%{top:2%;opacity:0}18%{opacity:1}82%{opacity:1}100%{top:92%;opacity:0}}
+@keyframes laiFlowU{0%{top:92%;opacity:0}18%{opacity:1}82%{opacity:1}100%{top:2%;opacity:0}}
+.lai-box{flex:1 1 320px;max-width:560px;min-width:0;border:1px solid var(--ink-line);border-radius:18px;background:rgba(255,255,255,.02);padding:clamp(18px,2.4vw,26px)}
+.lai-boxhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lai-label{display:inline-flex;align-items:center;gap:8px;font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber)}
+.lai-dot{width:7px;height:7px;border-radius:2px;background:var(--amber);flex:none}
+.lai-badge{display:inline-flex;align-items:center;gap:6px;font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);border:1px solid rgba(201,130,42,.4);background:rgba(201,130,42,.1);border-radius:999px;padding:5px 11px;white-space:nowrap}
+.lai-badge svg{width:11px;height:11px;flex:none}
+.lai-sub{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.02em;color:var(--paper-dim);margin-top:8px}
+.lai-node{position:relative;margin:clamp(20px,3vw,30px) 0;padding:clamp(20px,2.6vw,28px) 18px;border:1px solid rgba(201,130,42,.42);border-radius:16px;text-align:center;overflow:hidden}
+.lai-glow{position:absolute;top:50%;left:50%;width:min(340px,92%);height:200px;transform:translate(-50%,-50%);background:radial-gradient(ellipse at center,rgba(201,130,42,.6),rgba(201,130,42,0) 68%);border-radius:50%;opacity:.58;pointer-events:none;z-index:0}
+.lai-fig.is-live .lai-glow{animation:laiPulse 4.8s ease-in-out infinite}
+@keyframes laiPulse{0%,100%{transform:translate(-50%,-50%) scale(.94)}50%{transform:translate(-50%,-50%) scale(1.09)}}
+.lai-node b{position:relative;z-index:1;display:inline-flex;align-items:center;gap:9px;font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:clamp(21px,2.6vw,26px);letter-spacing:-.01em;color:var(--paper)}
+.lai-ndot{width:9px;height:9px;border-radius:50%;background:var(--amber);flex:none}
+.lai-fig.is-live .lai-ndot{animation:laiBlink 2.6s ease-in-out infinite}
+@keyframes laiBlink{0%,100%{box-shadow:0 0 0 0 rgba(201,130,42,.55)}50%{box-shadow:0 0 0 7px rgba(201,130,42,0)}}
+.lai-nsub{position:relative;z-index:1;display:block;margin-top:9px;font-family:"Space Mono",monospace;font-size:12px;line-height:1.45;color:var(--paper-dim)}
+.lai-out{display:flex;flex-wrap:wrap;align-items:center;gap:9px;padding-top:clamp(14px,2vw,18px);border-top:1px solid var(--ink-line)}
+.lai-outlabel{font-family:"Space Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);margin-right:3px}
+.lai-chip{font-family:"Space Mono",monospace;font-size:12px;color:var(--paper);border:1px solid var(--ink-line);border-radius:9px;padding:6px 11px;white-space:nowrap;transition:border-color .3s,background .3s}
+/* a kimenetek sorban felvillannak, mintha épp készülnének */
+.lai-fig.is-live .lai-chip{animation:laiChip 6.5s ease-in-out infinite}
+.lai-fig.is-live .lai-chip:nth-of-type(2){animation-delay:.5s}
+.lai-fig.is-live .lai-chip:nth-of-type(3){animation-delay:1s}
+.lai-fig.is-live .lai-chip:nth-of-type(4){animation-delay:1.5s}
+.lai-fig.is-live .lai-chip:nth-of-type(5){animation-delay:2s}
+@keyframes laiChip{0%,72%,100%{border-color:var(--ink-line);background:transparent}8%,20%{border-color:rgba(201,130,42,.65);background:rgba(201,130,42,.13)}}
+.lai-note{margin:clamp(24px,3.4vw,34px) auto 0;max-width:60ch;text-align:center;font-size:var(--fs-md);line-height:1.55;color:var(--paper-dim)}
+.lai-note b{color:var(--paper);font-weight:600}
+.lai-note i{font-style:normal;color:var(--amber)}
+/* keskeny nézet: a folyam függőlegesbe fordul */
+@media (max-width:720px){
+  .lai-flow{flex-direction:column;gap:6px}
+  .lai-wires{flex-direction:row;gap:52px;width:auto;align-items:flex-start;justify-content:center;padding:4px 0}
+  .lai-wire{display:flex;flex-direction:column;align-items:center;gap:9px}
+  .lai-wire--a{flex-direction:column-reverse}
+  .lai-line{width:2px;height:74px;background:linear-gradient(180deg,rgba(201,130,42,.14),rgba(201,130,42,.6))}
+  .lai-line--back{background:linear-gradient(180deg,rgba(195,203,194,.14),rgba(195,203,194,.55))}
+  .lai-head{top:auto;bottom:-1px;left:50%;right:auto;transform:translateX(-50%) rotate(135deg)}
+  .lai-line--back .lai-head{bottom:auto;top:-1px;transform:translateX(-50%) rotate(135deg)}
+  .lai-line i{left:50%;margin-left:-2.5px;margin-top:0;top:auto}
+  .lai-fig.is-live .lai-line i{animation-name:laiFlowD}
+  .lai-fig.is-live .lai-line--back i{animation-name:laiFlowU}
+  .lai-box{width:min(560px,100%);flex:0 0 auto}
+}
 .svc-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap-grid);margin-top:6px}
 .svc-grid>.svc{flex:1 1 296px;max-width:344px}
 /* Átfordítható szolgáltatás-kártya. A két oldal ugyanabban a rácscellában ül,
@@ -325,9 +396,6 @@ p{margin:0}
 .stack svg{width:100%;height:auto;display:block}
 .stack .scap{margin-top:14px;font-family:"Space Mono",monospace;font-size:var(--fs-2xs);color:var(--paper-dim);text-align:center}
 /* Lokális AI — beágyazott interaktív ábra (Claude Design, iframe) */
-.lai-embed{border:1px solid var(--ink-line);border-radius:var(--r);overflow:hidden;background:#0f1c18;aspect-ratio:3/2}
-.lai-embed iframe{display:block;width:100%;height:100%;border:0}
-@media(max-width:680px){.lai-embed{aspect-ratio:3/5}}
 .lab-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,4vw,52px);margin-top:42px;align-items:start}
 .models{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-list);margin-top:16px}
 .model{border:1px solid var(--ink-line);border-radius:var(--r-sm);padding:var(--sp-4);background:var(--ink-soft)}
@@ -430,6 +498,8 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .sintro{margin-bottom:24px}
 }
 @media (prefers-reduced-motion:reduce){
+  .lai-fig.is-live .lai-line i,.lai-fig.is-live .lai-glow,
+  .lai-fig.is-live .lai-ndot,.lai-fig.is-live .lai-chip{animation:none}
   .svc-in{transition:none}
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
   body.reveal-ready [data-reveal]{opacity:1;transform:none}
@@ -748,30 +818,45 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     </div>
     <p data-i18n="proof_cap" class="proof-cap" data-reveal>Este sistema de procesamiento de vídeo encadena por sí solo <b>4 modelos de IA</b>. Whisper (reconocimiento de voz) → NLLB (traducción) → XTTS-v2 (clonación de voz) → Demucs (separación de audio). Y la interfaz es <b>totalmente a medida</b>: puede ser un chat, un panel o una herramienta concreta como esta. Construyo lo que necesite tu tarea.</p>
 
-    <div class="lai-embed" data-reveal>
-      <iframe src="/lokalis-ai-abra.html?lang=es" title="Lokális AI — hogyan fut a privát AI a te eszközödön" loading="lazy" scrolling="no"></iframe>
-    </div>
-    <script>
-    /* Az ábra iframe-je a saját tartalmához méretezi a keretet, hogy semmi ne
-       vágódjon le (a beágyazott oldal min-height:100vh-t használ, ezért előbb
-       összehúzzuk, kiolvassuk a valódi magasságot, majd arra állítjuk). */
-    (function(){
-      var box=document.querySelector('.lai-embed');
-      var ifr=box&&box.querySelector('iframe');
-      if(!ifr) return;
-      function fit(){
-        try{
-          var d=ifr.contentWindow.document; if(!d||!d.body) return;
-          ifr.style.height='40px';
-          var h=Math.max(d.body.scrollHeight, d.documentElement.scrollHeight);
-          if(h>80){ box.style.aspectRatio='auto'; box.style.height=h+'px'; }
-          ifr.style.height='100%';
-        }catch(e){ ifr.style.height='100%'; }
-      }
-      ifr.addEventListener('load',function(){ fit(); setTimeout(fit,400); setTimeout(fit,1200); });
-      var rt; window.addEventListener('resize',function(){ clearTimeout(rt); rt=setTimeout(fit,150); });
-    })();
-    </script>
+    <figure class="lai-fig" data-reveal>
+      <div class="lai-flow">
+        <div class="lai-user">
+          <span class="lai-avatar" aria-hidden="true"></span>
+          <span class="lai-cap" data-i18n="lai_you">Tú</span>
+        </div>
+        <div class="lai-wires">
+          <div class="lai-wire lai-wire--q">
+            <span class="lai-wlabel" data-i18n="lai_q">pregunta</span>
+            <span class="lai-line" aria-hidden="true"><i></i><i></i><i></i><b class="lai-head"></b></span>
+          </div>
+          <div class="lai-wire lai-wire--a">
+            <span class="lai-line lai-line--back" aria-hidden="true"><i></i><i></i><i></i><b class="lai-head"></b></span>
+            <span class="lai-wlabel" data-i18n="lai_a">respuesta</span>
+          </div>
+        </div>
+        <div class="lai-box">
+          <div class="lai-boxhead">
+            <span class="lai-label"><span class="lai-dot"></span><span data-i18n="lai_dev">Tu equipo</span></span>
+            <span class="lai-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span data-i18n="lai_priv">privado</span></span>
+          </div>
+          <div class="lai-sub" data-i18n="lai_devsub">ordenador · servidor propio · nube propia</div>
+          <div class="lai-node">
+            <span class="lai-glow" aria-hidden="true"></span>
+            <b><span class="lai-ndot"></span><span data-i18n="lai_node">IA privada</span></b>
+            <span class="lai-nsub" data-i18n="lai_nodesub">se ejecuta en local, sin proveedor externo</span>
+          </div>
+          <div class="lai-out">
+            <span class="lai-outlabel" data-i18n="lai_out">lo que produce</span>
+            <span class="lai-chip" data-i18n="lai_c1">texto</span>
+            <span class="lai-chip" data-i18n="lai_c2">imagen</span>
+            <span class="lai-chip" data-i18n="lai_c3">audio</span>
+            <span class="lai-chip" data-i18n="lai_c4">vídeo</span>
+            <span class="lai-chip" data-i18n="lai_c5">3D</span>
+          </div>
+        </div>
+      </div>
+      <figcaption class="lai-note" data-i18n="lai_note">Tú preguntas y la respuesta <b>nace en local</b>. Tus datos <i>nunca salen</i> de tu propio equipo.</figcaption>
+    </figure>
 
     <div class="lab-cols">
       <div data-reveal>
@@ -3082,6 +3167,18 @@ const triggerOfficeWorkflow = (function () {
 })();
 </script>
 
+
+<!-- Lokális AI ábra: a mozgás csak akkor indul, amikor az ábra a nézetbe kerül -->
+<script>
+(function(){
+  var fig=document.querySelector('.lai-fig'); if(!fig) return;
+  if(!('IntersectionObserver' in window)){ fig.classList.add('is-live'); return; }
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ fig.classList.toggle('is-live', e.isIntersecting); });
+  },{threshold:.18});
+  io.observe(fig);
+})();
+</script>
 
 <!-- Szolgáltatás-kártyák: érintésre fordulnak, egérrel hoverre, billentyűzetről fókuszra -->
 <script>

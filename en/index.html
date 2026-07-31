@@ -161,15 +161,30 @@ p{margin:0}
 .sintro{color:var(--muted);max-width:var(--prose);margin-bottom:30px}
 
 /* ── szolgáltatások ── */
-.svc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--gap-grid);margin-top:6px}
-.svc{border:1px solid var(--paper-3);border-radius:var(--r-md);padding:var(--pad-card);background:#fff;transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
-.svc:hover{transform:translateY(-2px);box-shadow:var(--e-2)}
-.svc .ico{width:34px;height:34px;color:var(--amber-text);margin-bottom:14px}
+.svc-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--gap-grid);margin-top:6px}
+.svc-grid>.svc{flex:1 1 296px;max-width:344px}
+/* Átfordítható szolgáltatás-kártya. A két oldal ugyanabban a rácscellában ül,
+   így a kártya magassága magától a hosszabbik oldalhoz igazodik. */
+.svc{position:relative;perspective:1100px}
+.svc-in{position:relative;display:grid;height:100%;transform-style:preserve-3d;transition:transform .55s var(--ease)}
+.svc-face{grid-area:1/1;display:flex;flex-direction:column;border:1px solid var(--paper-3);border-radius:var(--r-md);padding:var(--pad-card);background:#fff;-webkit-backface-visibility:hidden;backface-visibility:hidden;transition:box-shadow .2s var(--ease)}
+.svc-back{transform:rotateY(180deg);background:var(--ink);color:var(--paper);border-color:var(--ink-line)}
+.svc:hover .svc-face,.svc:focus-within .svc-face{box-shadow:var(--e-2)}
+.svc:hover .svc-in,.svc:focus-within .svc-in,.svc.is-flipped .svc-in{transform:rotateY(180deg)}
+.svc .ico{width:34px;height:34px;color:var(--amber-text);margin-bottom:14px;flex:none}
+.svc-back .ico{color:var(--amber)}
 .svc b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-weight:600;font-size:var(--fs-md);margin-bottom:7px;letter-spacing:-.01em}
 .svc p{color:var(--muted);font-size:var(--fs-sm)}
-@media (max-width:1040px){.svc-grid{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:760px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:560px){.svc-grid{grid-template-columns:1fr}}
+.svc-back b{color:var(--paper)}
+.svc-back p{color:rgba(239,241,236,.82)}
+.svc-more{margin-top:auto;padding-top:14px;font-family:"Space Mono",monospace;font-size:var(--fs-2xs);font-weight:700;letter-spacing:var(--track-label);text-transform:uppercase;color:var(--amber-text);display:flex;align-items:center;gap:7px}
+.svc-more svg{width:13px;height:13px;flex:none;transition:transform .3s var(--ease)}
+.svc:hover .svc-more svg,.svc.is-flipped .svc-more svg{transform:rotate(180deg)}
+/* a teljes kártya kattintható, de billentyűzetről is elérhető */
+.svc-toggle{position:absolute;inset:0;z-index:3;border:0;padding:0;background:none;cursor:pointer;border-radius:var(--r-md);font:inherit;color:transparent;overflow:hidden;text-indent:-999em}
+.svc-toggle:focus-visible{outline:2.5px solid var(--amber);outline-offset:3px}
+@media (max-width:760px){.svc-grid>.svc{flex-basis:260px}}
+@media (max-width:560px){.svc-grid>.svc{flex-basis:100%;max-width:none}}
 
 /* ── demó-figyelmeztető ablak ── */
 .modal-ov{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(15,28,24,.62);backdrop-filter:blur(5px);opacity:0;visibility:hidden;transition:opacity .25s var(--ease),visibility .25s}
@@ -415,6 +430,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .sintro{margin-bottom:24px}
 }
 @media (prefers-reduced-motion:reduce){
+  .svc-in{transition:none}
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
   body.reveal-ready [data-reveal]{opacity:1;transform:none}
   .track{scroll-behavior:auto}
@@ -488,24 +504,74 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
     <p data-i18n="svc_intro" class="sintro" data-reveal>I work with you directly, and every solution comes with handover and a short training session so you can manage it easily on your own afterwards.</p>
     <div class="svc-grid" data-reveal>
       <article class="svc">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
-        <b data-i18n="svc1_t">Website &amp; hosting</b><p data-i18n="svc1_d">Personal and business sites, hand-built, hosting setup included.</p>
+        <div class="svc-in">
+          <div class="svc-face svc-front">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+            <b data-i18n="svc1_t">Website &amp; hosting</b><p data-i18n="svc1_d">Personal and business sites, hand-built, hosting setup included.</p>
+            <span class="svc-more" data-i18n="svc_more" aria-hidden="true">Details</span>
+          </div>
+          <div class="svc-face svc-back">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg>
+            <b data-i18n="svc1_t">Weboldal &amp; hosting</b><p data-i18n="svc1_b">I design and hand-write the site, then set up the domain and the hosting. It looks right on mobile and loads fast. You can also ask for a no-code editor so you can rewrite the texts yourself.</p>
+          </div>
+        </div>
+        <button class="svc-toggle" type="button" aria-pressed="false" data-i18n="svc_toggle">Show details</button>
       </article>
       <article class="svc">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 8 4 12 8 16"/><polyline points="16 8 20 12 16 16"/><line x1="13" y1="6" x2="11" y2="18"/></svg>
-        <b data-i18n="svc2_t">Custom web app</b><p data-i18n="svc2_d">A booking tool, registry, dashboard or game, tailored exactly to your workflow.</p>
+        <div class="svc-in">
+          <div class="svc-face svc-front">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 8 4 12 8 16"/><polyline points="16 8 20 12 16 16"/><line x1="13" y1="6" x2="11" y2="18"/></svg>
+            <b data-i18n="svc2_t">Custom web app</b><p data-i18n="svc2_d">A booking tool, registry, dashboard or game, tailored exactly to your workflow.</p>
+            <span class="svc-more" data-i18n="svc_more" aria-hidden="true">Részletek<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </div>
+          <div class="svc-face svc-back">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 8 4 12 8 16"/><polyline points="16 8 20 12 16 16"/><line x1="13" y1="6" x2="11" y2="18"/></svg>
+            <b data-i18n="svc2_t">Egyedi webalkalmazás</b><p data-i18n="svc2_b">We walk through your workflow and I build exactly for that. Booking, records, reports, permissions. The Loricatus ERP and the condominium registry work this way.</p>
+          </div>
+        </div>
+        <button class="svc-toggle" type="button" aria-pressed="false" data-i18n="svc_toggle">Részletek megjelenítése</button>
       </article>
       <article class="svc">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>
-        <b data-i18n="svc3_t">Local / private AI</b><p data-i18n="svc3_d">Your own “ChatGPT” and any open model on your machine or in your cloud. Your data stays with you.</p>
+        <div class="svc-in">
+          <div class="svc-face svc-front">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>
+            <b data-i18n="svc3_t">Local / private AI</b><p data-i18n="svc3_d">Your own “ChatGPT” and any open model on your machine or in your cloud. Your data stays with you.</p>
+            <span class="svc-more" data-i18n="svc_more" aria-hidden="true">Részletek<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </div>
+          <div class="svc-face svc-back">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="12" height="12" rx="2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg>
+            <b data-i18n="svc3_t">Lokális / privát AI</b><p data-i18n="svc3_b">I pick the model that fits your hardware, install it and set it up. Text, speech, images, 3D or music, several models chained if needed. No monthly fee, and the data never leaves your machine.</p>
+          </div>
+        </div>
+        <button class="svc-toggle" type="button" aria-pressed="false" data-i18n="svc_toggle">Részletek megjelenítése</button>
       </article>
       <article class="svc">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.2 2.7 3 6 3s6-1.8 6-3v-5"/></svg>
-        <b data-i18n="svc4_t">Training</b><p data-i18n="svc4_d">One-on-one mentoring and company workshops, from the basics to advanced local AI setups.</p>
+        <div class="svc-in">
+          <div class="svc-face svc-front">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.2 2.7 3 6 3s6-1.8 6-3v-5"/></svg>
+            <b data-i18n="svc4_t">Training</b><p data-i18n="svc4_d">One-on-one mentoring and company workshops, from the basics to advanced local AI setups.</p>
+            <span class="svc-more" data-i18n="svc_more" aria-hidden="true">Részletek<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </div>
+          <div class="svc-face svc-back">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.2 2.7 3 6 3s6-1.8 6-3v-5"/></svg>
+            <b data-i18n="svc4_t">Oktatás</b><p data-i18n="svc4_b">We practise on your own tasks, not on theory. From the basics to setting up your own, locally running AI. One to one or for your team, at your pace.</p>
+          </div>
+        </div>
+        <button class="svc-toggle" type="button" aria-pressed="false" data-i18n="svc_toggle">Részletek megjelenítése</button>
       </article>
       <article class="svc">
-        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"/><path d="M6 8h12v4a6 6 0 0 1-12 0z"/><path d="M12 18v4"/></svg>
-        <b data-i18n="svc5_t">AI inside your software</b><p data-i18n="svc5_d">Revit, Blender, Unity or anything with an API. The AI works inside it, and you say what you need in your own words.</p>
+        <div class="svc-in">
+          <div class="svc-face svc-front">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"/><path d="M6 8h12v4a6 6 0 0 1-12 0z"/><path d="M12 18v4"/></svg>
+            <b data-i18n="svc5_t">AI inside your software</b><p data-i18n="svc5_d">Revit, Blender, Unity or anything with an API. The AI works inside it, and you say what you need in your own words.</p>
+            <span class="svc-more" data-i18n="svc_more" aria-hidden="true">Részletek<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
+          </div>
+          <div class="svc-face svc-back">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6M15 2v6"/><path d="M6 8h12v4a6 6 0 0 1-12 0z"/><path d="M12 18v4"/></svg>
+            <b data-i18n="svc5_t">Az AI a te programodban</b><p data-i18n="svc5_b">I check whether your program has an API and write the connection for it. After that you ask in plain words and the AI does the work inside it. It already works with Revit, Blender and Unity.</p>
+          </div>
+        </div>
+        <button class="svc-toggle" type="button" aria-pressed="false" data-i18n="svc_toggle">Részletek megjelenítése</button>
       </article>
     </div>
   </div>
@@ -3016,6 +3082,22 @@ const triggerOfficeWorkflow = (function () {
 })();
 </script>
 
+
+<!-- Szolgáltatás-kártyák: érintésre fordulnak, egérrel hoverre, billentyűzetről fókuszra -->
+<script>
+(function(){
+  var cards=[].slice.call(document.querySelectorAll('.svc'));
+  cards.forEach(function(card){
+    var btn=card.querySelector('.svc-toggle'); if(!btn) return;
+    btn.addEventListener('click',function(){
+      var on=card.classList.toggle('is-flipped');
+      btn.setAttribute('aria-pressed',on?'true':'false');
+      if(on) cards.forEach(function(o){ if(o!==card){ o.classList.remove('is-flipped');
+        var b=o.querySelector('.svc-toggle'); if(b) b.setAttribute('aria-pressed','false'); } });
+    });
+  });
+})();
+</script>
 
 <!-- Microsoft Clarity: nem a betöltéssel egy időben indul, hanem amikor a böngésző
      már ráér, így nem vesz sávot és processzort az oldal saját tartalmától. -->

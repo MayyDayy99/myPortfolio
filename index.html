@@ -138,7 +138,10 @@ p,.lead,.sintro,.fa{text-wrap:pretty}
 .head-contact a:hover{opacity:1;color:var(--amber-text)}
 .head-contact svg{width:15px;height:15px;color:var(--amber-text);flex:none}
 .nav-links{display:flex;align-items:center;gap:2px}
-.nav-links a{font-size:var(--fs-sm);font-weight:500;padding:7px 10px;border-radius:var(--r-sm);color:var(--text);opacity:.85;transition:opacity .2s,background .2s;white-space:nowrap}
+.nav-links a{position:relative;font-size:var(--fs-sm);font-weight:500;padding:7px 10px;border-radius:var(--r-sm);color:var(--text);opacity:.85;transition:opacity .2s,background .2s;white-space:nowrap}
+.nav-links a::after{content:"";position:absolute;left:10px;right:10px;bottom:2px;height:2px;border-radius:2px;background:var(--amber);transform:scaleX(0);transform-origin:50% 50%;transition:transform .3s var(--ease)}
+.nav-links a[aria-current]{opacity:1}
+.nav-links a[aria-current]::after{transform:scaleX(1)}
 .nav-links a:hover{opacity:1;background:var(--paper-2)}
 .nav-toggle{display:none;background:none;border:0;cursor:pointer;padding:8px;color:var(--ink)}
 .lang{position:relative}
@@ -480,6 +483,8 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .nav-links{position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:2px;background:var(--paper);padding:14px;box-shadow:var(--e-2);border-top:1px solid var(--paper-3);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.2s var(--ease);z-index:60}
   .nav-links.open{transform:none;opacity:1;pointer-events:auto}
   .nav-links a{padding:13px;font-size:var(--fs-md)}
+  .nav-links a::after{display:none}
+  .nav-links a[aria-current]{background:var(--paper-2);color:var(--amber-text)}
   .nav-toggle{display:block}
 }
 @media (max-width:1040px){
@@ -503,6 +508,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .sintro{margin-bottom:24px}
 }
 @media (prefers-reduced-motion:reduce){
+  .nav-links a::after{transition:none}
   .lai-fig.is-live .lai-line i,.lai-fig.is-live .lai-glow,
   .lai-fig.is-live .lai-ndot,.lai-fig.is-live .lai-chip{animation:none}
   .svc-in{transition:none}
@@ -3233,6 +3239,30 @@ const triggerOfficeWorkflow = (function () {
     es.forEach(function(e){ fig.classList.toggle('is-live', e.isIntersecting); });
   },{threshold:.18});
   io.observe(fig);
+})();
+</script>
+
+<!-- Fejléc-navigáció: finoman jelöli, melyik szekciónál jár a látogató -->
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  if(!links.length) return;
+  var map=links.map(function(a){ var el=document.getElementById(a.getAttribute('href').slice(1)); return el?{a:a,el:el}:null; }).filter(Boolean);
+  var current=null, ticking=false;
+  function update(){
+    ticking=false;
+    var y=window.scrollY+110, pick=null;   /* 110: fejléc + kis ráhagyás */
+    for(var i=0;i<map.length;i++){ if(map[i].el.offsetTop<=y) pick=map[i].a; }
+    /* az oldal legalján a Kapcsolat felé már a GYIK maradjon jelölve, de ha
+       a hero tetején állunk, ne világítson semmi */
+    if(pick===current) return;
+    if(current) current.removeAttribute('aria-current');
+    if(pick) pick.setAttribute('aria-current','true');
+    current=pick;
+  }
+  window.addEventListener('scroll',function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } },{passive:true});
+  window.addEventListener('resize',function(){ if(!ticking){ ticking=true; requestAnimationFrame(update); } });
+  update();
 })();
 </script>
 

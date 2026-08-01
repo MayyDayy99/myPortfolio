@@ -129,6 +129,13 @@ p,.lead,.sintro,.fa{text-wrap:pretty}
 
 .header{position:sticky;top:0;z-index:100;background:rgba(239,241,236,.72);backdrop-filter:blur(10px);transition:box-shadow .3s}
 .header.scrolled{box-shadow:0 1px 0 var(--paper-3)}
+.readbar{position:absolute;left:0;right:0;bottom:0;height:2px;pointer-events:none}
+.readbar i{display:block;height:100%;background:var(--amber);border-radius:0 2px 2px 0;transform:scaleX(0);transform-origin:0 50%;will-change:transform}
+/* modern böngészőben tisztán CSS hajtja, JS nélkül */
+@supports (animation-timeline: scroll()) {
+  .readbar i{animation:readGrow linear both;animation-timeline:scroll(root)}
+}
+@keyframes readGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 .nav{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
 .brand{font-family:"Space Mono",monospace;font-weight:700;font-size:var(--fs-lg);letter-spacing:-.02em;display:flex;align-items:center;gap:.5em;white-space:nowrap}
 .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--amber)}
@@ -472,6 +479,17 @@ p,.lead,.sintro,.fa{text-wrap:pretty}
 .footer-nav a:hover{color:var(--paper);background:var(--ink-soft)}
 body.reveal-ready [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
 body.reveal-ready [data-reveal].in{opacity:1;transform:none}
+/* a rácsok gyerekei finom hullámban érkeznek, nem egy tömbben */
+body.reveal-ready .svc-grid[data-reveal]{transform:none}
+body.reveal-ready .svc-grid[data-reveal]>.svc{opacity:0;transform:translateY(14px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+body.reveal-ready .svc-grid[data-reveal].in>.svc{opacity:1;transform:none}
+body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(2){transition-delay:.07s}
+body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(3){transition-delay:.14s}
+body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(4){transition-delay:.21s}
+body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(5){transition-delay:.28s}
+.flow>.fstep:nth-child(2){transition-delay:.08s}
+.flow>.fstep:nth-child(3){transition-delay:.16s}
+.flow>.fstep:nth-child(4){transition-delay:.24s}
 
 @media (max-width:860px){
   .lab-cols,.models,.teach-line{grid-template-columns:1fr}
@@ -514,6 +532,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
   .svc-in{transition:none}
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
   body.reveal-ready [data-reveal]{opacity:1;transform:none}
+  body.reveal-ready .svc-grid[data-reveal]>.svc{opacity:1;transform:none;transition:none}
   .track{scroll-behavior:auto}
 }
 </style>
@@ -532,6 +551,7 @@ body.reveal-ready [data-reveal].in{opacity:1;transform:none}
 <a class="skip" href="#munkak">Ugrás a tartalomra</a>
 
 <header class="header" id="header">
+  <div class="readbar" aria-hidden="true"><i></i></div>
   <div class="wrap nav">
     <a href="#top" class="brand"><span class="dot"></span>Nemes Péter</a>
     <div class="nav-right">
@@ -3188,6 +3208,22 @@ const triggerOfficeWorkflow = (function () {
     es.forEach(function(e){ fig.classList.toggle('is-live', e.isIntersecting); });
   },{threshold:.18});
   io.observe(fig);
+})();
+</script>
+
+<!-- Olvasási-folyamat vonal: régi böngészőben JS viszi, újban tisztán CSS -->
+<script>
+(function(){
+  if(CSS.supports && CSS.supports('animation-timeline: scroll()')) return;
+  var bar=document.querySelector('.readbar i'); if(!bar) return;
+  var t=false;
+  function set(){ t=false;
+    var max=document.documentElement.scrollHeight-innerHeight;
+    bar.style.transform='scaleX('+(max>0?Math.min(1,scrollY/max):0)+')';
+  }
+  addEventListener('scroll',function(){ if(!t){ t=true; requestAnimationFrame(set); } },{passive:true});
+  addEventListener('resize',function(){ if(!t){ t=true; requestAnimationFrame(set); } });
+  set();
 })();
 </script>
 

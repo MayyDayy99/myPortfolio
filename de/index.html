@@ -93,6 +93,10 @@ p{margin:0}
 :focus-visible{outline:2.5px solid var(--amber);outline-offset:3px;border-radius:4px}
 .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
 .section{padding-block:clamp(56px,8vw,104px);scroll-margin-top:80px}
+h1,h2,h3{text-wrap:balance}
+p,.lead,.sintro,.fa{text-wrap:pretty}
+::selection{background:var(--ink);color:var(--paper)}
+.on-ink ::selection{background:var(--amber);color:var(--ink)}
 .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:var(--r-sm);font-weight:600;z-index:200}
 .skip:focus{left:12px}
 .label{font-family:"Space Mono",monospace;font-size:var(--fs-2xs);font-weight:700;letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
@@ -106,6 +110,7 @@ p{margin:0}
 .btn-ghost{background:transparent;color:var(--ink);border-color:var(--paper-3)}
 .btn-ghost:hover{border-color:var(--ink)}
 .btn--sm{padding:9px 16px;font-size:var(--fs-sm)}
+.btn:active,.cat:active,.anim-go:active,.cine-btn:active,.btn-icon:active{transform:translateY(0) scale(.97);transition-duration:.08s}
 .btn-amber{background:var(--amber);color:var(--ink);border-color:var(--amber)}
 .btn-amber:hover{background:var(--amber-dark);border-color:var(--amber-dark)}
 .btn-icon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;flex:none;padding:0;border-radius:50%;color:var(--muted);border:1px solid var(--paper-3);background:transparent;cursor:pointer;transition:color .2s,border-color .2s,background .2s}

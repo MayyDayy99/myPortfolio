@@ -175,8 +175,14 @@ def load():
             d = json.load(open(f, encoding='utf-8'))
         except Exception as e:
             print('  ! hibás JSON, kihagyva:', os.path.basename(f), e); continue
-        title = (d.get('title') or d.get('cim') or '').strip()
+        if d.get('draft') is True or str(d.get('status') or '').lower() in ('draft', 'piszkozat', 'pending'):
+            print('  - piszkozat, kihagyva:', os.path.basename(f)); continue
+        title = d.get('title') or d.get('cim') or ''
         content = d.get('content') or d.get('body') or d.get('tartalom') or ''
+        # a WordPress {"raw": ...} / {"rendered": ...} alakot is elfogadjuk
+        if isinstance(title, dict): title = title.get('raw') or title.get('rendered') or ''
+        if isinstance(content, dict): content = content.get('raw') or content.get('rendered') or ''
+        title = str(title).strip()
         if not title or not content:
             print('  ! title vagy content hiányzik, kihagyva:', os.path.basename(f)); continue
         date = str(d.get('date') or d.get('datum') or '')[:10]
@@ -185,7 +191,10 @@ def load():
         slug = d.get('slug') or slugify(title)
         excerpt = (d.get('excerpt') or d.get('leiras') or '').strip()
         if not excerpt:
-            plain = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', md(content))).strip()
+            # csak az elso bekezdes, hogy a felsorolas ne folyjon egybe a mondattal
+            first = re.search(r'<p>(.*?)</p>', md(content), re.S)
+            plain = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ',
+                           first.group(1) if first else md(content))).strip()
             excerpt = plain[:180] + ('…' if len(plain) > 180 else '')
         tags = d.get('tags') or d.get('cimkek') or []
         if isinstance(tags, str):

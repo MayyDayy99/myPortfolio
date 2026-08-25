@@ -38,8 +38,11 @@ jobs:
           for k in ('post', 'data', 'payload'):
               if isinstance(d.get(k), dict):
                   d = d[k]; break
-          title = (d.get('title') or d.get('cim') or '').strip()
+          title = d.get('title') or d.get('cim') or ''
           content = d.get('content') or d.get('body') or d.get('tartalom') or ''
+          if isinstance(title, dict): title = title.get('raw') or title.get('rendered') or ''
+          if isinstance(content, dict): content = content.get('raw') or content.get('rendered') or ''
+          title = str(title).strip()
           if not title or not content:
               raise SystemExit('A webhook nem tartalmazott title/content mezot.')
           m = str.maketrans('áéíóöőúüűÁÉÍÓÖŐÚÜŰ', 'aeiooouuuAEIOOOUUU')

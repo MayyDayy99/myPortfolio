@@ -1,0 +1,8 @@
+{
+  "title": "Miért futtass AI-t a saját gépeden?",
+  "slug": "miert-futtass-ai-t-a-sajat-gepeden",
+  "date": "2026-08-20",
+  "excerpt": "A felhős AI kényelmes, de minden bemenet elhagyja a céget. Van másik út, és nem is drágább.",
+  "tags": ["lokális AI", "adatvédelem", "kisvállalkozás"],
+  "content": "Amikor egy kisvállalkozás először próbál ki egy AI-t, szinte mindig felhős szolgáltatással kezdi. Ez logikus: nincs telepítés, nincs hardver, azonnal működik.\n\nVan viszont egy csendes ára. Minden, amit beírsz, elhagyja a céget. Ügyféllista, szerződéstervezet, árajánlat, belső levelezés.\n\n## Mikor éri meg helyben futtatni?\n\nHárom esetben szokott egyértelmű lenni a válasz:\n\n- **Érzékeny adat.** Ügyfél- vagy egészségügyi adat, szerződés, pénzügy.\n- **Sok ismétlődő feladat.** Havidíj helyett egyszeri beállítás.\n- **Saját tudásbázis.** A dokumentumaidra épülő kereső, ami nem kerül ki sehová.\n\n## Mi kell hozzá?\n\nKevesebb, mint gondolnád. Egy erősebb videokártyás gép már elég a legtöbb szöveges feladathoz. Képgeneráláshoz és videóhoz több kell, de ott is van értelmes belépőszint.\n\nA lényeg, hogy nem kell mindent helyben futtatni. A legtöbb helyen az a jó megoldás, ahol az érzékeny rész marad nálad, a többi mehet felhőbe.\n\nHa érdekel, hogy a te eseteddel mi a helyzet, [írj pár sort](https://portfolio.maydayprod.app/#kapcsolat), és megnézzük együtt."
+}

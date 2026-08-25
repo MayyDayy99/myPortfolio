@@ -1,0 +1,69 @@
+name: Blog építése
+
+# Kétféleképpen indul:
+#  1) ha valaki (vagy a tartalomposztoló) fájlt tesz a blog/_posts mappába
+#  2) repository_dispatch webhookra, amikor a poszt a kérés törzsében érkezik
+on:
+  push:
+    paths:
+      - 'blog/_posts/**'
+      - 'scripts/build_blog.py'
+      - 'index.html'
+  repository_dispatch:
+    types: [new-post, uj-poszt]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bejövő poszt kimentése (csak webhook esetén)
+        if: github.event_name == 'repository_dispatch'
+        env:
+          PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, unicodedata, datetime, pathlib
+          d = json.loads(os.environ['PAYLOAD'] or '{}')
+          # a poszt lehet közvetlenül a payloadban vagy egy "post"/"data" kulcs alatt
+          for k in ('post', 'data', 'payload'):
+              if isinstance(d.get(k), dict):
+                  d = d[k]; break
+          title = (d.get('title') or d.get('cim') or '').strip()
+          content = d.get('content') or d.get('body') or d.get('tartalom') or ''
+          if not title or not content:
+              raise SystemExit('A webhook nem tartalmazott title/content mezot.')
+          m = str.maketrans('áéíóöőúüűÁÉÍÓÖŐÚÜŰ', 'aeiooouuuAEIOOOUUU')
+          slug = d.get('slug') or re.sub(r'[^a-z0-9]+', '-',
+                 unicodedata.normalize('NFKD', title.translate(m)).encode('ascii','ignore').decode().lower()).strip('-')[:70]
+          date = str(d.get('date') or d.get('datum') or datetime.date.today().isoformat())[:10]
+          d.setdefault('date', date); d['slug'] = slug; d['title'] = title; d['content'] = content
+          p = pathlib.Path('blog/_posts'); p.mkdir(parents=True, exist_ok=True)
+          f = p / f'{date}-{slug}.json'
+          f.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding='utf-8')
+          print('kimentve:', f)
+          PY
+
+      - name: Blog generálása
+        run: python3 scripts/build_blog.py
+
+      - name: Commit, ha változott valami
+        run: |
+          git config user.name  "blog-bot"
+          git config user.email "blog-bot@users.noreply.github.com"
+          git add blog sitemap.xml
+          if git diff --cached --quiet; then
+            echo "Nincs változás."
+          else
+            git commit -m "blog: automatikus építés"
+            git push
+          fi

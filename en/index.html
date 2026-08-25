@@ -452,6 +452,13 @@ p,.lead,.sintro,.fa{text-wrap:pretty}
 .faq-item summary::after{content:"+";font-family:"Space Mono",monospace;font-size:1.35rem;color:var(--amber-text);transition:transform .2s var(--ease);flex:none;line-height:1}
 .faq-item[open] summary::after{transform:rotate(45deg)}
 .faq-item .fa{padding:0 var(--sp-5) 18px;color:var(--muted);font-size:var(--fs-sm);line-height:1.6}
+/* Nyitás-animáció ott, ahol a böngésző tudja. Máshol a régi, azonnali nyílás. */
+@supports selector(::details-content){
+  .faq-item{interpolate-size:allow-keywords}
+  .faq-item::details-content{block-size:0;overflow:hidden;
+    transition:block-size .34s var(--ease),content-visibility .34s allow-discrete}
+  .faq-item[open]::details-content{block-size:auto}
+}
 .faq-item .fa b{color:var(--ink)}
 .contact .lead b{color:var(--paper)}
 
@@ -526,6 +533,7 @@ body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(5){transition-delay:.28s
   .sintro{margin-bottom:24px}
 }
 @media (prefers-reduced-motion:reduce){
+  .faq-item::details-content{transition:none}
   .nav-links a::after{transition:none}
   .lai-fig.is-live .lai-line i,.lai-fig.is-live .lai-glow,
   .lai-fig.is-live .lai-ndot,.lai-fig.is-live .lai-chip{animation:none}
@@ -563,6 +571,7 @@ body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(5){transition-delay:.28s
         <a data-i18n="nav_about" href="#rolam">About</a>
         <a data-i18n="nav_process" href="#folyamat">Process</a>
         <a data-i18n="nav_faq" href="#gyik">FAQ</a>
+        <a data-i18n="nav_blog" href="/blog/">Blog</a>
       </nav>
       <div class="lang" id="lang">
         <button class="lang-btn" id="langBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Language / Nyelv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span class="lang-cur">EN</span></button>
@@ -1004,7 +1013,7 @@ body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(5){transition-delay:.28s
       <nav class="footer-nav">
         <a data-i18n="nav_works" href="#munkak">Munkáim</a>
         <a data-i18n="nav_local" href="#lokalis-ai">Lokális AI</a>
-        <a data-i18n="foot_contact" href="#kapcsolat">Contact</a>
+        <a data-i18n="nav_blog" href="/blog/">Blog</a><a data-i18n="foot_contact" href="#kapcsolat">Contact</a>
       </nav>
     </div>
     <div class="footer-small">© <span id="year"></span> Nemes Péter · <span data-i18n="foot_tag">AI development &amp; training</span></div>

@@ -3,1218 +3,696 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Loricatus Editor — bemutató</title>
+<title>Weboldal szerkesztő — bemutató</title>
 <meta name="robots" content="noindex">
-<meta name="description" content="Vizuális, kód nélküli tartalomszerkesztő bemutatója — kattints, írj át szöveget, állíts színt, rendezd át a szekciókat. A változtatások csak a böngésződben élnek.">
+<meta name="description" content="Vizuális, kód nélküli weboldal-szerkesztő teljes bemutatója: inline szöveg-, kép- és linkszerkesztés, színek, szekció-átrendezés, szabad pozíció, szekció-könyvtár, nézetek és nyelvváltás — a valódi portfólión, a böngésződben.">
 <style>
-  /* ============================================================
-     Loricatus Editor — önálló bemutató (demo)
-     Egyetlen fájl, build és háttér nélkül. A valódi szerkesztő
-     Vite + React + Tailwind + Supabase; ez a látvány és az
-     interakció hű mása, de minden csak a böngésződben él és
-     újratöltésre visszaáll — nincs mentés, nincs adatbázis.
-     ============================================================ */
-
   *, *::before, *::after { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  :root {
-    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-      "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  }
-  body {
-    font-family: var(--font);
-    background: #0f1116;
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-  }
+  :root { --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif; }
+  body { font-family: var(--font); background: #0b0f16; color: #fff; -webkit-font-smoothing: antialiased; }
   button { font-family: inherit; }
+  .app { display: flex; flex-direction: column; height: 100vh; background: #0b0f16; }
 
-  /* ── App shell ─────────────────────────────────────────────── */
-  .app { min-height: 100vh; background: #111827; color: #fff; }
-
-  /* ── Toolbar (premium glass) — ported from admin/src/index.css ─ */
-  .cms-toolbar {
-    position: sticky; top: 0; z-index: 20;
-    background: linear-gradient(180deg, rgba(30, 33, 42, 0.9), rgba(19, 21, 28, 0.92));
-    -webkit-backdrop-filter: blur(22px) saturate(150%);
-    backdrop-filter: blur(22px) saturate(150%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.75);
-  }
-  .cms-toolbar-inner {
-    padding: 10px 16px;
-    display: flex; flex-wrap: wrap; gap: 10px 12px;
-    justify-content: space-between; align-items: center;
-  }
-  .tb-left, .tb-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .tb-brand { display: flex; align-items: center; gap: 10px; }
-  .cms-brand-mark {
-    width: 36px; height: 36px; flex: none; border-radius: 11px;
-    display: grid; place-items: center; font-weight: 800; font-size: 17px;
-    letter-spacing: -0.02em; color: #fff;
-    background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9);
-    box-shadow: 0 8px 18px -6px rgba(37, 99, 235, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  }
-  .tb-title { line-height: 1.15; }
-  .tb-title h1 { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
-  .tb-title p { font-size: 11px; color: #9ca3af; margin: 2px 0 0; }
-  .tb-title .amber { color: #fbbf24; margin-left: 6px; }
-
-  .demo-pill {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-    color: #fcd34d; background: rgba(251, 191, 36, 0.12);
-    border: 1px solid rgba(251, 191, 36, 0.3); border-radius: 999px; padding: 4px 10px;
-  }
-  .demo-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24;
-    box-shadow: 0 0 0 0 rgba(251,191,36,.6); animation: pulse 2s infinite; }
+  /* Toolbar */
+  .cms-toolbar { flex: none; background: linear-gradient(180deg, rgba(30,33,42,.92), rgba(19,21,28,.95)); -webkit-backdrop-filter: blur(22px) saturate(150%); backdrop-filter: blur(22px) saturate(150%); border-bottom: 1px solid rgba(255,255,255,.08); box-shadow: 0 10px 30px -18px rgba(0,0,0,.75); }
+  .cms-toolbar-inner { padding: 9px 14px; display: flex; flex-wrap: wrap; gap: 8px 10px; justify-content: space-between; align-items: center; }
+  .tb-left, .tb-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tb-brand { display: flex; align-items: center; gap: 9px; }
+  .cms-brand-mark { width: 34px; height: 34px; flex: none; border-radius: 10px; display: grid; place-items: center; font-weight: 800; font-size: 16px; color: #fff; background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 8px 18px -6px rgba(37,99,235,.65), inset 0 1px 0 rgba(255,255,255,.3); }
+  .tb-title { line-height: 1.14; }
+  .tb-title h1 { font-size: 14.5px; font-weight: 600; margin: 0; }
+  .tb-title p { font-size: 10.5px; color: #9ca3af; margin: 2px 0 0; }
+  .tb-title .amber { color: #fbbf24; margin-left: 5px; }
+  .demo-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #fcd34d; background: rgba(251,191,36,.12); border: 1px solid rgba(251,191,36,.3); border-radius: 999px; padding: 4px 9px; }
+  .demo-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #fbbf24; animation: pulse 2s infinite; }
   @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(251,191,36,.5)} 70%{box-shadow:0 0 0 6px rgba(251,191,36,0)} 100%{box-shadow:0 0 0 0 rgba(251,191,36,0)} }
 
-  /* Segmented control */
-  .cms-segment {
-    display: inline-flex; align-items: center; padding: 3px; gap: 2px;
-    border-radius: 12px; background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-  .cms-seg-btn {
-    display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px;
-    border-radius: 9px; font-size: 12.5px; font-weight: 500; line-height: 1;
-    color: rgba(255, 255, 255, 0.6); background: transparent; border: none;
-    cursor: pointer; white-space: nowrap;
-    transition: background-color .15s, color .15s, box-shadow .15s;
-  }
-  .cms-seg-btn:hover:not(.is-active):not(:disabled) { color: #fff; background: rgba(255,255,255,.06); }
-  .cms-seg-btn.is-active {
-    color: #fff; background: rgba(255, 255, 255, 0.14);
-    box-shadow: 0 2px 8px -3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
-  }
+  .cms-segment { display: inline-flex; align-items: center; padding: 3px; gap: 2px; border-radius: 11px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+  .cms-seg-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.6); background: transparent; border: none; cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s; }
+  .cms-seg-btn:hover:not(:disabled):not(.is-active) { color: #fff; background: rgba(255,255,255,.06); }
+  .cms-seg-btn.is-active { color: #fff; background: rgba(255,255,255,.14); box-shadow: 0 2px 8px -3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12); }
   .cms-seg-btn:disabled { opacity: .4; cursor: default; }
 
-  /* Tool toggle pills */
-  .cms-tool {
-    display: inline-flex; align-items: center; gap: 5px; padding: 7px 11px;
-    border-radius: 10px; font-size: 12.5px; font-weight: 500; line-height: 1;
-    color: rgba(255, 255, 255, 0.66); background: rgba(255, 255, 255, 0.045);
-    border: 1px solid rgba(255, 255, 255, 0.08); cursor: pointer; white-space: nowrap;
-    transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s;
-  }
+  .cms-tool { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border-radius: 9px; font-size: 12px; font-weight: 500; line-height: 1; color: rgba(255,255,255,.66); background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.08); cursor: pointer; white-space: nowrap; transition: background-color .15s, color .15s, box-shadow .15s, border-color .15s; }
   .cms-tool:hover:not(.is-active) { background: rgba(255,255,255,.09); color: #fff; }
-  .cms-tool.is-active {
-    color: #fff; background: var(--acc, #6366f1); border-color: transparent;
-    box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2);
-  }
-  .cms-icon-btn {
-    width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px;
-    color: rgba(255, 255, 255, 0.5); background: transparent; border: none; cursor: pointer;
-    transition: background-color .15s, color .15s; font-size: 15px;
-  }
+  .cms-tool.is-active { color: #fff; background: var(--acc, #6366f1); border-color: transparent; box-shadow: 0 5px 16px -5px var(--acc, #6366f1), inset 0 1px 0 rgba(255,255,255,.2); }
+  .cms-icon-btn { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 9px; color: rgba(255,255,255,.5); background: transparent; border: none; cursor: pointer; transition: background-color .15s, color .15s; font-size: 14px; }
   .cms-icon-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
 
-  .cms-btn-save {
-    border-radius: 11px; padding: 8px 17px; font-size: 12.5px; font-weight: 600; line-height: 1;
-    color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07);
-    cursor: pointer; transition: background-color .15s, box-shadow .15s, border-color .15s;
-  }
+  .cms-btn-save { border-radius: 10px; padding: 8px 15px; font-size: 12px; font-weight: 600; line-height: 1; color: #fff; border: 1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.07); cursor: pointer; transition: background-color .15s, box-shadow .15s; }
   .cms-btn-save:hover:not(:disabled) { background: rgba(255,255,255,.13); }
-  .cms-btn-save:disabled { opacity: .5; cursor: default; }
-  .cms-btn-save.is-dirty {
-    background: linear-gradient(135deg, #2563eb, #3b82f6); border-color: transparent;
-    box-shadow: 0 6px 18px -6px rgba(37,99,235,.6), inset 0 1px 0 rgba(255,255,255,.2);
-  }
-  .cms-btn-save.is-dirty:hover:not(:disabled) { filter: brightness(1.08); }
-  .cms-btn-publish {
-    border-radius: 11px; padding: 8px 18px; font-size: 12.5px; font-weight: 600; line-height: 1;
-    color: #fff; border: none; cursor: pointer;
-    background: linear-gradient(135deg, #15803d, #22c55e);
-    box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22);
-    transition: filter .15s;
-  }
-  .cms-btn-publish:hover:not(:disabled) { filter: brightness(1.08); }
-  .cms-btn-publish:disabled { opacity: .5; cursor: default; box-shadow: none; }
-
-  .status-txt { font-size: 12px; }
-  .status-txt.ok { color: #86efac; }
-  .status-txt.info { color: #93c5fd; }
-  .saved-ago { font-size: 12px; color: #9ca3af; }
-
-  .back-link {
-    display: inline-flex; align-items: center; gap: 6px; font-size: 12px;
-    color: #9ca3af; text-decoration: none; padding: 6px 10px; border-radius: 9px;
-    transition: background .15s, color .15s;
-  }
+  .cms-btn-save.is-dirty { background: linear-gradient(135deg, #2563eb, #3b82f6); border-color: transparent; box-shadow: 0 6px 18px -6px rgba(37,99,235,.6), inset 0 1px 0 rgba(255,255,255,.2); }
+  .cms-btn-publish { border-radius: 10px; padding: 8px 15px; font-size: 12px; font-weight: 600; line-height: 1; color: #fff; border: none; cursor: pointer; background: linear-gradient(135deg, #15803d, #22c55e); box-shadow: 0 7px 20px -6px rgba(34,197,94,.6), inset 0 1px 0 rgba(255,255,255,.22); transition: filter .15s; }
+  .cms-btn-publish:hover { filter: brightness(1.08); }
+  .status-txt { font-size: 11.5px; } .status-txt.ok { color: #86efac; } .status-txt.info { color: #93c5fd; }
+  .back-link { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: #9ca3af; text-decoration: none; padding: 6px 9px; border-radius: 8px; transition: background .15s, color .15s; }
   .back-link:hover { background: rgba(255,255,255,.08); color: #fff; }
 
-  /* ── Preview stage ─────────────────────────────────────────── */
-  .stage { padding: 22px 16px 60px; display: flex; justify-content: center; }
-  .frame {
-    width: 100%; max-width: 1180px; border-radius: 16px; overflow: hidden;
-    background: #fff; color: #111; box-shadow: 0 40px 90px -40px rgba(0,0,0,.8);
-    border: 1px solid rgba(255,255,255,.08); transition: max-width .28s ease;
-  }
-  .frame.mobile { max-width: 390px; }
-  .frame-bar {
-    display: flex; align-items: center; gap: 8px; padding: 9px 14px;
-    background: #e9edf1; border-bottom: 1px solid #d6dce2;
-  }
-  .frame-bar i { width: 11px; height: 11px; border-radius: 50%; background: #c3ccd4; display: inline-block; }
-  .frame-bar i:nth-child(1){ background:#ff5f57 } .frame-bar i:nth-child(2){ background:#febc2e } .frame-bar i:nth-child(3){ background:#28c840 }
-  .frame-bar .url {
-    margin-left: 10px; flex: 1; font-size: 12px; color: #55606b; background: #fff;
-    border-radius: 7px; padding: 5px 12px; border: 1px solid #dfe5ea; font-family: ui-monospace, monospace;
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
+  /* Stage / iframe */
+  .stage { flex: 1; min-height: 0; position: relative; background: #0b0f16; overflow: auto; display: flex; }
+  .frame-wrap { flex: 1; min-height: 0; display: flex; justify-content: center; }
+  #siteFrame { width: 100%; height: 100%; border: 0; background: #fff; display: block; transition: max-width .28s ease; }
+  .stage.mobile { padding: 20px 12px; }
+  .stage.mobile #siteFrame { max-width: 390px; border-radius: 18px; box-shadow: 0 40px 90px -40px rgba(0,0,0,.9); border: 1px solid rgba(255,255,255,.08); height: 100%; }
+  .frame-loading { position: absolute; inset: 0; display: grid; place-items: center; color: #9ca3af; font-size: 14px; pointer-events: none; text-align: center; padding: 20px; }
 
-  /* ── The fake website being edited (theme-driven) ──────────── */
-  .site {
-    --accent: #c7d540; --bg: #f8f6f2; --bg2: #eeeae3; --text: #111316; --muted: #737e88;
-    background: var(--bg); color: var(--text);
-    font-family: var(--font);
-  }
-  .site .sec { position: relative; }
-  .site .container { max-width: 960px; margin: 0 auto; padding: 0 28px; }
-
-  .site nav.topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 28px; border-bottom: 1px solid rgba(0,0,0,.06); background: var(--bg);
-  }
-  .site .brand { font-weight: 800; letter-spacing: -.02em; font-size: 18px; display:flex; align-items:center; gap:8px; }
-  .site .brand .logo { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display:inline-block; }
-  .site .navlinks { display: flex; gap: 20px; font-size: 14px; color: var(--muted); }
-  .site .navlinks span { cursor: default; }
-
-  .site .hero { padding: 74px 0 66px; background: var(--bg); text-align: left; position: relative; }
-  .site .eyebrow {
-    display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-    color: #5b6b2e; background: color-mix(in srgb, var(--accent) 30%, transparent);
-    padding: 6px 12px; border-radius: 999px; margin-bottom: 18px;
-  }
-  .site h1 { font-size: clamp(30px, 5vw, 52px); line-height: 1.05; margin: 0 0 18px; letter-spacing: -.02em; max-width: 16ch; }
-  .site .hero .sub { font-size: 18px; color: var(--muted); max-width: 46ch; margin: 0 0 28px; line-height: 1.5; }
-  .site .cta {
-    display: inline-block; background: var(--accent); color: #1a1d10; font-weight: 700; font-size: 15px;
-    padding: 13px 24px; border-radius: 11px; text-decoration: none; box-shadow: 0 10px 24px -10px color-mix(in srgb, var(--accent) 80%, black);
-  }
-
-  .site .services { padding: 60px 0; background: var(--bg2); }
-  .site .services h2, .site .about h2, .site .contact h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -.02em; }
-  .site .services .intro, .site .about p, .site .contact p { color: var(--muted); max-width: 52ch; margin: 0 0 32px; line-height: 1.55; font-size: 16px; }
-  .site .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .site .card {
-    background: var(--bg); border: 1px solid rgba(0,0,0,.07); border-radius: 14px; padding: 22px; position: relative;
-  }
-  .site .card .ico { width: 40px; height: 40px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 45%, transparent); display: grid; place-items: center; margin-bottom: 14px; font-size: 20px; }
-  .site .card h3 { margin: 0 0 8px; font-size: 18px; }
-  .site .card p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.5; }
-
-  .site .stats { padding: 50px 0; background: var(--bg); }
-  .site .stats .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 20px; text-align: center; }
-  .site .stats .num { font-size: 38px; font-weight: 800; letter-spacing: -.02em; color: var(--text); }
-  .site .stats .lbl { color: var(--muted); font-size: 14px; margin-top: 4px; }
-
-  .site .about { padding: 66px 0; background: var(--bg2); }
-  .site .about p { font-size: 17px; max-width: 60ch; }
-
-  .site .contact { padding: 66px 0 76px; background: var(--bg); }
-  .site .contact .email { display: inline-block; margin-top: 10px; font-weight: 700; color: #4a5720; font-size: 18px; }
-
-  .site footer { padding: 26px 28px; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid rgba(0,0,0,.06); background: var(--bg2); }
-
-  /* ── Inline edit affordances ───────────────────────────────── */
-  .editing [data-key] {
-    outline: 1.5px dashed transparent; outline-offset: 4px; border-radius: 4px;
-    transition: outline-color .12s, background .12s; cursor: text;
-  }
-  .editing [data-key]:hover { outline-color: #2563eb; background: rgba(37,99,235,.06); }
-  [data-key].is-active { outline: 2px solid #2563eb !important; background: rgba(37,99,235,.08); }
-  [contenteditable="true"] { cursor: text; }
-
-  /* ── Layout-overlay (drag to reorder sections in the preview) ─ */
-  .overlay-layout [data-section] { outline: 1.5px dashed rgba(139,92,246,.55); outline-offset: -2px; }
-  .sec-handle {
-    display: none; position: absolute; top: 8px; left: 8px; z-index: 5;
-    align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #fff;
-    background: rgba(139,92,246,.92); border-radius: 8px; padding: 5px 9px; cursor: grab;
-    box-shadow: 0 6px 16px -6px rgba(0,0,0,.5);
-  }
-  .overlay-layout .sec-handle { display: inline-flex; }
-  .overlay-layout [data-section].drag-over { box-shadow: inset 0 4px 0 #8b5cf6; }
-  [data-section].dragging { opacity: .5; }
-
-  /* ── Freeform (drag the hero CTA) ──────────────────────────── */
-  .overlay-freeform .site .cta { cursor: move; }
-  .overlay-freeform .site .cta::after {
-    content: "🎯"; position: absolute; margin: -10px 0 0 6px; font-size: 12px;
-  }
-
-  /* ── Side sheet (colors) ───────────────────────────────────── */
-  .cms-sidesheet {
-    position: fixed; top: 57px; right: 0; bottom: 0; width: 100%; max-width: 360px; z-index: 1200;
-    display: flex; flex-direction: column;
-    background: linear-gradient(180deg, rgba(32,35,44,.96), rgba(20,22,29,.98));
-    -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%);
-    border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7);
-    animation: slide-in .22s cubic-bezier(.2,.85,.25,1);
-  }
+  /* Side sheets (colors / layout / form) */
+  .sheet { position: fixed; top: 0; right: 0; bottom: 0; width: 100%; z-index: 1200; display: flex; flex-direction: column; background: linear-gradient(180deg, rgba(32,35,44,.98), rgba(20,22,29,.99)); -webkit-backdrop-filter: blur(26px) saturate(150%); backdrop-filter: blur(26px) saturate(150%); border-left: 1px solid rgba(255,255,255,.09); box-shadow: -24px 0 60px -24px rgba(0,0,0,.7); animation: slide-in .22s cubic-bezier(.2,.85,.25,1); }
+  .sheet.narrow { max-width: 360px; } .sheet.wide { max-width: 420px; }
   @keyframes slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
-  .sidesheet-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; border-bottom: 1px solid rgba(255,255,255,.1); }
-  .sidesheet-head h2 { font-size: 15px; font-weight: 600; margin: 0; }
-  .sidesheet-body { padding: 18px; overflow-y: auto; display: grid; gap: 12px; }
-  .sidesheet-body .hint { font-size: 12px; color: #9ca3af; line-height: 1.5; margin: 0; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.1); flex: none; }
+  .sheet-head h2 { font-size: 15px; font-weight: 600; margin: 0; }
+  .sheet-body { padding: 16px 18px 40px; overflow-y: auto; display: grid; gap: 12px; }
+  .sheet-body .hint { font-size: 12px; color: #9ca3af; line-height: 1.5; margin: 0; }
+
   .color-row { background: rgba(17,24,39,.4); border-radius: 10px; padding: 12px; }
   .color-row .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .color-row label { font-size: 13px; color: #e5e7eb; }
   .color-row .reset { font-size: 11px; color: #9ca3af; text-decoration: underline; background: none; border: none; cursor: pointer; }
   .color-row .reset:hover { color: #fff; }
   .color-row .inputs { display: flex; gap: 8px; align-items: center; }
-  .color-row input[type=color] { height: 38px; width: 52px; flex: none; background: #374151; border: none; border-radius: 8px; cursor: pointer; padding: 3px; }
+  .color-row input[type=color] { height: 36px; width: 50px; flex: none; background: #374151; border: none; border-radius: 8px; cursor: pointer; padding: 3px; }
   .color-row input[type=text] { flex: 1; min-width: 0; padding: 9px 11px; background: #374151; border: none; border-radius: 8px; color: #fff; font-family: ui-monospace, monospace; font-size: 13px; }
   .color-row .desc { font-size: 11px; color: #6b7280; margin: 6px 0 0; }
 
-  /* ── Layout view (list) & Form view ────────────────────────── */
-  .panel { max-width: 900px; margin: 0 auto; padding: 22px 16px 70px; }
-  .cms-card {
-    background: linear-gradient(180deg, rgba(38,41,51,.55), rgba(26,28,36,.62));
-    border: 1px solid rgba(255,255,255,.07); border-radius: 16px;
-    box-shadow: 0 12px 32px -20px rgba(0,0,0,.6); padding: 22px; margin-bottom: 18px;
-  }
-  .cms-card h2 { font-size: 17px; font-weight: 600; margin: 0 0 16px; }
-  .lay-row {
-    display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 11px;
-    background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); margin-bottom: 9px;
-  }
-  .lay-row .grip { color: #6b7280; cursor: grab; font-size: 15px; }
-  .lay-row .name { flex: 1; font-size: 14px; }
+  /* Layout list rows */
+  .lay-row { display: flex; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07); }
   .lay-row.hidden-sec { opacity: .5; }
-  .lay-row .mini { width: 30px; height: 28px; border-radius: 8px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #cbd5e1; cursor: pointer; display: grid; place-items: center; font-size: 13px; }
-  .lay-row .mini:hover { background: rgba(255,255,255,.12); color: #fff; }
-  .lay-row .mini:disabled { opacity: .3; cursor: default; }
-  .lay-row[draggable=true] { cursor: grab; }
+  .lay-row .grip { color: #6b7280; font-size: 14px; cursor: grab; }
+  .lay-row .name { flex: 1; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lay-row .badge2 { font-size: 10px; color: #a78bfa; }
+  .mini { width: 29px; height: 27px; border-radius: 7px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: #cbd5e1; cursor: pointer; display: grid; place-items: center; font-size: 12px; }
+  .mini:hover { background: rgba(255,255,255,.12); color: #fff; } .mini:disabled { opacity: .3; cursor: default; }
   .lay-row.drag-over { box-shadow: inset 0 3px 0 #8b5cf6; }
 
-  .field { margin-bottom: 15px; }
-  .field label { display: block; font-size: 12.5px; color: #9ca3af; margin-bottom: 6px; }
-  .field input, .field textarea {
-    width: 100%; border-radius: 10px; padding: 10px 13px; font-size: 14px; color: #fff;
-    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); resize: vertical;
-    font-family: inherit;
-  }
+  .cat-item { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; padding: 11px 13px; border-radius: 10px; background: rgba(255,255,255,.03); border: 1px dashed rgba(255,255,255,.16); cursor: pointer; transition: background .15s, border-color .15s; }
+  .cat-item:hover { background: rgba(20,184,166,.14); border-color: #14b8a6; }
+  .cat-item .t { font-size: 13px; font-weight: 600; color: #e5e7eb; }
+  .cat-item .d { grid-column: 1 / -1; font-size: 11.5px; color: #8a94a3; line-height: 1.4; }
+  .cat-item .add { font-size: 16px; color: #34d399; }
+
+  .field { margin-bottom: 4px; }
+  .field label { display: block; font-size: 11.5px; color: #9ca3af; margin-bottom: 5px; }
+  .field input, .field textarea { width: 100%; border-radius: 9px; padding: 9px 11px; font-size: 13.5px; color: #fff; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); resize: vertical; font-family: inherit; }
   .field input:focus, .field textarea:focus { outline: none; border-color: rgba(59,130,246,.7); box-shadow: 0 0 0 3px rgba(59,130,246,.2); }
-
-  .catalog { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  .catalog button {
-    display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #e5e7eb;
-    background: rgba(255,255,255,.05); border: 1px dashed rgba(255,255,255,.2); border-radius: 10px;
-    padding: 9px 13px; cursor: pointer; transition: background .15s, border-color .15s;
-  }
-  .catalog button:hover { background: rgba(20,184,166,.16); border-color: #14b8a6; color: #fff; }
-  .subtle { font-size: 12.5px; color: #9ca3af; line-height: 1.55; }
-  .addbtn { font-size: 12.5px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 8px 12px; cursor: pointer; }
+  .grp-title { font-size: 12px; font-weight: 700; color: #c4b5fd; text-transform: uppercase; letter-spacing: .05em; margin: 8px 0 2px; }
+  .addbtn { font-size: 12px; color: #a7f3d0; background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.3); border-radius: 9px; padding: 9px 12px; cursor: pointer; justify-self: start; }
   .addbtn:hover { background: rgba(16,185,129,.2); }
-  .delbtn { font-size: 12px; color: #fca5a5; background: none; border: none; cursor: pointer; }
-  .delbtn:hover { color: #fff; }
 
-  /* ── Toast ─────────────────────────────────────────────────── */
-  .toast-wrap { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
-  .toast {
-    background: rgba(17,24,39,.96); color: #fff; border: 1px solid rgba(255,255,255,.12);
-    border-radius: 12px; padding: 12px 18px; font-size: 13.5px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8);
-    display: flex; align-items: center; gap: 10px; max-width: 92vw;
-    animation: toast-in .2s ease-out;
-  }
-  .toast .ic { font-size: 16px; }
-  .toast.ok { border-color: rgba(34,197,94,.4); }
-  .toast.info { border-color: rgba(59,130,246,.4); }
+  /* Modal (image / link) */
+  .modal-back { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; background: rgba(8,10,15,.55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .modal { width: 100%; max-width: 460px; border-radius: 18px; padding: 22px; background: linear-gradient(180deg, rgba(38,41,51,.94), rgba(22,24,31,.97)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px -18px rgba(0,0,0,.7); }
+  .modal h3 { margin: 0 0 4px; font-size: 17px; }
+  .modal p.sub { margin: 0 0 16px; font-size: 12.5px; color: #9ca3af; }
+  .modal .field { margin-bottom: 13px; }
+  .modal .preview { margin: 4px 0 12px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); background: #0b0f16; max-height: 160px; display: grid; place-items: center; }
+  .modal .preview img { max-width: 100%; max-height: 160px; display: block; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+  .btn-primary { border: none; cursor: pointer; border-radius: 10px; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); }
+  .btn-primary:hover { filter: brightness(1.07); }
+  .btn-ghost { border: none; cursor: pointer; border-radius: 10px; padding: 10px 14px; font-size: 13.5px; color: #d1d5db; background: transparent; }
+  .btn-ghost:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+  /* Toast */
+  .toast-wrap { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); z-index: 3000; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .toast { background: rgba(17,24,39,.97); color: #fff; border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 11px 17px; font-size: 13px; box-shadow: 0 20px 50px -20px rgba(0,0,0,.8); display: flex; align-items: center; gap: 10px; max-width: 92vw; animation: toast-in .2s ease-out; }
+  .toast.ok { border-color: rgba(34,197,94,.4); } .toast.info { border-color: rgba(59,130,246,.4); }
   @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-  /* ── Intro overlay ─────────────────────────────────────────── */
-  .intro-backdrop {
-    position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px;
-    background: rgba(8,10,15,.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  }
-  .intro {
-    max-width: 460px; width: 100%; border-radius: 20px; padding: 30px 28px; text-align: center;
-    background: linear-gradient(180deg, rgba(38,41,51,.9), rgba(22,24,31,.94));
-    border: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0 30px 70px -18px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07);
-  }
-  .intro .mark { width: 52px; height: 52px; margin: 0 auto 16px; border-radius: 15px; display: grid; place-items: center; font-weight: 800; font-size: 24px;
-    background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
-  .intro h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
-  .intro p { margin: 0 0 16px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
-  .intro ul { text-align: left; margin: 0 auto 22px; padding: 0; list-style: none; display: grid; gap: 9px; max-width: 340px; }
-  .intro li { display: flex; gap: 10px; align-items: flex-start; font-size: 13.5px; color: #e5e7eb; }
-  .intro li .k { flex: none; }
-  .intro .start {
-    width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 600; color: #fff;
-    background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6);
-  }
+  /* Intro + Tour */
+  .intro-back { position: fixed; inset: 0; z-index: 4000; display: grid; place-items: center; padding: 20px; background: rgba(8,10,15,.66); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .intro { max-width: 480px; width: 100%; border-radius: 20px; padding: 28px; text-align: center; background: linear-gradient(180deg, rgba(38,41,51,.94), rgba(22,24,31,.97)); border: 1px solid rgba(255,255,255,.1); box-shadow: 0 30px 70px -18px rgba(0,0,0,.7); }
+  .intro .mark { width: 50px; height: 50px; margin: 0 auto 15px; border-radius: 14px; display: grid; place-items: center; font-weight: 800; font-size: 22px; background: linear-gradient(140deg, #818cf8, #2563eb 55%, #0ea5e9); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
+  .intro h2 { margin: 0 0 8px; font-size: 21px; }
+  .intro p { margin: 0 0 14px; color: #cbd5e1; font-size: 13.5px; line-height: 1.6; }
+  .intro ul { text-align: left; margin: 0 auto 20px; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 380px; }
+  .intro li { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #e5e7eb; }
+  .intro .start { width: 100%; border: none; cursor: pointer; border-radius: 12px; padding: 12px; font-size: 15px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); box-shadow: 0 10px 24px -8px rgba(37,99,235,.6); }
   .intro .start:hover { filter: brightness(1.07); }
-  .intro .foot { margin: 14px 0 0; font-size: 11.5px; color: #6b7280; }
+  .intro .foot { margin: 12px 0 0; font-size: 11px; color: #6b7280; }
+  .intro .ghost2 { margin-top: 8px; background: none; border: none; color: #9ca3af; font-size: 12px; cursor: pointer; text-decoration: underline; }
+
+  .tour-dim { position: fixed; inset: 0; z-index: 4500; background: rgba(8,10,15,.55); }
+  .tour-spot { position: fixed; z-index: 4600; border-radius: 12px; box-shadow: 0 0 0 4px rgba(59,130,246,.9), 0 0 0 9999px rgba(8,10,15,.6); transition: all .2s ease; pointer-events: none; }
+  .tour-card { position: fixed; z-index: 4700; max-width: 320px; background: linear-gradient(180deg, rgba(38,41,51,.98), rgba(22,24,31,.99)); border: 1px solid rgba(255,255,255,.12); border-radius: 14px; padding: 16px 17px; box-shadow: 0 26px 60px -18px rgba(0,0,0,.8); }
+  .tour-card h4 { margin: 0 0 6px; font-size: 15px; } .tour-card p { margin: 0 0 14px; font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+  .tour-card .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .tour-card .dots { font-size: 11px; color: #6b7280; } .tour-card .acts { display: flex; gap: 6px; }
+  .tour-card .skip { background: none; border: none; color: #9ca3af; font-size: 12px; cursor: pointer; }
+  .tour-card .nx { border: none; cursor: pointer; border-radius: 9px; padding: 7px 13px; font-size: 12.5px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #2563eb, #3b82f6); }
 
   .sr-hide { display: none !important; }
-
-  @media (max-width: 720px) {
-    .tb-title p .amber { display: block; margin: 2px 0 0; }
-    .hide-sm { display: none !important; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
+  @media (max-width: 860px) { .hide-sm { display: none !important; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 </style>
 </head>
 <body>
-<div class="app" id="app">
-  <!-- Toolbar -->
+<div class="app">
   <header class="cms-toolbar">
     <div class="cms-toolbar-inner">
       <div class="tb-left">
         <div class="tb-brand">
-          <div class="cms-brand-mark" aria-hidden="true">L</div>
+          <div class="cms-brand-mark" aria-hidden="true">N</div>
           <div class="tb-title">
-            <h1>Loricatus Editor</h1>
-            <p id="tbSub">bemutato@loricatus.hu<span class="amber" id="dirtyInfo"></span></p>
+            <h1>Weboldal szerkesztő</h1>
+            <p id="tbSub">Bemutató mód<span class="amber" id="dirtyInfo"></span></p>
           </div>
         </div>
-
-        <span class="demo-pill hide-sm" title="Ez egy bemutató – a változtatások csak a böngésződben élnek."><span class="dot"></span>Demó</span>
-
-        <!-- Locale -->
-        <div class="cms-segment" id="localeSeg" role="group" aria-label="Nyelv"></div>
-
-        <!-- View mode -->
-        <div class="cms-segment" id="viewSeg" role="group" aria-label="Nézet"></div>
-
-        <!-- Live tools -->
-        <div class="tb-tools" id="liveTools" style="display:flex; gap:6px; align-items:center;"></div>
+        <span class="demo-pill hide-sm" title="Bemutató – a változtatások csak a böngésződben élnek."><span class="dot"></span>Demó</span>
+        <div class="cms-segment" id="localeSeg" data-tour="locale" role="group" aria-label="Nyelv"></div>
+        <div class="cms-segment" id="pagesSeg" data-tour="pages" title="Oldal kiválasztása"></div>
+        <div class="cms-segment" id="viewSeg" data-tour="viewmodes" role="group" aria-label="Nézet"></div>
+        <div id="tools" data-tour="tools" style="display:flex; gap:6px; align-items:center;"></div>
       </div>
-
       <div class="tb-right">
         <span id="statusSlot" class="hide-sm"></span>
+        <button class="cms-icon-btn" id="helpBtn" title="Vezetett túra újraindítása">?</button>
         <div class="cms-segment">
           <button class="cms-seg-btn" id="undoBtn" title="Visszavonás (Ctrl+Z)">↶</button>
           <button class="cms-seg-btn" id="redoBtn" title="Újra (Ctrl+Shift+Z)">↷</button>
         </div>
         <a class="back-link hide-sm" href="index.html" title="Vissza a portfólióhoz">← Portfólió</a>
-        <button class="cms-btn-save" id="saveBtn" title="Mentés (Ctrl+S)">Mentés</button>
-        <button class="cms-btn-publish" id="publishBtn">Publikálás (HU)</button>
+        <button class="cms-btn-save" id="saveBtn" data-tour="save" title="Mentés (Ctrl+S)">Mentés</button>
+        <button class="cms-btn-publish" id="publishBtn" data-tour="publish">Publikálás</button>
       </div>
     </div>
   </header>
 
-  <!-- Views get rendered here -->
-  <main id="main"></main>
-
-  <!-- Colors side sheet -->
-  <aside class="cms-sidesheet sr-hide" id="colorSheet" aria-label="Színek">
-    <div class="sidesheet-head">
-      <h2>🎨 Színek</h2>
-      <button class="cms-icon-btn" id="closeColors" title="Bezárás">✕</button>
+  <div class="stage" id="stage">
+    <div class="frame-wrap">
+      <iframe id="siteFrame" src="index.html" title="A portfólió szerkesztő előnézete"></iframe>
     </div>
-    <div class="sidesheet-body">
-      <p class="hint">A színek azonnal frissülnek az előnézetben. A mentéshez / közzétételhez használd a fenti Mentés / Publikálás gombot.</p>
+    <div class="frame-loading" id="frameLoading">Portfólió betöltése…</div>
+  </div>
+
+  <!-- Colors -->
+  <aside class="sheet narrow sr-hide" id="colorsSheet" aria-label="Színek">
+    <div class="sheet-head"><h2>🎨 Színek</h2><button class="cms-icon-btn" data-close="colors" title="Bezárás">✕</button></div>
+    <div class="sheet-body">
+      <p class="hint">A színek azonnal frissülnek az előnézetben. Mentés / publikálás a fenti gombokkal.</p>
       <div id="colorRows"></div>
-      <button class="addbtn" id="resetColors" style="justify-self:start">↺ Vissza az alap színekhez</button>
+      <button class="addbtn" id="resetColors">↺ Vissza az alap színekhez</button>
+    </div>
+  </aside>
+
+  <!-- Layout (Elrendezés) -->
+  <aside class="sheet wide sr-hide" id="layoutSheet" aria-label="Elrendezés">
+    <div class="sheet-head"><h2>📐 Elrendezés</h2><button class="cms-icon-btn" data-close="layout" title="Bezárás">✕</button></div>
+    <div class="sheet-body">
+      <p class="hint">Húzd a fogantyút vagy használd a nyilakat az átrendezéshez; a szemmel elrejtheted a szekciót. Alul új szekciót szúrhatsz be a könyvtárból.</p>
+      <div id="secList"></div>
+      <div class="grp-title">Új szekció beszúrása — szekció-könyvtár</div>
+      <div id="catalog" style="display:grid; gap:8px;"></div>
+    </div>
+  </aside>
+
+  <!-- Form (Lista) -->
+  <aside class="sheet wide sr-hide" id="formSheet" aria-label="Lista">
+    <div class="sheet-head"><h2>📝 Lista — minden mező</h2><button class="cms-icon-btn" data-close="form" title="Bezárás">✕</button></div>
+    <div class="sheet-body" id="formBody">
+      <p class="hint">Az oldal összes szövege egy helyen. Írj bele, és az előnézet azonnal frissül.</p>
     </div>
   </aside>
 </div>
 
 <div class="toast-wrap" id="toasts" aria-live="polite"></div>
+<div id="modalRoot"></div>
+<div id="tourRoot"></div>
 
-<!-- Intro -->
-<div class="intro-backdrop" id="introBackdrop">
-  <div class="intro" role="dialog" aria-modal="true" aria-labelledby="introTitle">
-    <div class="mark" aria-hidden="true">L</div>
-    <h2 id="introTitle">Loricatus Editor</h2>
-    <p>Így szerkeszti a megrendelő <b>kód nélkül, böngészőből</b> a saját weboldalát. Próbáld ki nyugodtan — kattints bármibe.</p>
+<div class="intro-back" id="introBack">
+  <div class="intro" role="dialog" aria-modal="true">
+    <div class="mark" aria-hidden="true">N</div>
+    <h2>Weboldal szerkesztő</h2>
+    <p>Ez itt a <b>saját portfóliód</b> — így szerkeszthetnéd <b>kód nélkül, böngészőből</b>, pontosan úgy, ahogy egy megrendelő is kapná a saját oldalához.</p>
     <ul>
-      <li><span class="k">✍️</span><span>Kattints egy szövegre és írd át — az <b>Élő szerkesztés</b> nézetben.</span></li>
-      <li><span class="k">🎨</span><span>A <b>Színek</b> gombbal állítsd az arculatot, élő előnézettel.</span></li>
-      <li><span class="k">📐</span><span>Az <b>Átrendezés</b> / <b>Elrendezés</b> nézetben húzd át a szekciókat.</span></li>
+      <li><span>✍️</span><span>Kattints <b>bármelyik szövegre, képre vagy linkre</b>, és írd át.</span></li>
+      <li><span>🎨</span><span><b>Színek</b>, <b>Átrendezés</b>, <b>Szabad pozíció</b>, <b>Mobil</b> nézet — a felső eszköztárból.</span></li>
+      <li><span>🧩</span><span><b>Elrendezés</b> nézet: szekciók sorrendje + <b>szekció-könyvtár</b>. <b>Lista</b> nézet: minden mező egy helyen.</span></li>
     </ul>
     <button class="start" id="introStart">Kipróbálom</button>
-    <p class="foot">Bemutató mód — a változtatások csak a böngésződben élnek, és újratöltésre visszaállnak. Semmi nem kerül mentésre.</p>
+    <button class="ghost2" id="introTour">Inkább egy gyors vezetett túrát kérek</button>
+    <p class="foot">Bemutató mód — a változtatások csak a böngésződben élnek, és újratöltésre visszaállnak. Az éles oldal nem változik.</p>
   </div>
 </div>
 
 <script>
 "use strict";
 (function () {
-  // ─────────────────────────────────────────────────────────────
-  // Content model — a representative Loricatus-style site in 3 locales.
-  // (The real editor pulls the live HTML + Supabase content; here it is
-  //  seeded inline so the demo is fully self-contained.)
-  // ─────────────────────────────────────────────────────────────
-  var LOCALES = [
-    { code: "hu", flag: "🇭🇺", label: "Magyar" },
-    { code: "en", flag: "🇬🇧", label: "English" },
-    { code: "it", flag: "🇮🇹", label: "Italiano" },
-  ];
-
-  // defaults per THEME_KEYS in admin/src/lib/theme.ts
-  var THEME_KEYS = [
-    { key: "accent", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések", def: "#c7d540" },
-    { key: "bg",     label: "Fő háttér",       hint: "Az oldal alap háttérszíne", def: "#f8f6f2" },
-    { key: "bg2",    label: "Másodlagos háttér",hint: "Szolgáltatások / szekciók háttere", def: "#eeeae3" },
-    { key: "text",   label: "Szöveg",           hint: "A fő szövegszín", def: "#111316" },
-    { key: "muted",  label: "Halvány szöveg",   hint: "Leírások, másodlagos feliratok", def: "#737e88" },
-  ];
-
-  function seed() {
-    return {
-      nav_brand: { hu: "Loricatus", en: "Loricatus", it: "Loricatus" },
-      hero_eyebrow: { hu: "Drónos felmérés · geoinformatika", en: "Drone survey · geoinformatics", it: "Rilievo con drone · geoinformatica" },
-      hero_title: {
-        hu: "Pontos térbeli adat a levegőből, napok alatt.",
-        en: "Precise spatial data from the air, in days.",
-        it: "Dati spaziali precisi dall'alto, in pochi giorni.",
-      },
-      hero_sub: {
-        hu: "LiDAR- és fotogrammetriai felmérés építőipari és geodéziai projektekhez. Pontfelhő, digitális terepmodell és BIM-kész eredmény.",
-        en: "LiDAR and photogrammetry surveys for construction and geodesy. Point clouds, digital terrain models and BIM-ready output.",
-        it: "Rilievi LiDAR e fotogrammetrici per edilizia e geodesia. Nuvole di punti, modelli del terreno e output pronti per il BIM.",
-      },
-      hero_cta: { hu: "Kérek ajánlatot", en: "Request a quote", it: "Richiedi un preventivo" },
-
-      svc_title: { hu: "Amiben segítünk", en: "How we help", it: "Come aiutiamo" },
-      svc_intro: {
-        hu: "Felméréstől a kész, feldolgozott adatig — egy kézből.",
-        en: "From survey to finished, processed data — from a single source.",
-        it: "Dal rilievo al dato finito ed elaborato — da un'unica fonte.",
-      },
-      about_title: { hu: "Rólunk", en: "About us", it: "Chi siamo" },
-      about_text: {
-        hu: "A Loricatus csapata mérnöki pontossággal dolgozik: DJI Zenmuse L1 LiDAR, RTK-GPS és validált feldolgozási munkafolyamat. Az adat, amit átadunk, azonnal beépíthető a tervezésbe.",
-        en: "The Loricatus team works with engineering precision: DJI Zenmuse L1 LiDAR, RTK-GPS and a validated processing workflow. The data we deliver drops straight into your design.",
-        it: "Il team Loricatus lavora con precisione ingegneristica: LiDAR DJI Zenmuse L1, RTK-GPS e un flusso di elaborazione validato. I dati che consegniamo entrano subito nella progettazione.",
-      },
-      contact_title: { hu: "Beszéljünk a projektről", en: "Let's talk about your project", it: "Parliamo del tuo progetto" },
-      contact_text: {
-        hu: "Küldd el a terület méretét és a célt, és egy munkanapon belül visszajelzünk.",
-        en: "Send us the site size and your goal, and we'll get back to you within one business day.",
-        it: "Inviaci la dimensione dell'area e l'obiettivo: risponderemo entro un giorno lavorativo.",
-      },
-      contact_email: { hu: "info@loricatus.hu", en: "info@loricatus.hu", it: "info@loricatus.hu" },
-      foot: { hu: "© Loricatus — minden jog fenntartva.", en: "© Loricatus — all rights reserved.", it: "© Loricatus — tutti i diritti riservati." },
-    };
-  }
-
-  function seedServices() {
-    return [
-      { id: "svc1", ico: "🛰️",
-        title: { hu: "LiDAR-felmérés", en: "LiDAR survey", it: "Rilievo LiDAR" },
-        desc:  { hu: "Nagy pontosságú pontfelhő növényzettel fedett terepen is.", en: "High-accuracy point cloud, even under vegetation.", it: "Nuvola di punti ad alta precisione, anche sotto la vegetazione." } },
-      { id: "svc2", ico: "🗺️",
-        title: { hu: "Terepmodell (DTM/DSM)", en: "Terrain model (DTM/DSM)", it: "Modello del terreno (DTM/DSM)" },
-        desc:  { hu: "Digitális terep- és felületmodell tervezéshez, földmunkához.", en: "Digital terrain and surface models for design and earthworks.", it: "Modelli digitali del terreno e della superficie per progettazione e scavi." } },
-      { id: "svc3", ico: "🏗️",
-        title: { hu: "Építéskövetés", en: "Construction monitoring", it: "Monitoraggio cantiere" },
-        desc:  { hu: "Idősoros drónfelvételek a kivitelezés előrehaladásáról.", en: "Time-series drone captures of build progress.", it: "Riprese drone in serie temporale sull'avanzamento dei lavori." } },
-    ];
-  }
-
-  function seedStats() {
-    return [
-      { id: "st1", num: "±2 cm", label: { hu: "pontosság", en: "accuracy", it: "precisione" } },
-      { id: "st2", num: "48 óra", label: { hu: "átadási idő", en: "turnaround", it: "consegna" } },
-      { id: "st3", num: "120+", label: { hu: "projekt", en: "projects", it: "progetti" } },
-    ];
-  }
-
-  var SECTION_LABELS = {
-    hero:     { hu: "Fejléc + hero", en: "Header + hero", it: "Intestazione + hero" },
-    services: { hu: "Szolgáltatások", en: "Services", it: "Servizi" },
-    stats:    { hu: "Számok", en: "Stats", it: "Numeri" },
-    about:    { hu: "Rólunk", en: "About", it: "Chi siamo" },
-    contact:  { hu: "Kapcsolat + lábléc", en: "Contact + footer", it: "Contatti + footer" },
-  };
-
-  var CATALOG = [
-    { tpl: "reviews", label: { hu: "Vélemények", en: "Testimonials", it: "Recensioni" } },
-    { tpl: "faq",     label: { hu: "GYIK", en: "FAQ", it: "FAQ" } },
-    { tpl: "gallery", label: { hu: "Galéria", en: "Gallery", it: "Galleria" } },
-  ];
+  var frame = document.getElementById("siteFrame");
+  var stage = document.getElementById("stage");
 
   // ── State ────────────────────────────────────────────────────
-  var S;
-  function freshState() {
-    return {
-      locale: "hu",
-      view: "live",            // live | layout | form
-      overlay: "edit",         // edit | layout | freeform
-      mobile: false,
-      showColors: false,
-      data: seed(),
-      services: seedServices(),
-      stats: seedStats(),
-      theme: {},               // overrides {accent,bg,...}
-      order: ["hero", "services", "stats", "about", "contact"],
-      hidden: {},              // {sectionId:true}
-      added: {},               // {sectionId:{tpl,label}}
-      heroPos: null,           // {x,y} freeform
-      lastSavedAt: null,
-    };
-  }
+  var view = "live";            // live | layout | form
+  var overlay = "edit";         // edit | reorder | freeform (live only)
+  var mobile = false, ready = false, panel = null; // panel: colors|layout|form|null
+  var locale = "hu";
 
-  // ── Undo/redo history ────────────────────────────────────────
-  var history = [], hIdx = -1, skipSnap = false, snapTimer = null;
-  function snapshotObj() {
-    return JSON.stringify({
-      data: S.data, services: S.services, stats: S.stats, theme: S.theme,
-      order: S.order, hidden: S.hidden, added: S.added, heroPos: S.heroPos,
-    });
-  }
-  function pushHistory() {
-    if (skipSnap) { skipSnap = false; return; }
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(function () {
-      var snap = snapshotObj();
-      if (history[hIdx] === snap) return;
-      history = history.slice(0, hIdx + 1);
-      history.push(snap);
-      if (history.length > 50) history.shift();
-      hIdx = history.length - 1;
-      refreshUndoButtons();
-    }, 350);
-  }
-  function restore(snap) {
-    var o = JSON.parse(snap);
-    S.data = o.data; S.services = o.services; S.stats = o.stats; S.theme = o.theme;
-    S.order = o.order; S.hidden = o.hidden; S.added = o.added; S.heroPos = o.heroPos;
-    skipSnap = true;
-    renderAll();
-  }
-  function undo() { if (hIdx > 0) { hIdx--; restore(history[hIdx]); refreshUndoButtons(); } }
-  function redo() { if (hIdx < history.length - 1) { hIdx++; restore(history[hIdx]); refreshUndoButtons(); } }
-  function refreshUndoButtons() {
-    document.getElementById("undoBtn").disabled = hIdx <= 0;
-    document.getElementById("redoBtn").disabled = hIdx >= history.length - 1;
-  }
+  var LOCALES = [
+    { code: "hu", flag: "🇭🇺" }, { code: "en", flag: "🇬🇧" }, { code: "de", flag: "🇩🇪" },
+    { code: "es", flag: "🇪🇸" }, { code: "fr", flag: "🇫🇷" }, { code: "zh", flag: "🇨🇳" },
+  ];
+  var COLORS = [
+    { v: "--amber", label: "Kiemelő szín", hint: "Linkek, gombok, kiemelések (borostyán)" },
+    { v: "--paper", label: "Fő háttér", hint: "Az oldal alap háttere" },
+    { v: "--paper-2", label: "Másodlagos háttér", hint: "Váltakozó szekciók háttere" },
+    { v: "--text", label: "Szöveg", hint: "A fő szövegszín" },
+    { v: "--muted", label: "Halvány szöveg", hint: "Leírások, másodlagos feliratok" },
+  ];
+  var defaults = {}, overrides = {};
 
-  // ── Dirty tracking (against the last "save") ─────────────────
-  var savedSnapshot = null;
-  function isDirty() { return savedSnapshot !== null && snapshotObj() !== savedSnapshot; }
+  // Section catalog — mirrors the editor's sections/catalog.json (13 blocks).
+  var CATALOG = [
+    { t: "hero", label: "Kiemelt fejléc", d: "Nagy cím + alcím + két gomb — egy oldal tetejére." },
+    { t: "features", label: "Jellemzők (3 kártya)", d: "Három kártya ikonnal, címmel és leírással." },
+    { t: "cards", label: "Kártyarács linkkel", d: "Három kártya címmel, leírással és „Tovább” linkkel." },
+    { t: "steps", label: "Folyamat (3 lépés)", d: "Számozott lépések — „Így dolgozunk” bemutatás." },
+    { t: "stats", label: "Számok / eredmények", d: "Nagy számok felirattal — projektek, tapasztalat." },
+    { t: "checklist", label: "Előnyök (pipás lista)", d: "Pipás felsorolás címmel és leírással." },
+    { t: "testimonial", label: "Ügyfélvélemény", d: "Kiemelt idézet névvel és beosztással." },
+    { t: "mediatext", label: "Kép + szöveg", d: "Kép az egyik, szöveg és gomb a másik hasábban." },
+    { t: "video", label: "Videó (YouTube / Vimeo)", d: "Beágyazott videó — illeszd be a linket." },
+    { t: "text", label: "Szöveges szekció", d: "Cím + szabadon szerkeszthető szövegtörzs." },
+    { t: "cta", label: "Ajánlatkérő sáv", d: "Rövid felhívás egy gombbal a kapcsolat felé." },
+    { t: "contact", label: "Kapcsolati blokk", d: "Cím + rövid szöveg + e-mail és gomb." },
+    { t: "faq", label: "GYIK", d: "Gyakori kérdések, rövid válaszokkal." },
+  ];
+
+  // ── Undo/redo ────────────────────────────────────────────────
+  var ops = [], opIdx = -1;
+  function pushOp(op) { ops = ops.slice(0, opIdx + 1); ops.push(op); if (ops.length > 80) ops.shift(); opIdx = ops.length - 1; refreshUndo(); markDirty(); if (view !== "live") { renderLayout(); renderForm(); } }
+  function refreshUndo() { document.getElementById("undoBtn").disabled = opIdx < 0; document.getElementById("redoBtn").disabled = opIdx >= ops.length - 1; }
+  function applyOp(op, dir) {
+    var to = dir > 0 ? "next" : "prev";
+    if (op.type === "text") op.el.textContent = op[to];
+    else if (op.type === "image") op.el.setAttribute("src", op[to]);
+    else if (op.type === "link") { op.el.textContent = op[to].text; if (op.el.tagName === "A") op.el.setAttribute("href", op[to].href); }
+    else if (op.type === "color") { var val = op[to]; if (val == null) clearColor(op.v, true); else setColor(op.v, val, true); syncColors(); }
+    else if (op.type === "hide") { op.el.style.display = op[to] ? "none" : ""; }
+    else if (op.type === "pos") { var p = op[to]; op.el.style.position = p.position; op.el.style.left = p.left; op.el.style.top = p.top; }
+    else if (op.type === "add") { if (dir > 0) op.parent.insertBefore(op.el, op.ref); else op.el.remove(); }
+    else if (op.type === "del") { if (dir > 0) op.el.remove(); else op.parent.insertBefore(op.el, op.ref); }
+    else if (op.type === "move") { op.parent.insertBefore(op.el, dir > 0 ? op.nextNext : op.prevNext); }
+  }
+  function undo() { if (opIdx < 0) return; applyOp(ops[opIdx], -1); opIdx--; refreshUndo(); markDirty(); if (view!=="live"){renderLayout();renderForm();} }
+  function redo() { if (opIdx >= ops.length - 1) return; opIdx++; applyOp(ops[opIdx], 1); refreshUndo(); markDirty(); if (view!=="live"){renderLayout();renderForm();} }
+
+  var savedIdx = -1, savedColors = "{}";
+  function isDirty() { return opIdx !== savedIdx || JSON.stringify(overrides) !== savedColors; }
+  function markDirty() {
+    var n = 0; for (var i = 0; i <= opIdx; i++) if (ops[i].type === "text" || ops[i].type === "link") n++;
+    var bits = [];
+    if (n) bits.push("· " + n + " módosítás");
+    if (Object.keys(overrides).length) bits.push("· színek");
+    document.getElementById("dirtyInfo").textContent = bits.length ? " " + bits.join(" ") : "";
+    document.getElementById("saveBtn").classList.toggle("is-dirty", isDirty());
+  }
 
   // ── Helpers ──────────────────────────────────────────────────
-  function el(tag, attrs, children) {
+  function doc() { return frame.contentDocument; }
+  function win() { return frame.contentWindow; }
+  function root() { return doc().documentElement; }
+  function el(tag, attrs, kids) {
     var e = document.createElement(tag);
-    if (attrs) for (var k in attrs) {
-      if (k === "class") e.className = attrs[k];
-      else if (k === "html") e.innerHTML = attrs[k];
-      else if (k === "text") e.textContent = attrs[k];
-      else if (k.slice(0, 2) === "on" && typeof attrs[k] === "function") e.addEventListener(k.slice(2), attrs[k]);
-      else if (attrs[k] != null) e.setAttribute(k, attrs[k]);
-    }
-    if (children) (Array.isArray(children) ? children : [children]).forEach(function (c) {
-      if (c == null) return;
-      e.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
-    });
+    if (attrs) for (var k in attrs) { if (k === "class") e.className = attrs[k]; else if (k === "text") e.textContent = attrs[k]; else if (k === "html") e.innerHTML = attrs[k]; else if (k.slice(0,2)==="on" && typeof attrs[k]==="function") e.addEventListener(k.slice(2), attrs[k]); else if (attrs[k]!=null) e.setAttribute(k, attrs[k]); }
+    if (kids) (Array.isArray(kids)?kids:[kids]).forEach(function(c){ if(c==null)return; e.appendChild(typeof c==="string"?document.createTextNode(c):c); });
     return e;
   }
-  function themeVal(k) { return S.theme[k] || THEME_KEYS.filter(function (t) { return t.key === k; })[0].def; }
-  function L(obj) { return (obj && (obj[S.locale] != null ? obj[S.locale] : obj.hu)) || ""; }
+  function tool(label, acc, active, onclick, tip) { var b = el("button", { class: "cms-tool" + (active?" is-active":""), onclick: onclick, title: tip||"" }, label); b.style.setProperty("--acc", acc); return b; }
 
-  // ─────────────────────────────────────────────────────────────
-  // Rendering
-  // ─────────────────────────────────────────────────────────────
-  function renderAll() {
-    renderToolbar();
-    renderMain();
-    renderColors();
-    updateDirtyUI();
-    pushHistory();
+  // ── Colours ──────────────────────────────────────────────────
+  function hexToRgb(h){ h=(h||"").trim().replace("#",""); if(h.length===3) h=h.split("").map(function(c){return c+c;}).join(""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+  function toHex(n){ n=Math.max(0,Math.min(255,Math.round(n))); return n.toString(16).padStart(2,"0"); }
+  function darken(h,f){ var c=hexToRgb(h); return "#"+toHex(c[0]*(1-f))+toHex(c[1]*(1-f))+toHex(c[2]*(1-f)); }
+  function rgba(h,a){ var c=hexToRgb(h); return "rgba("+c[0]+","+c[1]+","+c[2]+","+a+")"; }
+  function isHex(v){ return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test((v||"").trim()); }
+  function setColor(v, val, silent){ overrides[v]=val; var r=root(); r.style.setProperty(v,val); if(v==="--amber"&&isHex(val)){ r.style.setProperty("--amber-dark",darken(val,.12)); r.style.setProperty("--amber-soft",rgba(val,.1)); } if(!silent) markDirty(); }
+  function clearColor(v, silent){ delete overrides[v]; var r=root(); r.style.removeProperty(v); if(v==="--amber"){ r.style.removeProperty("--amber-dark"); r.style.removeProperty("--amber-soft"); } if(!silent) markDirty(); }
+  function curColor(v){ return overrides[v]||defaults[v]||"#000000"; }
+  function normHex(v){ v=(v||"").trim(); return isHex(v)?(v.length===4?"#"+v[1]+v[1]+v[2]+v[2]+v[3]+v[3]:v):"#000000"; }
+  var colorTimer=null, pendingColor=null;
+  function schedColorOp(v,prev,next){ pendingColor={type:"color",v:v,prev:prev,next:next}; clearTimeout(colorTimer); colorTimer=setTimeout(function(){ if(pendingColor){pushOp(pendingColor);pendingColor=null;} },450); }
+  function buildColorRows(){
+    var wrap=document.getElementById("colorRows"); wrap.innerHTML="";
+    COLORS.forEach(function(c){
+      var custom=overrides[c.v]!=null;
+      var color=el("input",{type:"color",value:normHex(curColor(c.v))});
+      var text=el("input",{type:"text",value:overrides[c.v]||"",placeholder:defaults[c.v]||""});
+      color.addEventListener("input",function(){ var prev=overrides[c.v]!=null?overrides[c.v]:null; setColor(c.v,color.value); text.value=color.value; schedColorOp(c.v,prev,color.value); });
+      text.addEventListener("input",function(){ var prev=overrides[c.v]!=null?overrides[c.v]:null; if(text.value.trim()){ setColor(c.v,text.value.trim()); if(isHex(text.value.trim())) color.value=text.value.trim(); } else clearColor(c.v); schedColorOp(c.v,prev,text.value.trim()||null); });
+      wrap.appendChild(el("div",{class:"color-row"},[
+        el("div",{class:"top"},[ el("label",null,c.label), custom?el("button",{class:"reset",onclick:function(){ var prev=overrides[c.v]; clearColor(c.v); pushOp({type:"color",v:c.v,prev:prev,next:null}); buildColorRows(); }},"alap"):null ]),
+        el("div",{class:"inputs"},[color,text]),
+        el("p",{class:"desc"},c.hint),
+      ]));
+    });
+  }
+  function syncColors(){ if(panel==="colors") buildColorRows(); }
+
+  // ── Inline editing (text / image / link) ─────────────────────
+  var TEXT_TAGS={H1:1,H2:1,H3:1,H4:1,H5:1,H6:1,P:1,SPAN:1,LI:1,STRONG:1,EM:1,B:1,SMALL:1,BLOCKQUOTE:1,FIGCAPTION:1,LABEL:1,TD:1,TH:1,DT:1,DD:1};
+  function textFrom(node){ var e=node,d=doc(); while(e&&e!==d.body){ if(TEXT_TAGS[e.tagName]){ var ec=0; for(var i=0;i<e.children.length;i++) if(!/^(BR|WBR|B|I|EM|STRONG|SMALL|SUP|SUB)$/.test(e.children[i].tagName)) ec++; if(ec===0&&e.textContent.trim()) return e; } e=e.parentElement; } e=node; while(e&&e!==d.body){ if(/^(H1|H2|H3|H4|H5|H6|P|LI)$/.test(e.tagName)&&e.textContent.trim()) return e; e=e.parentElement; } return null; }
+  function linkFrom(node){ var e=node,d=doc(); while(e&&e!==d.body){ if(e.tagName==="A"||e.tagName==="BUTTON") return e; e=e.parentElement; } return null; }
+  function imgFrom(node){ return node && node.tagName==="IMG" ? node : null; }
+
+  function onFrameClick(e){
+    if(!ready || view!=="live" || overlay==="reorder") return;
+    var t=e.target;
+    // Let the site's own chrome work normally (language switcher, mobile menu).
+    if(t.closest && t.closest('#lang, #langBtn, #langMenu, [data-lang], #toggle, .nav-toggle')) return;
+    if(overlay==="freeform"){ return; } // freeform uses pointer drag, see below
+    var img=imgFrom(t); if(img){ e.preventDefault(); e.stopPropagation(); openImageModal(img); return; }
+    var lnk=linkFrom(t);
+    // a link that is basically an icon/button with no meaningful text → still editable as link
+    if(lnk && (lnk.tagName==="A" && lnk.getAttribute("href")!=null || lnk.tagName==="BUTTON")){ e.preventDefault(); e.stopPropagation(); openLinkModal(lnk); return; }
+    if(startTextEdit(t)){ e.preventDefault(); e.stopPropagation(); }
+  }
+  function startTextEdit(target){
+    var node=textFrom(target); if(!node) return false;
+    if(node.getAttribute("contenteditable")==="true") return true;
+    var before=node.textContent;
+    node.setAttribute("contenteditable","true"); node.focus();
+    try{ var r=doc().createRange(); r.selectNodeContents(node); r.collapse(false); var s=win().getSelection(); s.removeAllRanges(); s.addRange(r); }catch(_){}
+    function commit(){ node.removeAttribute("contenteditable"); node.removeEventListener("blur",commit); node.removeEventListener("keydown",onKey); var after=node.textContent; if(after!==before) pushOp({type:"text",el:node,prev:before,next:after}); }
+    function onKey(ev){ if(ev.key==="Escape"){ node.textContent=before; node.blur(); } if(ev.key==="Enter"&&!/^(P|LI|DIV|TD)$/.test(node.tagName)){ ev.preventDefault(); node.blur(); } }
+    node.addEventListener("blur",commit); node.addEventListener("keydown",onKey);
+    return true;
   }
 
-  function renderToolbar() {
-    // Locale segment
-    var seg = document.getElementById("localeSeg");
-    seg.innerHTML = "";
-    LOCALES.forEach(function (l) {
-      seg.appendChild(el("button", {
-        class: "cms-seg-btn" + (S.locale === l.code ? " is-active" : ""),
-        title: "Váltás: " + l.label,
-        onclick: function () { S.locale = l.code; renderAll(); },
-      }, l.flag + " " + l.code.toUpperCase()));
+  // ── Modals (image / link) ────────────────────────────────────
+  function closeModal(){ document.getElementById("modalRoot").innerHTML=""; }
+  function modalShell(title, sub, bodyKids, onOk){
+    var back=el("div",{class:"modal-back",onclick:function(e){ if(e.target===back) closeModal(); }});
+    var m=el("div",{class:"modal"},[ el("h3",null,title), el("p",{class:"sub"},sub) ].concat(bodyKids).concat([
+      el("div",{class:"modal-actions"},[ el("button",{class:"btn-ghost",onclick:closeModal},"Mégse"), el("button",{class:"btn-primary",onclick:function(){ onOk(); }},"Alkalmaz") ])
+    ]));
+    back.appendChild(m); document.getElementById("modalRoot").appendChild(back); return m;
+  }
+  function openImageModal(img){
+    var prev=img.getAttribute("src")||"";
+    var input=el("input",{type:"text",value:prev,placeholder:"https://…/kep.jpg"});
+    var pv=el("div",{class:"preview"},[ el("img",{src:prev}) ]);
+    input.addEventListener("input",function(){ pv.firstChild.setAttribute("src",input.value); });
+    modalShell("Kép cseréje","Illeszd be egy kép URL-jét — az élő rendszerben feltöltés is van.",[
+      pv, el("div",{class:"field"},[ el("label",null,"Kép URL"), input ])
+    ],function(){ var next=input.value.trim(); if(next&&next!==prev){ img.setAttribute("src",next); pushOp({type:"image",el:img,prev:prev,next:next}); } closeModal(); });
+  }
+  function openLinkModal(a){
+    var prevText=a.textContent, prevHref=a.tagName==="A"?(a.getAttribute("href")||""):"";
+    var tin=el("input",{type:"text",value:prevText});
+    var hin=el("input",{type:"text",value:prevHref,placeholder:"https://… vagy #szakasz"});
+    var kids=[ el("div",{class:"field"},[ el("label",null,"Link szövege"), tin ]) ];
+    if(a.tagName==="A") kids.push(el("div",{class:"field"},[ el("label",null,"Hivatkozás (href)"), hin ]));
+    modalShell("Link szerkesztése","A gomb / hivatkozás felirata és célja.",kids,function(){
+      var nt=tin.value, nh=hin.value.trim();
+      if(nt!==prevText || (a.tagName==="A"&&nh!==prevHref)){ a.textContent=nt; if(a.tagName==="A") a.setAttribute("href",nh); pushOp({type:"link",el:a,prev:{text:prevText,href:prevHref},next:{text:nt,href:nh}}); }
+      closeModal();
     });
+  }
 
-    // View segment
-    var vseg = document.getElementById("viewSeg");
-    vseg.innerHTML = "";
-    [["live", "Élő szerkesztés"], ["layout", "Elrendezés"], ["form", "Lista"]].forEach(function (v) {
-      vseg.appendChild(el("button", {
-        class: "cms-seg-btn" + (S.view === v[0] ? " is-active" : ""),
-        onclick: function () { S.view = v[0]; if (v[0] !== "live") S.showColors = false; renderAll(); },
-      }, v[1]));
+  // ── Freeform positioning ─────────────────────────────────────
+  var ffEl=null;
+  function enableFreeform(){ doc().body.classList.add("__ff"); doc().addEventListener("pointerdown",ffDown,true); }
+  function disableFreeform(){ if(!doc().body) return; doc().body.classList.remove("__ff"); doc().removeEventListener("pointerdown",ffDown,true); }
+  var ffStart=null, ffPrev=null;
+  function ffDown(e){
+    if(view!=="live"||overlay!=="freeform") return;
+    var t=e.target; if(!t||t===doc().body||t.tagName==="SECTION") return;
+    // pick a reasonably sized element to move
+    var node=t; while(node&&node.parentElement&&node.parentElement!==doc().body && node.getBoundingClientRect().width<40) node=node.parentElement;
+    ffEl=node; e.preventDefault(); e.stopPropagation();
+    var cs=win().getComputedStyle(node);
+    ffPrev={position:node.style.position||"", left:node.style.left||"", top:node.style.top||""};
+    if(cs.position==="static"||!node.style.position){ node.style.position="relative"; }
+    ffStart={x:e.clientX,y:e.clientY, ox:parseFloat(node.style.left)||0, oy:parseFloat(node.style.top)||0};
+    doc().addEventListener("pointermove",ffMove,true);
+    doc().addEventListener("pointerup",ffUp,true);
+  }
+  function ffMove(e){ if(!ffEl) return; ffEl.style.left=(ffStart.ox+(e.clientX-ffStart.x))+"px"; ffEl.style.top=(ffStart.oy+(e.clientY-ffStart.y))+"px"; }
+  function ffUp(){ doc().removeEventListener("pointermove",ffMove,true); doc().removeEventListener("pointerup",ffUp,true); if(ffEl){ var next={position:ffEl.style.position,left:ffEl.style.left,top:ffEl.style.top}; if(JSON.stringify(next)!==JSON.stringify(ffPrev)) pushOp({type:"pos",el:ffEl,prev:ffPrev,next:next}); ffEl=null; } }
+
+  // ── Section reorder (drag on the iframe) ─────────────────────
+  var dragEl=null;
+  function sections(){ return Array.prototype.slice.call(doc().body.querySelectorAll("section")); }
+  function enableReorder(){
+    doc().body.classList.add("__reo");
+    sections().forEach(function(sec){
+      sec.setAttribute("draggable","true");
+      if(win().getComputedStyle(sec).position==="static"){ sec.style.position="relative"; sec.dataset.reoPos="1"; }
+      if(!sec.querySelector(".__handle")){ var h=doc().createElement("div"); h.className="__handle"; h.textContent="⠿ "+secLabel(sec); sec.appendChild(h); }
+      sec.addEventListener("dragstart",dStart); sec.addEventListener("dragover",dOver); sec.addEventListener("dragleave",dLeave); sec.addEventListener("drop",dDrop); sec.addEventListener("dragend",dEnd);
     });
+  }
+  function disableReorder(){ if(!doc().body) return; doc().body.classList.remove("__reo"); sections().forEach(function(sec){ sec.removeAttribute("draggable"); if(sec.dataset.reoPos){ sec.style.position=""; delete sec.dataset.reoPos; } var h=sec.querySelector(".__handle"); if(h)h.remove(); sec.removeEventListener("dragstart",dStart); sec.removeEventListener("dragover",dOver); sec.removeEventListener("dragleave",dLeave); sec.removeEventListener("drop",dDrop); sec.removeEventListener("dragend",dEnd); }); }
+  function secLabel(sec){ var h=sec.querySelector("h1,h2,h3"); var t=h?h.textContent.trim():(sec.id||"szekció"); return t.length>26?t.slice(0,24)+"…":t; }
+  function dStart(e){ dragEl=e.currentTarget; e.dataTransfer.effectAllowed="move"; try{e.dataTransfer.setData("text/plain","x");}catch(_){ } dragEl.style.opacity=".5"; }
+  function dOver(e){ e.preventDefault(); e.currentTarget.style.boxShadow="inset 0 5px 0 #8b5cf6"; }
+  function dLeave(e){ e.currentTarget.style.boxShadow=""; }
+  function dDrop(e){ e.preventDefault(); e.currentTarget.style.boxShadow=""; var tg=e.currentTarget; if(!dragEl||dragEl===tg) return; var parent=tg.parentNode; var prevNext=dragEl.nextSibling; parent.insertBefore(dragEl,tg); var nextNext=dragEl.nextSibling; pushOp({type:"move",el:dragEl,parent:parent,prevNext:prevNext,nextNext:nextNext}); }
+  function dEnd(){ if(dragEl) dragEl.style.opacity=""; sections().forEach(function(s){s.style.boxShadow="";}); dragEl=null; }
 
-    // Live tools
-    var tools = document.getElementById("liveTools");
-    tools.innerHTML = "";
-    if (S.view === "live") {
-      tools.appendChild(toolBtn("🎨 Színek", "#ec4899", S.showColors, function () { S.showColors = !S.showColors; renderAll(); }));
-      tools.appendChild(toolBtn("📐 Átrendezés", "#8b5cf6", S.overlay === "layout", function () {
-        S.overlay = S.overlay === "layout" ? "edit" : "layout"; renderAll();
-      }));
-      tools.appendChild(toolBtn("🎯 Szabad pozíció", "#0ea5e9", S.overlay === "freeform", function () {
-        S.overlay = S.overlay === "freeform" ? "edit" : "freeform"; renderAll();
-      }));
-      if (S.overlay === "freeform" && S.heroPos) {
-        tools.appendChild(el("button", { class: "cms-tool", title: "Pozíció visszaállítása",
-          onclick: function () { if (confirm("Szabad pozíció törlése? Az elem visszaáll a helyére.")) { S.heroPos = null; renderAll(); } } }, "↺ pozíció"));
-      }
-      tools.appendChild(toolBtn("📱 Mobil", "#f59e0b", S.mobile, function () { S.mobile = !S.mobile; renderAll(); }));
-      tools.appendChild(el("button", { class: "cms-icon-btn", title: "Előnézet frissítése",
-        onclick: function () { S.data = mergeSeed(); renderAll(); toast("info", "↻", "Előnézet frissítve."); } }, "↻"));
+  // ── Section catalog blocks (themed with the portfolio's vars) ─
+  function blockHTML(t){
+    var A="var(--amber,#c9822a)", P="var(--paper,#eff1ec)", P2="var(--paper-2,#e6e9e2)", TX="var(--text,#12231f)", MU="var(--muted,#566760)", INK="#12231f";
+    var pad="padding:60px 28px;", wrap="max-width:960px;margin:0 auto;", h="margin:0 0 12px;font-size:30px;letter-spacing:-.02em;color:"+TX;
+    var card="background:"+P+";border:1px solid rgba(0,0,0,.08);border-radius:14px;padding:22px;";
+    var btn="display:inline-block;background:"+A+";color:#fff;font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none;";
+    switch(t){
+      case "hero": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"text-align:center'><span style='display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b4a16;background:color-mix(in srgb,"+A+" 26%,transparent);padding:6px 12px;border-radius:999px'>Új kiemelt szekció</span><h2 style='font-size:44px;margin:16px 0 12px;letter-spacing:-.02em;color:"+TX+"'>Nagy, figyelemfelkeltő cím</h2><p style='color:"+MU+";font-size:18px;max-width:44ch;margin:0 auto 22px'>Ide jön az alcím, ami egy mondatban elmondja a lényeget.</p><a href='#' style='"+btn+"'>Fő gomb</a> <a href='#' style='display:inline-block;padding:12px 22px;border-radius:11px;border:1px solid "+MU+";color:"+TX+";text-decoration:none'>Második gomb</a></div></div>";
+      case "features": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"'><h2 style='"+h+"'>Jellemzők</h2><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px'>"+[["✨","Első jellemző"],["⚡","Második jellemző"],["🎯","Harmadik jellemző"]].map(function(c){return "<div style='"+card+"'><div style='font-size:26px'>"+c[0]+"</div><h3 style='margin:10px 0 6px;color:"+TX+"'>"+c[1]+"</h3><p style='margin:0;color:"+MU+";font-size:14.5px'>Rövid leírás a jellemzőről, egy-két mondatban.</p></div>";}).join("")+"</div></div></div>";
+      case "cards": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"'><h2 style='"+h+"'>Kártyák</h2><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px'>"+[1,2,3].map(function(i){return "<div style='"+card+"'><h3 style='margin:0 0 6px;color:"+TX+"'>Kártya "+i+"</h3><p style='margin:0 0 12px;color:"+MU+";font-size:14.5px'>Rövid leírás a kártyáról.</p><a href='#' style='color:"+A+";font-weight:600;text-decoration:none'>Tovább →</a></div>";}).join("")+"</div></div></div>";
+      case "steps": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"'><h2 style='"+h+"'>Így dolgozunk</h2><div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px'>"+[1,2,3].map(function(i){return "<div><div style='width:38px;height:38px;border-radius:50%;background:"+A+";color:#fff;display:grid;place-items:center;font-weight:800'>"+i+"</div><h3 style='margin:12px 0 6px;color:"+TX+"'>"+i+". lépés</h3><p style='margin:0;color:"+MU+";font-size:14.5px'>Mi történik ebben a lépésben.</p></div>";}).join("")+"</div></div></div>";
+      case "stats": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:20px;text-align:center'>"+[["120+","projekt"],["8 év","tapasztalat"],["100%","elégedettség"]].map(function(s){return "<div><div style='font-size:38px;font-weight:800;color:"+TX+"'>"+s[0]+"</div><div style='color:"+MU+";font-size:14px'>"+s[1]+"</div></div>";}).join("")+"</div></div>";
+      case "checklist": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"'><h2 style='"+h+"'>Miért minket válassz</h2><ul style='list-style:none;padding:0;margin:0;display:grid;gap:10px;max-width:52ch'>"+["Első előny","Második előny","Harmadik előny","Negyedik előny"].map(function(x){return "<li style='display:flex;gap:10px;color:"+TX+"'><span style='color:"+A+";font-weight:800'>✓</span><span>"+x+" — rövid magyarázat.</span></li>";}).join("")+"</ul></div></div>";
+      case "testimonial": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"text-align:center;max-width:640px'><p style='font-size:24px;line-height:1.4;color:"+TX+"'>„Gyors, korrekt, profi munka. Bátran ajánlom mindenkinek.”</p><p style='margin-top:14px;color:"+MU+"'><b style='color:"+TX+"'>Ügyfél Neve</b> · Cég Kft.</p></div></div>";
+      case "mediatext": return "<div style='"+pad+"background:"+P2+"'><div style='"+wrap+"display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center'><div style='aspect-ratio:4/3;border-radius:14px;background:color-mix(in srgb,"+A+" 25%,"+P+")'></div><div><h2 style='"+h+"'>Kép + szöveg</h2><p style='color:"+MU+";font-size:16px;line-height:1.6'>Bal oldalon egy kép, jobb oldalon a szöveg és egy gomb.</p><a href='#' style='"+btn+"margin-top:12px'>Gomb</a></div></div></div>";
+      case "video": return "<div style='"+pad+"background:"+INK+"'><div style='"+wrap+"text-align:center'><h2 style='margin:0 0 16px;font-size:30px;color:#fff'>Videó</h2><div style='aspect-ratio:16/9;max-width:720px;margin:0 auto;border-radius:14px;overflow:hidden;background:#000;display:grid;place-items:center;color:#9ca3af'><div>▶ &nbsp;YouTube / Vimeo beágyazás<br><span style='font-size:12px'>(illeszd be a linket a szerkesztőben)</span></div></div></div></div>";
+      case "text": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"max-width:680px'><h2 style='"+h+"'>Szöveges szekció</h2><p style='color:"+MU+";font-size:17px;line-height:1.7'>Ide bármilyen szabadon szerkeszthető szöveg jöhet. Több bekezdés, felsorolás, kiemelés — ahogy szükséged van rá.</p></div></div>";
+      case "cta": return "<div style='padding:44px 28px;background:"+A+"'><div style='"+wrap+"display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between'><div><h2 style='margin:0 0 4px;font-size:26px;color:#fff'>Kérj most ingyenes ajánlatot</h2><p style='margin:0;color:rgba(255,255,255,.85)'>Válaszolok egy munkanapon belül.</p></div><a href='#' style='background:#fff;color:"+TX+";font-weight:700;padding:12px 22px;border-radius:11px;text-decoration:none'>Kapcsolat</a></div></div>";
+      case "contact": return "<div style='"+pad+"background:"+INK+"'><div style='"+wrap+"text-align:center'><h2 style='margin:0 0 10px;font-size:30px;color:#fff'>Lépj kapcsolatba</h2><p style='color:rgba(255,255,255,.75);max-width:44ch;margin:0 auto 14px'>Írj pár sort, és felveszem veled a kapcsolatot.</p><p style='color:"+A+";font-weight:700;font-size:18px'>hello@example.com</p><a href='#' style='"+btn+"margin-top:8px'>Írok egy üzenetet</a></div></div>";
+      case "faq": return "<div style='"+pad+"background:"+P+"'><div style='"+wrap+"max-width:680px'><h2 style='"+h+"'>Gyakori kérdések</h2>"+[["Mennyibe kerül?","Projektfüggő — az ajánlatban tételesen látod."],["Mennyi idő?","A méretétől függ, jellemzően 1–3 hét."]].map(function(q){return "<div style='border-bottom:1px solid rgba(0,0,0,.08);padding:14px 0'><h3 style='margin:0 0 6px;font-size:17px;color:"+TX+"'>"+q[0]+"</h3><p style='margin:0;color:"+MU+"'>"+q[1]+"</p></div>";}).join("")+"</div></div>";
     }
-    refreshUndoButtons();
+    return "<div style='"+pad+"'><div style='"+wrap+"'><h2 style='"+h+"'>Új szekció</h2></div></div>";
   }
-  function toolBtn(label, acc, active, onclick) {
-    var b = el("button", { class: "cms-tool" + (active ? " is-active" : ""), onclick: onclick }, label);
-    b.style.setProperty("--acc", acc);
-    return b;
-  }
-  function mergeSeed() {
-    // "reload" keeps edited values (like the real iframe reload) — no-op merge kept simple
-    return S.data;
+  function addSection(entry){
+    var d=doc(), sec=d.createElement("section");
+    sec.setAttribute("data-added","1"); sec.className="__added";
+    sec.innerHTML=blockHTML(entry.t);
+    // insert before the last section (usually contact/footer) if any, else append
+    var secs=sections(); var ref = secs.length? secs[secs.length-1] : null;
+    var parent = ref? ref.parentNode : d.body;
+    if(ref) parent.insertBefore(sec, ref); else parent.appendChild(sec);
+    pushOp({type:"add",el:sec,parent:parent,ref: sec.nextSibling});
+    toast("ok","＋","„"+entry.label+"” szekció beszúrva — rendezd át és szerkeszd.");
+    sec.scrollIntoView({behavior:"smooth",block:"center"});
   }
 
-  function updateDirtyUI() {
-    var changed = countChanged();
-    var info = document.getElementById("dirtyInfo");
-    var bits = [];
-    if (changed.fields) bits.push("· " + changed.fields + " módosított mező");
-    if (changed.layout) bits.push("· elrendezés módosítva");
-    if (changed.theme) bits.push("· színek módosítva");
-    info.textContent = bits.length ? " " + bits.join(" ") : "";
-    var save = document.getElementById("saveBtn");
-    save.classList.toggle("is-dirty", !!(changed.fields || changed.layout || changed.theme));
-  }
-  function countChanged() {
-    var base = seed(), out = { fields: 0, layout: 0, theme: 0 };
-    Object.keys(base).forEach(function (k) {
-      LOCALES.forEach(function (l) { if ((S.data[k] && S.data[k][l.code]) !== base[k][l.code]) out.fields++; });
+  // ── Layout panel (Elrendezés) ────────────────────────────────
+  function renderLayout(){
+    if(panel!=="layout"||!ready) return;
+    var list=document.getElementById("secList"); list.innerHTML="";
+    var secs=sections();
+    secs.forEach(function(sec,i){
+      var hidden = sec.style.display==="none";
+      var added = sec.hasAttribute("data-added");
+      var row=el("div",{class:"lay-row"+(hidden?" hidden-sec":""),draggable:"true"},[
+        el("span",{class:"grip"},"⠿"),
+        el("span",{class:"name"},secLabel(sec)),
+        added?el("span",{class:"badge2"},"beszúrt"):null,
+        el("button",{class:"mini",title:"Fel",disabled:i===0?"":null,onclick:function(){ moveSec(sec,-1); }},"▲"),
+        el("button",{class:"mini",title:"Le",disabled:i===secs.length-1?"":null,onclick:function(){ moveSec(sec,1); }},"▼"),
+        el("button",{class:"mini",title:hidden?"Megjelenítés":"Elrejtés",onclick:function(){ var wasHidden=sec.style.display==="none"; sec.style.display=wasHidden?"":"none"; pushOp({type:"hide",el:sec,prev:wasHidden,next:!wasHidden}); renderLayout(); }},hidden?"🙈":"👁"),
+        added?el("button",{class:"mini",title:"Törlés",onclick:function(){ var parent=sec.parentNode, ref=sec.nextSibling; sec.remove(); pushOp({type:"del",el:sec,parent:parent,ref:ref}); renderLayout(); }},"🗑"):null,
+      ]);
+      // drag reorder within the list
+      row.addEventListener("dragstart",function(e){ dragEl=sec; e.dataTransfer.effectAllowed="move"; });
+      row.addEventListener("dragover",function(e){ e.preventDefault(); row.classList.add("drag-over"); });
+      row.addEventListener("dragleave",function(){ row.classList.remove("drag-over"); });
+      row.addEventListener("drop",function(e){ e.preventDefault(); row.classList.remove("drag-over"); if(!dragEl||dragEl===sec) return; var parent=sec.parentNode, prevNext=dragEl.nextSibling; parent.insertBefore(dragEl,sec); var nextNext=dragEl.nextSibling; pushOp({type:"move",el:dragEl,parent:parent,prevNext:prevNext,nextNext:nextNext}); renderLayout(); });
+      list.appendChild(row);
     });
-    // services/stats count changes coarsely
-    if (JSON.stringify(S.services) !== JSON.stringify(seedServices())) out.fields++;
-    if (JSON.stringify(S.stats) !== JSON.stringify(seedStats())) out.fields++;
-    out.theme = Object.keys(S.theme).length;
-    var fresh = freshState();
-    if (JSON.stringify(S.order) !== JSON.stringify(fresh.order) ||
-        Object.keys(S.hidden).length || Object.keys(S.added).length || S.heroPos) out.layout = 1;
+    var cat=document.getElementById("catalog"); cat.innerHTML="";
+    CATALOG.forEach(function(entry){
+      cat.appendChild(el("div",{class:"cat-item",onclick:function(){ addSection(entry); }},[
+        el("span",{class:"t"},entry.label), el("span",{class:"add"},"＋"), el("span",{class:"d"},entry.d),
+      ]));
+    });
+  }
+  function moveSec(sec,dir){ var parent=sec.parentNode; var prevNext=sec.nextSibling; if(dir<0){ var p=sec.previousElementSibling; while(p&&p.tagName!=="SECTION") p=p.previousElementSibling; if(!p) return; parent.insertBefore(sec,p); } else { var n=sec.nextElementSibling; while(n&&n.tagName!=="SECTION") n=n.nextElementSibling; if(!n) return; parent.insertBefore(sec,n.nextSibling); } var nextNext=sec.nextSibling; pushOp({type:"move",el:sec,parent:parent,prevNext:prevNext,nextNext:nextNext}); renderLayout(); }
+
+  // ── Form panel (Lista) ───────────────────────────────────────
+  function renderForm(){
+    if(panel!=="form"||!ready) return;
+    var body=document.getElementById("formBody");
+    body.innerHTML="";
+    body.appendChild(el("p",{class:"hint"},"Az oldal szövegei szekciónként. Írj bele, az előnézet azonnal frissül."));
+    var secs=sections();
+    secs.forEach(function(sec){
+      if(sec.style.display==="none") return;
+      var fields=collectTextFields(sec);
+      if(!fields.length) return;
+      body.appendChild(el("div",{class:"grp-title"},secLabel(sec)));
+      fields.forEach(function(node){
+        var isLong=node.textContent.length>60||node.tagName==="P";
+        var inp=el(isLong?"textarea":"input",{});
+        inp.value=node.textContent;
+        if(isLong) inp.rows=2;
+        inp.addEventListener("focus",function(){ var before=node.textContent; inp.dataset.before=before; });
+        inp.addEventListener("input",function(){ node.textContent=inp.value; markDirty(); });
+        inp.addEventListener("change",function(){ var before=inp.dataset.before!=null?inp.dataset.before:node.textContent; if(before!==inp.value){ pushOp({type:"text",el:node,prev:before,next:inp.value}); inp.dataset.before=inp.value; } });
+        body.appendChild(el("div",{class:"field"},[ inp ]));
+      });
+    });
+  }
+  function collectTextFields(sec){
+    var out=[], seen=new Set();
+    var nodes=sec.querySelectorAll("h1,h2,h3,h4,p,li,blockquote,a.btn,button");
+    nodes.forEach(function(n){
+      if(!n.textContent.trim()) return;
+      var ec=0; for(var i=0;i<n.children.length;i++) if(!/^(BR|B|I|EM|STRONG|SMALL|SUP|SUB|SPAN)$/.test(n.children[i].tagName)) ec++;
+      if(ec>0) return; // skip containers
+      if(seen.has(n)) return; seen.add(n);
+      if(out.length<14) out.push(n);
+    });
     return out;
   }
 
-  function renderMain() {
-    var main = document.getElementById("main");
-    main.innerHTML = "";
-    document.getElementById("app").classList.toggle("overlay-layout", S.view === "live" && S.overlay === "layout");
-    document.getElementById("app").classList.toggle("overlay-freeform", S.view === "live" && S.overlay === "freeform");
-    if (S.view === "live") main.appendChild(renderLive());
-    else if (S.view === "layout") main.appendChild(renderLayoutView());
-    else main.appendChild(renderFormView());
+  // ── Locale (drive the portfolio's own switcher) ──────────────
+  function setLocale(code){
+    locale=code;
+    try{ var b=doc().querySelector('#langMenu button[data-lang="'+code+'"]'); if(b) b.click(); }catch(_){}
+    renderLocale();
+  }
+  function renderLocale(){
+    var seg=document.getElementById("localeSeg"); seg.innerHTML="";
+    LOCALES.forEach(function(l){ seg.appendChild(el("button",{class:"cms-seg-btn"+(locale===l.code?" is-active":""),title:"Nyelv: "+l.code.toUpperCase(),onclick:function(){ setLocale(l.code); }}, l.flag+" "+l.code.toUpperCase())); });
+  }
+  function renderPages(){
+    var seg=document.getElementById("pagesSeg"); seg.innerHTML="";
+    seg.appendChild(el("button",{class:"cms-seg-btn is-active",title:"Ez a portfólió egyetlen oldalból áll"},"📄 Főoldal"));
   }
 
-  // ── LIVE preview ─────────────────────────────────────────────
-  function renderLive() {
-    var stage = el("div", { class: "stage" });
-    var frame = el("div", { class: "frame" + (S.mobile ? " mobile" : "") });
-    frame.appendChild(el("div", { class: "frame-bar" }, [
-      el("i"), el("i"), el("i"),
-      el("div", { class: "url" }, "loricatus.hu"),
-    ]));
+  // ── Views + tools ────────────────────────────────────────────
+  function setView(v){ view=v; if(v!=="live"){ overlay="edit"; setModeClass(); } openPanel(v==="layout"?"layout":v==="form"?"form":null); renderTools(); renderViews(); }
+  function renderViews(){
+    var seg=document.getElementById("viewSeg"); seg.innerHTML="";
+    [["live","Élő szerkesztés"],["layout","Elrendezés"],["form","Lista"]].forEach(function(v){ seg.appendChild(el("button",{class:"cms-seg-btn"+(view===v[0]?" is-active":""),onclick:function(){ setView(v[0]); }},v[1])); });
+  }
+  function renderTools(){
+    var t=document.getElementById("tools"); t.innerHTML="";
+    if(view!=="live"){ return; }
+    t.appendChild(tool("🎨 Színek","#ec4899",panel==="colors",function(){ openPanel(panel==="colors"?null:"colors"); },"Téma színek"));
+    t.appendChild(tool("📐 Átrendezés","#8b5cf6",overlay==="reorder",function(){ overlay=overlay==="reorder"?"edit":"reorder"; setModeClass(); renderTools(); },"Húzd-rendezd a szekciókat"));
+    t.appendChild(tool("🎯 Szabad pozíció","#0ea5e9",overlay==="freeform",function(){ overlay=overlay==="freeform"?"edit":"freeform"; setModeClass(); renderTools(); },"Pixel-pontos áthelyezés"));
+    t.appendChild(tool("📱 Mobil","#f59e0b",mobile,function(){ mobile=!mobile; stage.classList.toggle("mobile",mobile); renderTools(); },"Mobil nézet"));
+    t.appendChild(el("button",{class:"cms-icon-btn",title:"Előnézet újratöltése (visszaáll az eredeti)",onclick:reloadFrame},"↻"));
+  }
+  function setModeClass(){ if(!ready) return; root().classList.toggle("ed-on", view==="live"&&overlay==="edit"); if(view==="live"&&overlay==="reorder") enableReorder(); else disableReorder(); if(view==="live"&&overlay==="freeform") enableFreeform(); else disableFreeform(); }
 
-    var site = el("div", { class: "site" + (S.overlay === "edit" ? " editing" : "") });
-    applyThemeVars(site);
-
-    S.order.forEach(function (id) {
-      if (S.hidden[id]) return;
-      var sec = renderSection(id);
-      if (sec) site.appendChild(sec);
-    });
-
-    frame.appendChild(site);
-    stage.appendChild(frame);
-
-    if (S.overlay === "layout") enableSectionDrag(site);
-    if (S.overlay === "freeform") enableFreeform(site);
-    return stage;
-  }
-
-  function applyThemeVars(node) {
-    THEME_KEYS.forEach(function (t) { node.style.setProperty("--" + t.key, themeVal(t.key)); });
-  }
-
-  function editable(tag, key, opts) {
-    opts = opts || {};
-    var e = el(tag, { class: opts.class || "", "data-key": key });
-    e.textContent = L(S.data[key]);
-    if (S.view === "live" && S.overlay === "edit") {
-      e.addEventListener("click", function (ev) { ev.preventDefault(); startInline(e, key); });
-    }
-    return e;
-  }
-  function startInline(node, key) {
-    if (node.getAttribute("contenteditable") === "true") return;
-    node.setAttribute("contenteditable", "true");
-    node.classList.add("is-active");
-    node.focus();
-    // place caret at end
-    var r = document.createRange(); r.selectNodeContents(node); r.collapse(false);
-    var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
-    function commit() {
-      node.removeAttribute("contenteditable");
-      node.classList.remove("is-active");
-      var val = node.textContent.trim();
-      if (!S.data[key]) S.data[key] = {};
-      S.data[key][S.locale] = val;
-      node.removeEventListener("blur", commit);
-      node.removeEventListener("keydown", onKey);
-      updateDirtyUI(); pushHistory();
-    }
-    function onKey(ev) {
-      if (ev.key === "Enter" && node.tagName !== "P") { ev.preventDefault(); node.blur(); }
-      if (ev.key === "Escape") { node.textContent = L(S.data[key]); node.blur(); }
-    }
-    node.addEventListener("blur", commit);
-    node.addEventListener("keydown", onKey);
-  }
-
-  function renderSection(id) {
-    if (S.added[id]) return renderAddedSection(id);
-    switch (id) {
-      case "hero": return secHero();
-      case "services": return secServices();
-      case "stats": return secStats();
-      case "about": return secAbout();
-      case "contact": return secContact();
-    }
-    return null;
-  }
-
-  function secWrap(id, cls, inner) {
-    var s = el("section", { class: "sec " + cls, "data-section": id });
-    s.appendChild(handleFor(id));
-    (Array.isArray(inner) ? inner : [inner]).forEach(function (n) { if (n) s.appendChild(n); });
-    return s;
-  }
-  function handleFor(id) {
-    return el("div", { class: "sec-handle", title: "Húzd a szekció áthelyezéséhez", draggable: "false" },
-      "⠿ " + L(SECTION_LABELS[id] || { hu: "Szekció" }));
-  }
-
-  function secHero() {
-    var nav = el("nav", { class: "topbar" }, [
-      el("div", { class: "brand" }, [el("span", { class: "logo" }), editSpan("nav_brand")]),
-      el("div", { class: "navlinks hide-sm" }, [
-        el("span", null, L(SECTION_LABELS.services)), el("span", null, L(SECTION_LABELS.about)), el("span", null, L(SECTION_LABELS.contact)),
-      ]),
-    ]);
-    var hero = el("div", { class: "container" }, [
-      editable("span", "hero_eyebrow", { class: "eyebrow" }),
-      editable("h1", "hero_title"),
-      editable("p", "hero_sub", { class: "sub" }),
-      ctaEl(),
-    ]);
-    var heroSec = el("div", { class: "hero" }, hero);
-    return secWrap("hero", "", [nav, heroSec]);
-  }
-  function editSpan(key) {
-    // inline editable span used inside composite elements
-    return editable("span", key);
-  }
-  function ctaEl() {
-    var a = el("a", { class: "cta", href: "#", "data-key": "hero_cta" }, L(S.data.hero_cta));
-    if (S.view === "live" && S.overlay === "edit") a.addEventListener("click", function (ev) { ev.preventDefault(); startInline(a, "hero_cta"); });
-    else a.addEventListener("click", function (ev) { ev.preventDefault(); });
-    if (S.heroPos) { a.style.position = "relative"; a.style.left = S.heroPos.x + "px"; a.style.top = S.heroPos.y + "px"; }
-    return a;
-  }
-
-  function secServices() {
-    var cards = el("div", { class: "cards" });
-    S.services.forEach(function (sv) {
-      cards.appendChild(el("div", { class: "card" }, [
-        el("div", { class: "ico" }, sv.ico),
-        svcEdit("h3", sv, "title"),
-        svcEdit("p", sv, "desc"),
-      ]));
-    });
-    return secWrap("services", "services", el("div", { class: "container" }, [
-      editable("h2", "svc_title"),
-      editable("p", "svc_intro", { class: "intro" }),
-      cards,
-    ]));
-  }
-  function svcEdit(tag, sv, field) {
-    var e = el(tag, null, L(sv[field]));
-    if (S.view === "live" && S.overlay === "edit") {
-      e.style.cursor = "text";
-      e.addEventListener("mouseenter", function () { e.style.outline = "1.5px dashed #2563eb"; e.style.outlineOffset = "3px"; });
-      e.addEventListener("mouseleave", function () { if (e.getAttribute("contenteditable") !== "true") e.style.outline = "none"; });
-      e.addEventListener("click", function () {
-        e.setAttribute("contenteditable", "true"); e.focus();
-        function commit() { e.removeAttribute("contenteditable"); e.style.outline = "none"; sv[field][S.locale] = e.textContent.trim(); e.removeEventListener("blur", commit); updateDirtyUI(); pushHistory(); }
-        e.addEventListener("blur", commit);
-      });
-    }
-    return e;
-  }
-
-  function secStats() {
-    var row = el("div", { class: "row" });
-    S.stats.forEach(function (st) {
-      row.appendChild(el("div", null, [
-        el("div", { class: "num" }, st.num),
-        el("div", { class: "lbl" }, L(st.label)),
-      ]));
-    });
-    return secWrap("stats", "stats", el("div", { class: "container" }, row));
-  }
-
-  function secAbout() {
-    return secWrap("about", "about", el("div", { class: "container" }, [
-      editable("h2", "about_title"),
-      editable("p", "about_text"),
-    ]));
-  }
-
-  function secContact() {
-    var email = el("a", { class: "email", href: "#", "data-key": "contact_email" }, L(S.data.contact_email));
-    if (S.view === "live" && S.overlay === "edit") email.addEventListener("click", function (ev) { ev.preventDefault(); startInline(email, "contact_email"); });
-    else email.addEventListener("click", function (ev) { ev.preventDefault(); });
-    var contact = el("div", { class: "contact" }, el("div", { class: "container" }, [
-      editable("h2", "contact_title"),
-      editable("p", "contact_text"),
-      email,
-    ]));
-    var foot = el("footer", null, editable("span", "foot"));
-    return secWrap("contact", "", [contact, foot]);
-  }
-
-  function renderAddedSection(id) {
-    var meta = S.added[id];
-    var body;
-    if (meta.tpl === "reviews") {
-      body = el("div", { class: "cards" }, [1, 2, 3].map(function (i) {
-        return el("div", { class: "card" }, [
-          el("p", { html: "„Gyors, pontos, korrekt. A pontfelhő azonnal használható volt." }),
-          el("h3", { style: "margin-top:12px;font-size:15px" }, "Ügyfél " + i + "."),
-        ]);
-      }));
-    } else if (meta.tpl === "faq") {
-      body = el("div", null, [
-        faqItem("Mennyi idő egy felmérés?", "A terület méretétől függően jellemzően 1–2 nap, plusz feldolgozás."),
-        faqItem("Milyen formátumban kapom az adatot?", "LAS/LAZ pontfelhő, GeoTIFF, DXF és igény szerint IFC/BIM."),
-      ]);
-    } else {
-      body = el("div", { class: "cards" }, [1, 2, 3, 4].map(function () {
-        return el("div", { class: "card", style: "aspect-ratio:4/3;background:color-mix(in srgb,var(--accent) 25%,var(--bg2))" });
-      }));
-    }
-    return secWrap(id, "services", el("div", { class: "container" }, [
-      el("h2", null, L(meta.label)),
-      body,
-    ]));
-  }
-  function faqItem(q, a) {
-    return el("div", { style: "border-bottom:1px solid rgba(0,0,0,.08);padding:14px 0" }, [
-      el("h3", { style: "margin:0 0 6px;font-size:17px" }, q),
-      el("p", { style: "margin:0;color:var(--muted)" }, a),
-    ]);
-  }
-
-  // ── Section drag (layout overlay) ────────────────────────────
-  function enableSectionDrag(site) {
-    var dragId = null;
-    site.querySelectorAll("[data-section]").forEach(function (node) {
-      var handle = node.querySelector(".sec-handle");
-      node.setAttribute("draggable", "false");
-      handle.setAttribute("draggable", "true");
-      handle.addEventListener("dragstart", function (e) { dragId = node.getAttribute("data-section"); node.classList.add("dragging"); e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", dragId); });
-      handle.addEventListener("dragend", function () { node.classList.remove("dragging"); site.querySelectorAll(".drag-over").forEach(function (n) { n.classList.remove("drag-over"); }); });
-      node.addEventListener("dragover", function (e) { e.preventDefault(); node.classList.add("drag-over"); });
-      node.addEventListener("dragleave", function () { node.classList.remove("drag-over"); });
-      node.addEventListener("drop", function (e) {
-        e.preventDefault(); node.classList.remove("drag-over");
-        var targetId = node.getAttribute("data-section");
-        if (!dragId || dragId === targetId) return;
-        var from = S.order.indexOf(dragId), to = S.order.indexOf(targetId);
-        S.order.splice(from, 1); S.order.splice(to, 0, dragId);
-        renderAll();
-      });
-    });
-  }
-
-  // ── Freeform drag of the hero CTA ────────────────────────────
-  function enableFreeform(site) {
-    var cta = site.querySelector(".cta");
-    if (!cta) return;
-    cta.style.position = "relative";
-    var startX, startY, ox, oy, dragging = false;
-    cta.addEventListener("pointerdown", function (e) {
-      e.preventDefault(); dragging = true; cta.setPointerCapture(e.pointerId);
-      startX = e.clientX; startY = e.clientY;
-      ox = (S.heroPos && S.heroPos.x) || 0; oy = (S.heroPos && S.heroPos.y) || 0;
-    });
-    cta.addEventListener("pointermove", function (e) {
-      if (!dragging) return;
-      var nx = ox + (e.clientX - startX), ny = oy + (e.clientY - startY);
-      cta.style.left = nx + "px"; cta.style.top = ny + "px";
-      S.heroPos = { x: Math.round(nx), y: Math.round(ny) };
-    });
-    cta.addEventListener("pointerup", function () { if (dragging) { dragging = false; renderToolbar(); updateDirtyUI(); pushHistory(); } });
-  }
-
-  // ── LAYOUT view (section list + catalog) ─────────────────────
-  function renderLayoutView() {
-    var panel = el("div", { class: "panel" });
-
-    var secCard = el("div", { class: "cms-card" });
-    secCard.appendChild(el("h2", null, "Szekciók sorrendje és láthatósága"));
-    secCard.appendChild(el("p", { class: "subtle", style: "margin:-8px 0 14px" }, "Húzd a fogantyút az átrendezéshez, vagy használd a nyilakat. A szemmel elrejtheted a szekciót az oldalról."));
-    var list = el("div");
-    S.order.forEach(function (id, i) {
-      var label = S.added[id] ? L(S.added[id].label) + " · beszúrt" : L(SECTION_LABELS[id]);
-      var row = el("div", { class: "lay-row" + (S.hidden[id] ? " hidden-sec" : ""), draggable: "true", "data-lid": id }, [
-        el("span", { class: "grip" }, "⠿"),
-        el("span", { class: "name" }, label),
-        el("button", { class: "mini", title: "Fel", disabled: i === 0 ? "" : null, onclick: function () { moveSection(id, -1); } }, "▲"),
-        el("button", { class: "mini", title: "Le", disabled: i === S.order.length - 1 ? "" : null, onclick: function () { moveSection(id, 1); } }, "▼"),
-        el("button", { class: "mini", title: S.hidden[id] ? "Megjelenítés" : "Elrejtés", onclick: function () { if (S.hidden[id]) delete S.hidden[id]; else S.hidden[id] = true; renderAll(); } }, S.hidden[id] ? "🙈" : "👁"),
-        S.added[id] ? el("button", { class: "mini", title: "Törlés", onclick: function () { if (confirm("Törlöd ezt a beszúrt szekciót?")) { S.order = S.order.filter(function (x) { return x !== id; }); delete S.added[id]; delete S.hidden[id]; renderAll(); } } }, "🗑") : null,
-      ]);
-      list.appendChild(row);
-    });
-    enableRowDrag(list);
-    secCard.appendChild(list);
-
-    // Catalog
-    secCard.appendChild(el("p", { class: "subtle", style: "margin:16px 0 4px" }, "Új szekció beszúrása:"));
-    var cat = el("div", { class: "catalog" });
-    CATALOG.forEach(function (c) {
-      cat.appendChild(el("button", { onclick: function () { addSection(c); } }, "＋ " + L(c.label)));
-    });
-    secCard.appendChild(cat);
-    panel.appendChild(secCard);
-
-    // Services list management
-    var svcCard = el("div", { class: "cms-card" });
-    svcCard.appendChild(el("h2", null, "Szolgáltatás-kártyák"));
-    S.services.forEach(function (sv, i) {
-      svcCard.appendChild(el("div", { class: "lay-row" }, [
-        el("span", { class: "grip" }, sv.ico),
-        el("span", { class: "name" }, L(sv.title)),
-        el("button", { class: "mini", title: "Fel", disabled: i === 0 ? "" : null, onclick: function () { var a = S.services; a.splice(i - 1, 0, a.splice(i, 1)[0]); renderAll(); } }, "▲"),
-        el("button", { class: "mini", title: "Le", disabled: i === S.services.length - 1 ? "" : null, onclick: function () { var a = S.services; a.splice(i + 1, 0, a.splice(i, 1)[0]); renderAll(); } }, "▼"),
-        el("button", { class: "mini", title: "Törlés", onclick: function () { S.services.splice(i, 1); renderAll(); } }, "🗑"),
-      ]));
-    });
-    svcCard.appendChild(el("button", { class: "addbtn", style: "margin-top:6px", onclick: addService }, "＋ Új szolgáltatás-kártya"));
-    panel.appendChild(svcCard);
-
-    return panel;
-  }
-  function moveSection(id, dir) {
-    var i = S.order.indexOf(id), j = i + dir;
-    if (j < 0 || j >= S.order.length) return;
-    S.order.splice(j, 0, S.order.splice(i, 1)[0]);
-    renderAll();
-  }
-  function enableRowDrag(list) {
-    var dragId = null;
-    list.querySelectorAll("[data-lid]").forEach(function (row) {
-      row.addEventListener("dragstart", function (e) { dragId = row.getAttribute("data-lid"); e.dataTransfer.effectAllowed = "move"; });
-      row.addEventListener("dragover", function (e) { e.preventDefault(); row.classList.add("drag-over"); });
-      row.addEventListener("dragleave", function () { row.classList.remove("drag-over"); });
-      row.addEventListener("drop", function (e) {
-        e.preventDefault(); row.classList.remove("drag-over");
-        var tId = row.getAttribute("data-lid");
-        if (!dragId || dragId === tId) return;
-        var from = S.order.indexOf(dragId), to = S.order.indexOf(tId);
-        S.order.splice(from, 1); S.order.splice(to, 0, dragId);
-        renderAll();
-      });
-    });
-  }
-  function addSection(c) {
-    var id = "sec_" + Math.abs(hash(c.tpl + S.order.length + Object.keys(S.added).length));
-    S.added[id] = { tpl: c.tpl, label: c.label };
-    S.order.push(id);
-    renderAll();
-    toast("ok", "＋", "„" + L(c.label) + "" + "" + "" + "" + "” szekció beszúrva — rendezd át és mentsd el.");
-  }
-  function addService() {
-    var n = S.services.length + 1;
-    S.services.push({ id: "svc_" + n + "_" + Math.abs(hash("" + n + Date0())), ico: "✨",
-      title: { hu: "Új szolgáltatás", en: "New service", it: "Nuovo servizio" },
-      desc: { hu: "Írd át a leírást a Lista nézetben vagy az élő előnézeten.", en: "Edit this text in the List view or in the live preview.", it: "Modifica questo testo nella vista Elenco o nell'anteprima." } });
-    renderAll();
-  }
-  function hash(s) { var h = 0; for (var i = 0; i < s.length; i++) { h = (h << 5) - h + s.charCodeAt(i); h |= 0; } return h; }
-  var _seq = 0; function Date0() { return (_seq++); } // deterministic id source (no Date/random)
-
-  // ── FORM view (grouped fields + colors) ──────────────────────
-  function renderFormView() {
-    var panel = el("div", { class: "panel" });
-
-    // colors first (like the real form view)
-    var colorCard = el("div", { class: "cms-card" });
-    colorCard.appendChild(el("h2", null, "Téma színek"));
-    colorCard.appendChild(colorGrid());
-    panel.appendChild(colorCard);
-
-    var groups = [
-      ["Fejléc + hero", [["nav_brand", "Márkanév", "text"], ["hero_eyebrow", "Felső címke", "text"], ["hero_title", "Cím", "textarea"], ["hero_sub", "Alcím", "textarea"], ["hero_cta", "Gomb felirata", "text"]]],
-      ["Szolgáltatások (szöveg)", [["svc_title", "Cím", "text"], ["svc_intro", "Bevezető", "textarea"]]],
-      ["Rólunk", [["about_title", "Cím", "text"], ["about_text", "Szöveg", "textarea"]]],
-      ["Kapcsolat + lábléc", [["contact_title", "Cím", "text"], ["contact_text", "Szöveg", "textarea"], ["contact_email", "E-mail", "text"], ["foot", "Lábléc", "text"]]],
-    ];
-    groups.forEach(function (g) {
-      var card = el("div", { class: "cms-card" });
-      card.appendChild(el("h2", null, g[0]));
-      g[1].forEach(function (f) { card.appendChild(fieldEditor(f[0], f[1], f[2])); });
-      panel.appendChild(card);
-    });
-
-    // services text editor
-    var sc = el("div", { class: "cms-card" });
-    sc.appendChild(el("h2", null, "Szolgáltatás-kártyák szövege"));
-    S.services.forEach(function (sv) {
-      sc.appendChild(el("div", { style: "border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;margin-bottom:12px" }, [
-        listField(sv, "title", "Kártya címe", "text"),
-        listField(sv, "desc", "Kártya leírása", "textarea"),
-      ]));
-    });
-    panel.appendChild(sc);
-
-    return panel;
-  }
-  function fieldEditor(key, label, type) {
-    var wrap = el("div", { class: "field" });
-    wrap.appendChild(el("label", null, label + " · " + S.locale.toUpperCase()));
-    var input = el(type === "textarea" ? "textarea" : "input", { value: type === "textarea" ? null : L(S.data[key]) });
-    if (type === "textarea") { input.rows = 3; input.value = L(S.data[key]); }
-    input.addEventListener("input", function () { if (!S.data[key]) S.data[key] = {}; S.data[key][S.locale] = input.value; updateDirtyUI(); pushHistory(); });
-    wrap.appendChild(input);
-    return wrap;
-  }
-  function listField(obj, field, label, type) {
-    var wrap = el("div", { class: "field" });
-    wrap.appendChild(el("label", null, label + " · " + S.locale.toUpperCase()));
-    var input = el(type === "textarea" ? "textarea" : "input", {});
-    input.value = L(obj[field]);
-    if (type === "textarea") input.rows = 2;
-    input.addEventListener("input", function () { obj[field][S.locale] = input.value; updateDirtyUI(); pushHistory(); });
-    wrap.appendChild(input);
-    return wrap;
-  }
-
-  // ── Colors (side sheet + form grid share the row builder) ────
-  function colorGrid() {
-    var grid = el("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px" });
-    THEME_KEYS.forEach(function (t) { grid.appendChild(colorRow(t)); });
-    return grid;
-  }
-  function colorRow(t) {
-    var cur = themeVal(t.key);
-    var custom = !!S.theme[t.key];
-    var row = el("div", { class: "color-row" });
-    var top = el("div", { class: "top" }, [
-      el("label", null, t.label),
-      custom ? el("button", { class: "reset", title: "Vissza az alap színre", onclick: function () { delete S.theme[t.key]; renderAll(); } }, "alap") : null,
-    ]);
-    var color = el("input", { type: "color", value: cur });
-    var text = el("input", { type: "text", value: S.theme[t.key] || "", placeholder: t.def });
-    color.addEventListener("input", function () { S.theme[t.key] = color.value; text.value = color.value; liveTheme(); scheduleDirty(); });
-    text.addEventListener("input", function () { if (text.value.trim()) S.theme[t.key] = text.value.trim(); else delete S.theme[t.key]; liveTheme(); scheduleDirty(); });
-    row.appendChild(top);
-    row.appendChild(el("div", { class: "inputs" }, [color, text]));
-    row.appendChild(el("p", { class: "desc" }, t.hint));
-    return row;
-  }
-  function liveTheme() {
-    // repaint the preview instantly without a full re-render (keeps color focus)
-    var site = document.querySelector(".site");
-    if (site) applyThemeVars(site);
-    updateDirtyUI();
-  }
-  var dirtyTimer = null;
-  function scheduleDirty() { clearTimeout(dirtyTimer); dirtyTimer = setTimeout(pushHistory, 400); }
-
-  function renderColors() {
-    var sheet = document.getElementById("colorSheet");
-    var show = S.showColors && S.view === "live";
-    sheet.classList.toggle("sr-hide", !show);
-    if (!show) return;
-    var rows = document.getElementById("colorRows");
-    rows.innerHTML = "";
-    rows.appendChild(colorGrid());
+  function openPanel(which){
+    panel=which;
+    ["colors","layout","form"].forEach(function(k){ document.getElementById(k+"Sheet").classList.toggle("sr-hide", panel!==k); });
+    if(panel==="colors") buildColorRows();
+    if(panel==="layout") renderLayout();
+    if(panel==="form") renderForm();
+    renderTools();
   }
 
   // ── Save / Publish (mock) ────────────────────────────────────
-  function doSave(silent) {
-    savedSnapshot = snapshotObj();
-    S.lastSavedAt = Date0();
-    updateDirtyUI();
-    setStatus("ok", "Mentve (" + S.locale.toUpperCase() + ").");
-    if (!silent) toast("ok", "💾", "Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek.");
-    return true;
-  }
-  function doPublish() {
-    doSave(true);
-    setStatus("info", "Publikálás elindítva (" + S.locale.toUpperCase() + ").");
-    toast("info", "🚀", "Publikálás elindítva (demó). Az éles rendszerben a weboldal kb. 1 perc múlva frissülne.");
-  }
-  var statusTimer = null;
-  function setStatus(kind, txt) {
-    var slot = document.getElementById("statusSlot");
-    slot.innerHTML = "";
-    slot.appendChild(el("span", { class: "status-txt " + kind }, txt));
-    clearTimeout(statusTimer);
-    statusTimer = setTimeout(function () { slot.innerHTML = ""; }, 4000);
-  }
+  function setStatus(kind,txt){ var s=document.getElementById("statusSlot"); s.innerHTML=""; s.appendChild(el("span",{class:"status-txt "+kind},txt)); clearTimeout(setStatus._t); setStatus._t=setTimeout(function(){ s.innerHTML=""; },4000); }
+  function doSave(silent){ savedIdx=opIdx; savedColors=JSON.stringify(overrides); markDirty(); setStatus("ok","Mentve."); if(!silent) toast("ok","💾","Piszkozat mentve — bemutató módban a változtatások csak a böngésződben élnek."); }
+  function doPublish(){ doSave(true); setStatus("info","Publikálás elindítva."); toast("info","🚀","Publikálás elindítva (demó). Az éles rendszerben az oldal kb. 1 perc múlva frissülne."); }
+  function toast(kind,ic,msg){ var w=document.getElementById("toasts"); var el2=el("div",{class:"toast "+kind},[el("span",null,ic),el("span",null,msg)]); w.appendChild(el2); setTimeout(function(){ el2.style.transition="opacity .3s, transform .3s"; el2.style.opacity="0"; el2.style.transform="translateY(8px)"; setTimeout(function(){ el2.remove(); },320); },3300); }
 
-  function toast(kind, ic, msg) {
-    var wrap = document.getElementById("toasts");
-    var t = el("div", { class: "toast " + kind }, [el("span", { class: "ic" }, ic), el("span", null, msg)]);
-    wrap.appendChild(t);
-    setTimeout(function () { t.style.transition = "opacity .3s, transform .3s"; t.style.opacity = "0"; t.style.transform = "translateY(8px)"; setTimeout(function () { t.remove(); }, 320); }, 3200);
-  }
-
-  // ── Wire up static controls ──────────────────────────────────
-  function bind() {
-    document.getElementById("saveBtn").addEventListener("click", function () { doSave(false); });
-    document.getElementById("publishBtn").addEventListener("click", doPublish);
-    document.getElementById("undoBtn").addEventListener("click", undo);
-    document.getElementById("redoBtn").addEventListener("click", redo);
-    document.getElementById("closeColors").addEventListener("click", function () { S.showColors = false; renderAll(); });
-    document.getElementById("resetColors").addEventListener("click", function () { if (Object.keys(S.theme).length && confirm("Minden szín visszaáll az alap színekre?")) { S.theme = {}; renderAll(); } });
-
-    document.addEventListener("keydown", function (e) {
-      var mod = e.ctrlKey || e.metaKey;
-      var tgt = e.target;
-      var typing = tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.isContentEditable);
-      if (mod && e.key.toLowerCase() === "s") { e.preventDefault(); doSave(false); return; }
-      if (mod && e.key.toLowerCase() === "z" && !e.shiftKey) { e.preventDefault(); undo(); return; }
-      if (mod && ((e.key.toLowerCase() === "z" && e.shiftKey) || e.key.toLowerCase() === "y")) { e.preventDefault(); redo(); return; }
-      if (typing) return;
-      if (e.key === "1") { S.view = "live"; renderAll(); }
-      else if (e.key === "2") { S.view = "layout"; renderAll(); }
-      else if (e.key === "3") { S.view = "form"; renderAll(); }
-    });
-
-    var intro = document.getElementById("introBackdrop");
-    document.getElementById("introStart").addEventListener("click", function () { intro.style.display = "none"; });
-    intro.addEventListener("click", function (e) { if (e.target === intro) intro.style.display = "none"; });
+  // ── Guided tour ──────────────────────────────────────────────
+  var TOUR=[
+    { title:"Üdv a szerkesztőben! 👋", body:"Egy perc alatt megmutatom a lényeget. A jobb felső ? gombbal bármikor újraindíthatod." },
+    { target:"locale", title:"Nyelvek", body:"Válts a nyelvek között — minden nyelvet külön szerkeszthetsz és publikálhatsz." },
+    { target:"pages", title:"Oldalak", body:"Itt választod ki, melyik oldalt szerkeszted. (Ez a portfólió egyetlen oldal.)" },
+    { target:"viewmodes", title:"Nézetek", body:"Élő szerkesztés · Elrendezés (szekciók sorrendje + könyvtár) · Lista (minden mező egy helyen)." },
+    { target:"tools", title:"Eszközök", body:"Színek, szekció-átrendezés, szabad pozíció és mobil nézet — élő előnézettel." },
+    { target:"save", title:"Mentés", body:"Piszkozatba ment — bátran ments gyakran, nem tudsz elrontani semmit." },
+    { target:"publish", title:"Publikálás", body:"Közzététel: az élő rendszerben ~1 perc múlva megjelenne a weboldalon." },
+    { title:"Kész! ✓", body:"Próbáld ki nyugodtan. A ? gombbal (jobb fent) bármikor újraindítod ezt." },
+  ];
+  var tourIdx=0;
+  function startTour(){ tourIdx=0; renderTour(); }
+  function endTour(){ document.getElementById("tourRoot").innerHTML=""; }
+  function renderTour(){
+    var root2=document.getElementById("tourRoot"); root2.innerHTML="";
+    var step=TOUR[tourIdx]; if(!step) return;
+    root2.appendChild(el("div",{class:"tour-dim",onclick:endTour}));
+    var card=el("div",{class:"tour-card"});
+    var top=40, left=window.innerWidth/2-160;
+    if(step.target){ var tg=document.querySelector('[data-tour="'+step.target+'"]'); if(tg){ var r=tg.getBoundingClientRect(); var spot=el("div",{class:"tour-spot"}); spot.style.top=(r.top-6)+"px"; spot.style.left=(r.left-6)+"px"; spot.style.width=(r.width+12)+"px"; spot.style.height=(r.height+12)+"px"; root2.appendChild(spot); top=Math.min(r.bottom+12, window.innerHeight-160); left=Math.max(12, Math.min(r.left, window.innerWidth-332)); } }
+    card.style.top=top+"px"; card.style.left=left+"px";
+    card.appendChild(el("h4",null,step.title));
+    card.appendChild(el("p",null,step.body));
+    card.appendChild(el("div",{class:"row"},[
+      el("span",{class:"dots"},(tourIdx+1)+" / "+TOUR.length),
+      el("div",{class:"acts"},[
+        el("button",{class:"skip",onclick:endTour},"Kihagyom"),
+        el("button",{class:"nx",onclick:function(){ if(tourIdx>=TOUR.length-1) endTour(); else { tourIdx++; renderTour(); } }}, tourIdx>=TOUR.length-1?"Kész":"Tovább →"),
+      ]),
+    ]));
+    root2.appendChild(card);
   }
 
-  // ── Boot ─────────────────────────────────────────────────────
-  S = freshState();
-  bind();
-  renderAll();
-  // establish saved baseline so a freshly loaded page is not "dirty"
-  savedSnapshot = snapshotObj();
-  history = [snapshotObj()]; hIdx = 0; refreshUndoButtons();
-  updateDirtyUI();
+  // ── Inject editing into the iframe ───────────────────────────
+  function injectEditing(){
+    var d=doc();
+    if(!d.getElementById("__ed-style")){
+      var st=d.createElement("style"); st.id="__ed-style";
+      st.textContent=
+        ".ed-on :is(h1,h2,h3,h4,h5,h6,p,span,a,li,button,strong,em,small,blockquote,figcaption,td,th):hover{outline:2px dashed #2563eb;outline-offset:2px;cursor:text}"+
+        ".ed-on img:hover{outline:2px dashed #ec4899;outline-offset:2px;cursor:pointer}"+
+        ".ed-on a:hover,.ed-on button:hover{cursor:pointer}"+
+        "[contenteditable='true']{outline:2px solid #2563eb !important;cursor:text;background:rgba(37,99,235,.06)}"+
+        ".__reo section{outline:1.5px dashed rgba(139,92,246,.6);outline-offset:-2px;cursor:grab}"+
+        ".__ff *:hover{outline:1.5px dashed #0ea5e9 !important;cursor:move}"+
+        ".__handle{position:absolute;top:8px;left:8px;z-index:9;display:inline-flex;align-items:center;gap:6px;font:600 11px/1 -apple-system,Segoe UI,Roboto,sans-serif;color:#fff;background:rgba(139,92,246,.94);border-radius:8px;padding:5px 9px;box-shadow:0 6px 16px -6px rgba(0,0,0,.5);pointer-events:none}";
+      d.head.appendChild(st);
+    }
+    if(!d.__edBound){ d.addEventListener("click",onFrameClick,true); d.__edBound=true; }
+    setModeClass();
+  }
+
+  function reloadFrame(){ ready=false; var fl=document.getElementById("frameLoading"); fl.style.display="grid"; fl.textContent="Portfólió újratöltése…"; overrides={}; ops=[]; opIdx=-1; savedIdx=-1; savedColors="{}"; overlay="edit"; view="live"; openPanel(null); renderViews(); renderTools(); win().location.reload(); }
+  function onFrameLoad(){
+    try{
+      var d=doc(); if(!d||!d.body) throw new Error("no body");
+      document.getElementById("frameLoading").style.display="none";
+      defaults={}; var cs=win().getComputedStyle(root());
+      COLORS.forEach(function(c){ defaults[c.v]=(cs.getPropertyValue(c.v)||"").trim(); });
+      ready=true; injectEditing(); refreshUndo(); markDirty(); renderLocale();
+      if(panel) openPanel(panel);
+    }catch(err){
+      var fl=document.getElementById("frameLoading"); fl.style.display="grid";
+      fl.textContent="Az előnézet csak webkiszolgálóról (https / localhost) szerkeszthető — az éles oldalon rendben működik.";
+    }
+  }
+  frame.addEventListener("load",onFrameLoad);
+
+  // ── Wiring ───────────────────────────────────────────────────
+  document.getElementById("saveBtn").addEventListener("click",function(){ doSave(false); });
+  document.getElementById("publishBtn").addEventListener("click",doPublish);
+  document.getElementById("undoBtn").addEventListener("click",undo);
+  document.getElementById("redoBtn").addEventListener("click",redo);
+  document.getElementById("helpBtn").addEventListener("click",startTour);
+  document.getElementById("resetColors").addEventListener("click",function(){ if(Object.keys(overrides).length&&confirm("Minden szín visszaáll az alap színekre?")){ Object.keys(overrides).slice().forEach(function(v){ clearColor(v,true); }); overrides={}; ops=ops.slice(0,opIdx+1); ops.push({type:"color",v:"__all",prev:null,next:null}); opIdx=ops.length-1; refreshUndo(); buildColorRows(); markDirty(); } });
+  document.querySelectorAll("[data-close]").forEach(function(b){ b.addEventListener("click",function(){ openPanel(null); if(view!=="live") setView("live"); }); });
+  document.addEventListener("keydown",function(e){
+    var mod=e.ctrlKey||e.metaKey;
+    if(mod&&e.key.toLowerCase()==="s"){ e.preventDefault(); doSave(false); return; }
+    if(mod&&e.key.toLowerCase()==="z"&&!e.shiftKey){ e.preventDefault(); undo(); return; }
+    if(mod&&((e.key.toLowerCase()==="z"&&e.shiftKey)||e.key.toLowerCase()==="y")){ e.preventDefault(); redo(); return; }
+  });
+  var intro=document.getElementById("introBack");
+  document.getElementById("introStart").addEventListener("click",function(){ intro.style.display="none"; });
+  document.getElementById("introTour").addEventListener("click",function(){ intro.style.display="none"; setTimeout(startTour,250); });
+  intro.addEventListener("click",function(e){ if(e.target===intro) intro.style.display="none"; });
+
+  renderLocale(); renderPages(); renderViews(); renderTools(); refreshUndo();
 })();
 </script>
 </body>

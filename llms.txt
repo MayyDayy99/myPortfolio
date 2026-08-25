@@ -1,0 +1,64 @@
+# Nemes Péter · AI-fejlesztő
+
+> Weboldalt, egyedi webalkalmazást és nálad futó, privát AI-t építek magánszemélyeknek és kisvállalkozásoknak, közérthetően, működő demókkal.
+
+Egyéni vállalkozó Magyarországról, magánszemélyeknek és kisvállalkozásoknak dolgozom, távmunkában világszerte. Az első, 30 perces egyeztetés díjmentes.
+
+- Kapcsolat: pr.nemes@gmail.com · +36 20 549 3710
+- Honlap: https://portfolio.maydayprod.app/
+- GitHub: https://github.com/MayyDayy99
+- LinkedIn: https://www.linkedin.com/in/p%C3%A9ter-nemes-260191237/
+- Nyelvek: magyar, angol, spanyol, kínai, német, francia
+
+## Szolgáltatások
+
+### Weboldal & hosting
+Bemutatkozó és céges oldalak, saját kézzel, a tárhely beállításával együtt.
+
+### Egyedi webalkalmazás
+Foglaló, nyilvántartó, vezérlő vagy játék, pontosan a te folyamatodra szabva.
+
+### Lokális / privát AI
+Saját „ChatGPT" és bármilyen nyílt modell a te gépeden vagy felhődben. Az adat nálad marad.
+
+### Oktatás
+1:1 mentorálás és céges workshop, az alapoktól a haladó, lokális AI-setupokig.
+
+### Az AI a te programodban
+Revit, Blender, Unity vagy bármi, aminek van API-ja. Az AI benne dolgozik, te meg a saját szavaiddal mondod meg, mit kérsz.
+
+## Gyakori kérdések
+
+### Mennyibe kerül?
+Attól függ, mire van szükséged. Egy egyszerű weboldal egészen más, mint egy egyedi AI-rendszer. Írd meg pár sorban, mit szeretnél, és küldök rá egy tételes ajánlatot. Az első egyeztetés díjmentes.
+
+### Mennyi idő, mire elkészül?
+Egy egyszerűbb oldal jellemzően pár nap, egy összetettebb rendszer inkább néhány hét. Konkrét határidőt mindig az ajánlatban rögzítek.
+
+### Kell hozzáértés az én oldalamon?
+Nem kell. Kész állapotban adom át, és megmutatom, hogyan használd. Nyugodtan kérdezhetsz, végig érthetően magyarázok.
+
+### Kié lesz az adat és a kód?
+A tiéd. Az elkészült megoldás és a hozzá tartozó adat a te tulajdonod. Lokális AI esetén ráadásul minden a saját eszközödön marad, nem kerül külső szolgáltatóhoz.
+
+### Mi van, ha később módosítani kell?
+Az átadás után is elérsz. A kisebb módosításokat gyorsan megoldom, nagyobb bővítésre pedig adok egy új ajánlatot.
+
+### Kiállítasz számlát?
+Igen. Alanyi adómentes egyéni vállalkozó vagyok. Igény szerint szerződéssel is dolgozom.
+
+### Össze tudod kötni az AI-t azzal a programmal, amit használok?
+Jó eséllyel igen. Revittel, Blenderrel és Unityvel már csináltam ilyet. Ha a programodnak van API-ja vagy szkriptelhető, meg tudom oldani, hogy az AI közvetlenül benne dolgozzon. Írd meg, mit használsz, és megnézem.
+
+## Nyelvi változatok
+
+- [hu](https://portfolio.maydayprod.app/)
+- [en](https://portfolio.maydayprod.app/en/)
+- [es](https://portfolio.maydayprod.app/es/)
+- [zh](https://portfolio.maydayprod.app/zh/)
+- [de](https://portfolio.maydayprod.app/de/)
+- [fr](https://portfolio.maydayprod.app/fr/)
+
+## Munkák
+
+Minden projekthez működő demó és videó tartozik a honlapon. A teljes lista a https://portfolio.maydayprod.app/#munkak címen található.

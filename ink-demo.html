@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tinta-lehúzás effekt — próba</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --paper:#eff1ec; --paper-2:#e6e9e2; --paper-3:#d6dcd3; --ink:#12231f;
+    --text:#12231f; --muted:#566760; --amber:#c9822a; --r:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"Space Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{font-family:var(--font);background:var(--paper);color:var(--text);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 24px 80px}
+  header h1{font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;margin:0 0 8px}
+  header p{color:var(--muted);max-width:60ch;line-height:1.6;margin:0 0 6px}
+  .hint{font-size:13px;color:var(--muted);font-family:var(--mono)}
+  .amber{color:var(--amber)}
+
+  .layout{display:grid;grid-template-columns:1.3fr .9fr;gap:26px;margin-top:28px;align-items:start}
+  @media (max-width:820px){.layout{grid-template-columns:1fr}}
+
+  /* Stage: content behind + ink canvas overlay */
+  .stage{position:relative;border-radius:var(--r);overflow:hidden;background:var(--ink);aspect-ratio:4/3;box-shadow:0 30px 70px -40px rgba(0,0,0,.5);border:1px solid var(--paper-3)}
+  .stage .content{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:28px}
+  .stage .content img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .stage .content .overlay-text{position:relative;z-index:1;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+  .stage .content .overlay-text h2{margin:0 0 6px;font-size:30px;letter-spacing:-.02em}
+  .stage .content .overlay-text p{margin:0;font-size:15px;opacity:.9}
+  canvas.ink{position:absolute;inset:0;z-index:2;cursor:none;touch-action:none}
+
+  .panel{background:var(--paper-2);border:1px solid var(--paper-3);border-radius:var(--r);padding:18px}
+  .panel h3{margin:0 0 4px;font-size:16px}
+  .panel .sub{margin:0 0 14px;font-size:12.5px;color:var(--muted)}
+  .ctl{margin-bottom:13px}
+  .ctl label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+  .ctl label b{font-family:var(--mono);color:var(--amber);font-weight:700}
+  .ctl input[type=range]{width:100%;accent-color:var(--amber)}
+  .ctl.row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+  .ctl.row input[type=color]{width:44px;height:30px;border:1px solid var(--paper-3);border-radius:8px;background:#fff;cursor:pointer;padding:2px}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .btn{font-family:var(--font);font-size:13px;font-weight:600;border-radius:10px;padding:9px 14px;cursor:pointer;border:1px solid var(--paper-3);background:#fff;color:var(--text)}
+  .btn:hover{background:var(--paper)}
+  .btn.amber{background:var(--amber);border-color:transparent;color:#fff}
+  .note{margin-top:22px;font-size:13px;color:var(--muted);line-height:1.6;border-top:1px solid var(--paper-3);padding-top:16px}
+  code{font-family:var(--mono);background:var(--paper-3);padding:1px 6px;border-radius:6px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Tinta-lehúzás effekt <span class="amber">· próba</span></h1>
+    <p>Mozgasd az egeret a kép fölött — a papírszínű tinta-réteg szabálytalan foltokban „lehúzódik", és előbukkan alatta a tartalom, majd lassan visszahalványul.</p>
+    <p class="hint">Sima (vanilla) JS-port, külső függőség nélkül. Mobil / reduced-motion esetén a réteg automatikusan felfedve marad.</p>
+  </header>
+
+  <div class="layout">
+    <div class="stage" id="stage">
+      <div class="content">
+        <img src="images/profil.jpg" alt="Minta tartalom" onerror="this.style.display='none'">
+        <div class="overlay-text">
+          <h2>Nemes Péter</h2>
+          <p>AI-fejlesztés · weboldalak · lokális AI</p>
+        </div>
+      </div>
+      <canvas class="ink" id="ink"></canvas>
+    </div>
+
+    <div class="panel">
+      <h3>Paraméterek</h3>
+      <p class="sub">Élőben hangolható — ezek a valódi komponens beállításai.</p>
+
+      <div class="ctl"><label>Ecsetméret <b id="v-brush">128</b></label><input type="range" id="brushSize" min="40" max="260" value="128"></div>
+      <div class="ctl"><label>Élettartam (ms) <b id="v-life">600</b></label><input type="range" id="lifetime" min="200" max="1600" step="50" value="600"></div>
+      <div class="ctl"><label>Méret-szórás <b id="v-vary">0.45</b></label><input type="range" id="rVary" min="0" max="0.9" step="0.05" value="0.45"></div>
+      <div class="ctl"><label>Folt-sűrűség (lépés) <b id="v-step">10</b></label><input type="range" id="stampStep" min="4" max="40" value="10"></div>
+      <div class="ctl"><label>Perem lágyulás <b id="v-grad">0.2</b></label><input type="range" id="gradientInnerRadius" min="0" max="0.9" step="0.05" value="0.2"></div>
+      <div class="ctl row"><label style="margin:0">Maszk színe</label><input type="color" id="maskColor" value="#fcfaf8"></div>
+
+      <div class="btns">
+        <button class="btn amber" id="fill">Maszk visszatöltése</button>
+        <button class="btn" id="reveal">Teljes felfedés</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">
+    Ha megfelel, mondd meg, <b>hova tegyem a portfólión</b> — pl. a <b>Rólam</b> profilkép fölé (ajánlott, kontrollált felület), vagy a hero háttérre.
+    Élesben a fallback bekapcsol: <code>@media (hover:none)</code> és <code>prefers-reduced-motion</code> esetén a réteg eltűnik, hogy mobilon senki ne lásson üres foltot.
+  </p>
+</div>
+
+<script>
+"use strict";
+// ── Ink-reveal — vanilla JS port of the React InkReveal component ──────────
+function initInkReveal(canvas, opts){
+  opts = Object.assign({
+    maskColor:[252,250,248], brushSize:128, lifetime:600, rStart:10, rVary:0.45,
+    stampStep:10, maxStamps:200, segments:36, wobble:[0.14,0.08,0.05],
+    gradientInnerRadius:0.2, gradientStops:[0.95,0.88,0]
+  }, opts||{});
+  var ctx = canvas.getContext("2d");
+  var stamps=[], running=false, lastPos=null, dims={w:0,h:0};
+
+  function fillMask(){ ctx.globalCompositeOperation="source-over"; ctx.fillStyle="rgb("+opts.maskColor[0]+","+opts.maskColor[1]+","+opts.maskColor[2]+")"; ctx.fillRect(0,0,dims.w,dims.h); }
+  function resize(){
+    var parent=canvas.parentElement; if(!parent) return;
+    var dpr=Math.min(window.devicePixelRatio||1,2);
+    var rect=parent.getBoundingClientRect();
+    dims={w:rect.width,h:rect.height};
+    canvas.width=Math.round(rect.width*dpr); canvas.height=Math.round(rect.height*dpr);
+    canvas.style.width=rect.width+"px"; canvas.style.height=rect.height+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    fillMask();
+  }
+  function carve(x,y,r,seed,alpha){
+    var g=ctx.createRadialGradient(x,y,r*opts.gradientInnerRadius,x,y,r);
+    g.addColorStop(0,"rgba(0,0,0,"+(opts.gradientStops[0]*alpha)+")");
+    g.addColorStop(0.5,"rgba(0,0,0,"+(opts.gradientStops[1]*alpha)+")");
+    g.addColorStop(1,"rgba(0,0,0,"+(opts.gradientStops[2]*alpha)+")");
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    for(var i=0;i<=opts.segments;i++){
+      var a=(i/opts.segments)*Math.PI*2;
+      var wob=0.78 + opts.wobble[0]*Math.sin(a*3+seed) + opts.wobble[1]*Math.sin(a*5+seed*2.1) + opts.wobble[2]*Math.sin(a*7+seed*0.7);
+      var px=x+Math.cos(a)*r*wob, py=y+Math.sin(a)*r*wob;
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.closePath(); ctx.fill();
+  }
+  function addStamp(x,y){ if(stamps.length>=opts.maxStamps) stamps.shift(); stamps.push({x:x,y:y,born:performance.now(),seed:Math.random()*Math.PI*2,rmax:opts.brushSize*(1-opts.rVary+Math.random()*opts.rVary)}); }
+  function stampAlong(x,y){
+    var last=lastPos;
+    if(!last){ addStamp(x,y); }
+    else { var dx=x-last.x, dy=y-last.y, dist=Math.hypot(dx,dy), steps=Math.max(1,Math.ceil(dist/opts.stampStep)); for(var i=1;i<=steps;i++) addStamp(last.x+dx*i/steps, last.y+dy*i/steps); }
+    lastPos={x:x,y:y};
+  }
+  function loop(){
+    var now=performance.now();
+    fillMask();
+    ctx.globalCompositeOperation="destination-out";
+    for(var i=stamps.length-1;i>=0;i--){
+      var t=(now-stamps[i].born)/opts.lifetime;
+      if(t>=1){ stamps.splice(i,1); continue; }
+      var ease=1-Math.pow(1-t,3);
+      var r=opts.rStart+(stamps[i].rmax-opts.rStart)*ease;
+      var alpha=1-t*t;
+      carve(stamps[i].x,stamps[i].y,r,stamps[i].seed,alpha);
+    }
+    if(stamps.length) requestAnimationFrame(loop); else running=false;
+  }
+  function start(){ if(!running){ running=true; requestAnimationFrame(loop); } }
+  function rel(e){ var r=canvas.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top}; }
+
+  canvas.addEventListener("pointerenter",function(e){ if(hidden) return; var p=rel(e); lastPos=p; stampAlong(p.x,p.y); start(); });
+  canvas.addEventListener("pointermove",function(e){ if(hidden) return; var p=rel(e); stampAlong(p.x,p.y); start(); });
+  canvas.addEventListener("pointerleave",function(){ lastPos=null; });
+  window.addEventListener("resize",resize);
+
+  // Fallback: coarse pointer (no hover) or reduced-motion → reveal (hide mask)
+  var hidden=false;
+  function applyFallback(){
+    var noHover = window.matchMedia("(hover:none)").matches;
+    var reduced = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+    hidden = noHover || reduced;
+    canvas.style.display = hidden ? "none" : "";
+  }
+
+  resize(); applyFallback();
+  return {
+    set:function(k,v){ opts[k]=v; if((k==="maskColor")&&!stamps.length) fillMask(); },
+    fill:function(){ stamps.length=0; hidden=false; canvas.style.display=""; fillMask(); },
+    reveal:function(){ stamps.length=0; canvas.style.display="none"; },
+    opts:opts
+  };
+}
+
+// ── Wire up the demo ───────────────────────────────────────────────────────
+(function(){
+  var canvas=document.getElementById("ink");
+  function hexToRgb(h){ h=h.replace("#",""); if(h.length===3) h=h.split("").map(function(c){return c+c;}).join(""); return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]; }
+  var ink=initInkReveal(canvas,{ maskColor:hexToRgb("#fcfaf8") });
+
+  function bind(id, key, fmt, transform){
+    var input=document.getElementById(id), out=document.getElementById("v-"+({brushSize:"brush",lifetime:"life",rVary:"vary",stampStep:"step",gradientInnerRadius:"grad"})[id]);
+    input.addEventListener("input",function(){
+      var val=transform?transform(input.value):parseFloat(input.value);
+      ink.set(key,val);
+      if(out) out.textContent=fmt?fmt(input.value):input.value;
+    });
+  }
+  bind("brushSize","brushSize");
+  bind("lifetime","lifetime");
+  bind("rVary","rVary");
+  bind("stampStep","stampStep");
+  bind("gradientInnerRadius","gradientInnerRadius");
+  document.getElementById("maskColor").addEventListener("input",function(e){ ink.set("maskColor",hexToRgb(e.target.value)); ink.fill(); });
+  document.getElementById("fill").addEventListener("click",function(){ ink.fill(); });
+  document.getElementById("reveal").addEventListener("click",function(){ ink.reveal(); });
+})();
+</script>
+</body>
+</html>

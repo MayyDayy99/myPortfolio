@@ -31,6 +31,18 @@ def slugify(t):
     return t[:70] or 'poszt'
 
 
+def cover_url(c):
+    """A borito lehet a repoban levo fajl vagy kulso, teljes URL.
+
+    A tartalomposztolo `media_url` neven kulso cimet kuld, azt nem szabad
+    gyoker-relativva alakitani.
+    """
+    c = (c or '').strip()
+    if not c:
+        return ''
+    return c if re.match(r'^https?://', c) else '/' + c.lstrip('/')
+
+
 def derive_title(content, limit=80):
     """Cim keszitese a szovegbol, ha a kuldo nem adott cimet.
 
@@ -224,7 +236,7 @@ def load():
         if isinstance(tags, str):
             tags = [t.strip() for t in tags.split(',') if t.strip()]
         posts.append({'title': title, 'slug': slug, 'date': date, 'excerpt': excerpt,
-                      'content': content, 'tags': tags, 'cover': d.get('cover') or d.get('kep') or '',
+                      'content': content, 'tags': tags, 'cover': d.get('cover') or d.get('kep') or d.get('media_url') or '',
                       'file': os.path.basename(f)})
     posts.sort(key=lambda p: (p['date'], p['title']), reverse=True)
     return posts
@@ -248,9 +260,10 @@ def main():
                          "author": {"@type": "Person", "name": AUTHOR,
                                     "@id": SITE + "/#person", "url": SITE + "/"},
                          "publisher": {"@id": SITE + "/#person"},
-                         "image": (SITE + '/' + p['cover'].lstrip('/')) if p['cover'] else SITE + "/images/og.jpg",
+                         "image": (cover_url(p['cover']) if re.match(r'^https?://', p['cover'] or '')
+                                   else SITE + cover_url(p['cover'])) if p['cover'] else SITE + "/images/og.jpg",
                          "keywords": ", ".join(p['tags'])}, ensure_ascii=False, separators=(',', ':'))
-        cover = f'<img class="bl-cover" src="/{p["cover"].lstrip("/")}" alt="" loading="lazy">' if p['cover'] else ''
+        cover = f'<img class="bl-cover" src="{cover_url(p["cover"])}" alt="" loading="lazy">' if p['cover'] else ''
         tags = ''.join(f'<span>{html.escape(t)}</span>' for t in p['tags'])
         body = f"""<main class="section">
   <div class="bl-wrap bl-article">

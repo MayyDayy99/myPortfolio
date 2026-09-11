@@ -1,5 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Click2CAST — kampányból csatornára szabott poszt, jóváhagyással és ütemezéssel">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Click2CAST — egy mondatból csatornára szabott poszt, jóváhagyás után kiküldve">
   <rect width="640" height="360" fill="#12231f"/>
+  <g transform="translate(0,22)">
 
   <text x="40" y="58" font-family="'Space Mono',monospace" font-size="20" fill="#c9822a" letter-spacing="0.08em">CLICK2CAST</text>
   <line x1="40" y1="78" x2="600" y2="78" stroke="#2a4038" stroke-width="1.5"/>
@@ -13,7 +14,7 @@
   </g>
 
   <g font-family="'Space Mono',monospace" font-size="17" fill="#eff1ec" text-anchor="middle">
-    <text x="103" y="173">Kampány</text>
+    <text x="103" y="173">Egy mondat</text>
     <text x="259" y="173">AI tartalom</text>
     <text x="415" y="173">Jóváhagyás</text>
     <text x="554" y="173">Kiküldés</text>
@@ -27,6 +28,7 @@
   </g>
 
   <g font-family="'Space Mono',monospace" font-size="20" fill="#7d8a82" text-anchor="middle">
-    <text x="320" y="278">több ügyfél · csúcsidőre időzítve</text>
+    <text x="320" y="278">egy mondatból · jóváhagyás után megy ki</text>
+  </g>
   </g>
 </svg>

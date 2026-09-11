@@ -31,6 +31,28 @@ def slugify(t):
     return t[:70] or 'poszt'
 
 
+def derive_title(content, limit=80):
+    """Cim keszitese a szovegbol, ha a kuldo nem adott cimet.
+
+    A tartalomposztolo Website-csatornaja csak torzset kuld, cimet nem.
+    Ilyenkor a markdown fejlec, ha van, kulonben az elso mondat lesz a cim.
+    """
+    text = str(content or '')
+    head = re.search(r'^\s*#{1,3}\s+(.+?)\s*$', text, re.M)
+    if head:
+        return head.group(1).strip()[:limit * 2].strip()
+    plain = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', text)).strip()
+    if not plain:
+        return ''
+    sentence = re.split(r'(?<=[.!?])\s', plain)[0].strip()
+    sentence = sentence.rstrip('.').strip()
+    if len(sentence) <= limit:
+        return sentence
+    cut = sentence[:limit]
+    space = cut.rfind(' ')
+    return (cut[:space] if space > limit // 2 else cut).rstrip(',;:') + '…'
+
+
 def md(text):
     """Nagyon kis markdown: címsor, félkövér, dőlt, link, lista, kód, bekezdés.
        Ha a bemenet már HTML-nek látszik, változatlanul hagyjuk."""
@@ -183,6 +205,8 @@ def load():
         if isinstance(title, dict): title = title.get('raw') or title.get('rendered') or ''
         if isinstance(content, dict): content = content.get('raw') or content.get('rendered') or ''
         title = str(title).strip()
+        if not title:
+            title = derive_title(content)
         if not title or not content:
             print('  ! title vagy content hiányzik, kihagyva:', os.path.basename(f)); continue
         date = str(d.get('date') or d.get('datum') or '')[:10]

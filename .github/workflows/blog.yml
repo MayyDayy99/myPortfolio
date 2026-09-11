@@ -43,8 +43,20 @@ jobs:
           if isinstance(title, dict): title = title.get('raw') or title.get('rendered') or ''
           if isinstance(content, dict): content = content.get('raw') or content.get('rendered') or ''
           title = str(title).strip()
+          if not title:
+              # A tartalomposztolo csak torzset kuld, cimet nem: keszitunk egyet.
+              txt = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', str(content))).strip()
+              head = re.search(r'^\s*#{1,3}\s+(.+?)\s*$', str(content), re.M)
+              if head:
+                  title = head.group(1).strip()
+              elif txt:
+                  first = re.split(r'(?<=[.!?])\s', txt)[0].strip().rstrip('.').strip()
+                  if len(first) > 80:
+                      cut = first[:80]; sp = cut.rfind(' ')
+                      first = (cut[:sp] if sp > 40 else cut).rstrip(',;:') + '\u2026'
+                  title = first
           if not title or not content:
-              raise SystemExit('A webhook nem tartalmazott title/content mezot.')
+              raise SystemExit('A webhook nem tartalmazott hasznalhato title/content mezot.')
           m = str.maketrans('áéíóöőúüűÁÉÍÓÖŐÚÜŰ', 'aeiooouuuAEIOOOUUU')
           slug = d.get('slug') or re.sub(r'[^a-z0-9]+', '-',
                  unicodedata.normalize('NFKD', title.translate(m)).encode('ascii','ignore').decode().lower()).strip('-')[:70]

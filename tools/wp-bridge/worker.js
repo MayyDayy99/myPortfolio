@@ -118,7 +118,7 @@ export default {
       excerpt: text(d.excerpt ?? d.leiras).trim(),
       date: String(d.date ?? d.datum ?? '').slice(0, 10),
       slug: d.slug ? String(d.slug) : undefined,
-      cover: d.cover ?? d.kep ?? undefined,
+      cover: d.cover ?? d.kep ?? d.media_url ?? undefined,
       tags,
       status: d.status ? String(d.status) : undefined,
     };

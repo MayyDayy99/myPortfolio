@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Click2CAST — kampányból csatornára szabott poszt, jóváhagyással és ütemezéssel">
+  <rect width="640" height="360" fill="#12231f"/>
+
+  <text x="40" y="58" font-family="'Space Mono',monospace" font-size="20" fill="#c9822a" letter-spacing="0.08em">CLICK2CAST</text>
+  <line x1="40" y1="78" x2="600" y2="78" stroke="#2a4038" stroke-width="1.5"/>
+
+  <!-- negy lepes, nagy es olvashato -->
+  <g fill="none" stroke="#3a564d" stroke-width="2">
+    <rect x="40"  y="118" width="126" height="96" rx="10"/>
+    <rect x="196" y="118" width="126" height="96" rx="10"/>
+    <rect x="352" y="118" width="126" height="96" rx="10"/>
+    <rect x="508" y="118" width="92"  height="96" rx="10"/>
+  </g>
+
+  <g font-family="'Space Mono',monospace" font-size="17" fill="#eff1ec" text-anchor="middle">
+    <text x="103" y="173">Kampány</text>
+    <text x="259" y="173">AI tartalom</text>
+    <text x="415" y="173">Jóváhagyás</text>
+    <text x="554" y="173">Kiküldés</text>
+  </g>
+
+  <!-- nyilak -->
+  <g stroke="#c9822a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M166 166h22"/><path d="M181 160l7 6-7 6"/>
+    <path d="M322 166h22"/><path d="M337 160l7 6-7 6"/>
+    <path d="M478 166h22"/><path d="M493 160l7 6-7 6"/>
+  </g>
+
+  <g font-family="'Space Mono',monospace" font-size="20" fill="#7d8a82" text-anchor="middle">
+    <text x="320" y="278">több ügyfél · csúcsidőre időzítve</text>
+  </g>
+</svg>

@@ -61,22 +61,28 @@ def inner_html(html, key):
 
 
 def set_inner(html, key, value):
-    """A data-i18n="key" elem belsejének cseréje, beágyazott azonos tagre is figyelve."""
-    m = re.search(r'<(\w+)[^>]*\bdata-i18n="%s"[^>]*>' % re.escape(key), html)
-    if not m:
-        return html
-    tag, i = m.group(1), m.end()
-    depth, pos = 1, i
-    op = re.compile(r'<(/?)%s\b' % tag)
-    while depth:
-        mm = op.search(html, pos)
-        if not mm:
+    """A data-i18n="key" elemek belsejének cseréje, beágyazott azonos tagre is figyelve.
+
+    Egy kulcs többször is szerepelhet az oldalon (pl. cta_demo tíz kártyán), ezért
+    minden előfordulást cserélünk — különben a második gombtól kezdve magyar maradna.
+    """
+    pat = re.compile(r'<(\w+)[^>]*\bdata-i18n="%s"[^>]*>' % re.escape(key))
+    at = 0
+    while True:
+        m = pat.search(html, at)
+        if not m:
             return html
-        depth += -1 if mm.group(1) else 1
-        pos = mm.end()
-        if depth == 0:
-            return html[:i] + value + html[mm.start():]
-    return html
+        tag, i = m.group(1), m.end()
+        depth, pos = 1, i
+        op = re.compile(r'<(/?)%s\b' % tag)
+        while depth:
+            mm = op.search(html, pos)
+            if not mm:
+                return html
+            depth += -1 if mm.group(1) else 1
+            pos = mm.end()
+        html = html[:i] + value + html[mm.start():]
+        at = i + len(value)
 
 
 def text_of(s):

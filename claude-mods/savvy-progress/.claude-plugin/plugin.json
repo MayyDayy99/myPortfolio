@@ -1,0 +1,9 @@
+{
+  "name": "savvy-progress",
+  "version": "0.1.0",
+  "description": "A live progress band above the prompt and an /agents-info panel showing every subagent's model, effort, tokens, context and estimated cost.",
+  "author": {
+    "name": "MayyDayy99"
+  },
+  "types": "./types/index.d.ts"
+}

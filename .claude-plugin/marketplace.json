@@ -1,0 +1,11 @@
+{
+  "name": "mayydayy-mods",
+  "owner": { "name": "MayyDayy99" },
+  "plugins": [
+    {
+      "name": "savvy-progress",
+      "source": "./claude-mods/savvy-progress",
+      "description": "Live subagent progress band and /agents-info panel with estimated costs."
+    }
+  ]
+}

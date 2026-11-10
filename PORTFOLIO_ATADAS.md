@@ -124,8 +124,27 @@ Privát/megbízói munkánál link helyett: `<span class="priv">megbízói proje
   `prefers-reduced-motion` esetén minden látható marad (nem tűnik el tartalom).
 - **Akadálymentesség:** skip-link, `aria` a füleken/gombokon, `:focus-visible`
   kontúr, reduced-motion tisztelet.
-- **TILOS:** `localStorage`/`sessionStorage` (nincs használatban, ne is legyen —
-  statikus oldalnál felesleges).
+- **Építés-animáció (első látogatáskor):** az oldal üres vászonként indul, és
+  görgetés közben „Claude" kurzora építi fel a drótváz helyére. Mindig addig
+  épít, ameddig a látogató legörgetett; ami a képernyőn van, az teljesen
+  elkészül, aztán megáll, és a következő görgetésre megy tovább. A végén nyom
+  nélkül eltűnik: a kész DOM bájtra azonos a sima oldaléval.
+  - **Hol van:** az `index.html` két jelölt blokkja: `<!-- bld:head:start -->`
+    (stílus + a döntő szkript a `<head>`-ben) és `<!-- bld:js:start -->`
+    (a motor a `</body>` előtt). A nyelvi oldalak a szokásos építéssel kapják meg.
+  - **Mikor indul:** első látogatáskor, egyszer; utána bármikor a `?build=1`
+    címmel (a láblécben link van rá). **Nem indul:** `?build=0`, „kevesebb
+    mozgás" beállítás, adatspórolás, keresőrobotok, beágyazva (iframe),
+    horgonyra (`#…`) érkezve, és ha az oldal 4 mp alatt nem töltődik be.
+    A „Kihagyom" gomb, a Tab és az Esc azonnal a kész oldalt adja.
+  - **Bővítés:** új szekció vagy kártya magától bekerül. Hogy egy elem hogyan
+    épül (keretbe húzva, gépelve, felpattanva, folyó szövegként), azt a motor
+    elején a `FRAME` / `TYPE` / `LABEL` / `POP` / `STREAM` választó-listák adják.
+  - **Kikapcsolás:** a `<head>`-beli szkriptben az `auto` értékét írd `false`-ra
+    (ekkor csak a `?build=1` link indítja), vagy töröld a két jelölt blokkot.
+- **Tárolás:** a `localStorage`-ban csak két apró beállítás él: a választott
+  nyelv (`site_lang`) és az, hogy az építés-animáció lement-e már (`pf_built`).
+  Más ne kerüljön oda — statikus oldalnál felesleges.
 
 ---
 

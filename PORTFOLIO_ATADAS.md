@@ -125,10 +125,13 @@ Privát/megbízói munkánál link helyett: `<span class="priv">megbízói proje
 - **Akadálymentesség:** skip-link, `aria` a füleken/gombokon, `:focus-visible`
   kontúr, reduced-motion tisztelet.
 - **Építés-animáció (első látogatáskor):** az oldal üres vászonként indul, és
-  görgetés közben „Claude" kurzora építi fel a drótváz helyére. Mindig addig
-  épít, ameddig a látogató legörgetett; ami a képernyőn van, az teljesen
-  elkészül, aztán megáll, és a következő görgetésre megy tovább. A végén nyom
-  nélkül eltűnik: a kész DOM bájtra azonos a sima oldaléval.
+  görgetés közben több „Claude" kurzor építi fel egyszerre a drótváz helyére
+  (asztali gépen három kurzor és három kurzor nélküli szál, telefonon kettő-kettő).
+  Mindig addig épít, ameddig a látogató legörgetett. Ha megáll, a képernyőn lévő
+  rész rövid idő alatt (legfeljebb kb. másfél másodperc) teljesen elkészül, a
+  kurzorok behúzódnak az állapotsávba, a sáv kicsire zsugorodik, és nyugodtan
+  lehet olvasni; a következő görgetésre megy tovább. A végén nyom nélkül
+  eltűnik: a kész DOM bájtra azonos a sima oldaléval.
   - **Hol van:** az `index.html` két jelölt blokkja: `<!-- bld:head:start -->`
     (stílus + a döntő szkript a `<head>`-ben) és `<!-- bld:js:start -->`
     (a motor a `</body>` előtt). A nyelvi oldalak a szokásos építéssel kapják meg.
@@ -140,6 +143,11 @@ Privát/megbízói munkánál link helyett: `<span class="priv">megbízói proje
   - **Bővítés:** új szekció vagy kártya magától bekerül. Hogy egy elem hogyan
     épül (keretbe húzva, gépelve, felpattanva, folyó szövegként), azt a motor
     elején a `FRAME` / `TYPE` / `LABEL` / `POP` / `STREAM` választó-listák adják.
+  - **Hangolás:** a motorban `NC` / `NA` a kurzorok és a kurzor nélküli szálak
+    száma, `BUDGET` az az idő, amennyi alatt megállás után a képernyőnek össze
+    kell állnia, `SMAX` a legnagyobb gyorsítás, `OPT` az egyes mozdulatok hossza.
+  - **Biztonság:** ha a motor hibára fut, vagy 7 mp-ig nem halad, magától
+    befejezi, és a kész oldal marad.
   - **Kikapcsolás:** a `<head>`-beli szkriptben az `auto` értékét írd `false`-ra
     (ekkor csak a `?build=1` link indítja), vagy töröld a két jelölt blokkot.
 - **Tárolás:** a `localStorage`-ban csak két apró beállítás él: a választott

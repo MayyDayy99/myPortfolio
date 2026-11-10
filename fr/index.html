@@ -547,8 +547,8 @@ body.reveal-ready .svc-grid[data-reveal]>.svc:nth-child(5){transition-delay:.28s
 <!-- bld:head:start -->
 <style data-bld>
 /* ═══ ÉPÍTÉS-ANIMÁCIÓ ═══
-   Első látogatáskor az oldal üres vászonként indul, és görgetés közben „Claude" kurzora
-   építi fel. Minden szabály a html.bld alatt él: ha az osztály nincs ott (visszatérő
+   Első látogatáskor az oldal üres vászonként indul, és görgetés közben több „Claude" kurzor
+   építi fel egyszerre. Minden szabály a html.bld alatt él: ha az osztály nincs ott (visszatérő
    látogató, kevesebb mozgás, keresőrobot, JS nélkül), ebből semmi nem érvényes. */
 html.bld body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;z-index:-1;pointer-events:none;
   background-image:radial-gradient(circle at 1px 1px,rgba(18,35,31,.17) 1px,transparent 1.7px);background-size:22px 22px}
@@ -565,10 +565,15 @@ html.bld .bu{opacity:0!important;pointer-events:none}
 html.bld .bt{transition:opacity .34s ease!important}
 html.bld .b-hid{opacity:0}
 .b-caret{border-left:2px solid #d97757;margin:0 -1px}
-@keyframes b-pop{from{opacity:0;transform:scale(.6)}60%{opacity:1;transform:scale(1.07)}to{opacity:1;transform:none}}
-@keyframes b-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* belépő mozgások. Önálló scale/translate tulajdonsággal, így nem írják felül az elem saját transform-ját */
+@keyframes b-pop{from{opacity:0;scale:.6}60%{opacity:1;scale:1.07}to{opacity:1;scale:1}}
+@keyframes b-rise{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
+@keyframes b-up{from{opacity:0;translate:0 10px;scale:.985}to{opacity:1;translate:0 0;scale:1}}
+@keyframes b-in{from{opacity:0;translate:0 10px;outline-color:rgba(217,119,87,.95)}40%{opacity:1;translate:0 0;outline-color:rgba(217,119,87,.95)}to{opacity:1;outline-color:rgba(217,119,87,0)}}
 html.bld .b-pop{animation:b-pop .36s cubic-bezier(.2,.9,.3,1.2) both}
 html.bld .b-rise{animation:b-rise .4s ease both}
+html.bld .b-up{animation:b-up .42s cubic-bezier(.2,.8,.2,1) both}
+html.bld .b-in{outline:1.5px solid rgba(217,119,87,0);outline-offset:2px;animation:b-in .7s ease-out both}
 
 /* ── drótváz: a még meg nem épült elemek helye. Az oldallal együtt görög, a fejléc alatt marad ── */
 .b-skl{position:absolute;left:0;top:0;width:100%;height:0;z-index:5;pointer-events:none}
@@ -590,8 +595,18 @@ html.bld .b-rise{animation:b-rise .4s ease both}
 .b-cur.off{opacity:0}
 .b-cur svg{display:block;width:24px;height:24px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.28));transition:transform .12s}
 .b-cur.hit svg{transform:scale(.84)}
+.b-cur svg path{fill:#d97757;stroke:#fff;stroke-width:1.5;stroke-linejoin:round}
 .b-cur b{position:absolute;left:16px;top:19px;background:#d97757;color:#fff;font:600 11.5px/1 "Hanken Grotesk",system-ui,sans-serif;padding:4px 8px 5px;border-radius:3px 10px 10px 10px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+/* a segítő kurzorok kisebbek és körvonalasak: látszik, ki a vezető */
+.b-cur.aid svg{width:21px;height:21px}
+.b-cur.aid svg path{fill:#fff;stroke:#d97757;stroke-width:1.8}
+.b-cur.aid b{left:14px;top:17px;background:#fff;color:#bf5a3a;font-size:10.5px;padding:3px 7px 4px;box-shadow:0 0 0 1.25px rgba(217,119,87,.7),0 2px 8px rgba(0,0,0,.16)}
 .b-cur.flip b{left:auto;right:12px;border-radius:10px 3px 10px 10px}
+/* akinek épp nincs dolga, az állapotsávba húzódik, és nem takar semmit */
+.b-cur.dock{opacity:0;transition:opacity .28s ease .1s}
+.b-chip{position:absolute;left:0;top:0;z-index:1;opacity:0;font:700 10px/1 "Space Mono",monospace;color:#f6f1e7;background:#1c1b19;border:1px solid rgba(255,255,255,.18);border-radius:5px;padding:4px 6px 5px;white-space:nowrap}
+.b-chip.go{animation:b-chip .9s ease-out both}
+@keyframes b-chip{0%{opacity:0;translate:0 6px}15%{opacity:.96;translate:0 0}65%{opacity:.96;translate:0 -6px}100%{opacity:0;translate:0 -16px}}
 .b-ring{position:absolute;left:0;top:0;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid #d97757;opacity:0}
 .b-ring.go{animation:b-ring .5s ease-out}
 @keyframes b-ring{from{opacity:.9;transform:scale(.25)}to{opacity:0;transform:scale(1.5)}}
@@ -626,7 +641,14 @@ html.bld .b-rise{animation:b-rise .4s ease both}
 .b-hud.is-done .b-spark svg{animation:none}
 .b-hud.is-idle .b-spark svg{animation-play-state:paused}
 @keyframes b-spin{to{transform:rotate(360deg)}}
-.b-txt{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;line-height:1.2}
+.b-txt{min-width:0;max-width:min(54vw,340px);overflow:hidden;text-overflow:ellipsis;font-size:13.5px;line-height:1.2;transition:max-width .35s ease,opacity .25s ease}
+/* pihenőben a sáv előbb jelzi, hogy görgetni kell, aztán kicsire húzódik, hogy ne takarja a szöveget */
+.b-dn{display:none;flex:none;font:700 14px/1 "Space Mono",monospace;color:#d97757}
+.b-hud.hint .b-dn{display:inline-block;animation:b-nudge 1.3s ease-in-out infinite}
+@keyframes b-nudge{0%,100%{translate:0 -2px}50%{translate:0 3px}}
+.b-hud.mini .b-txt{max-width:0;opacity:0}
+.b-hud.mini .b-pct{display:none}
+.b-hud.mini{gap:7px;padding:6px 6px 6px 12px}
 .b-txt b{font-weight:700}
 .b-txt span{color:#6b6a66;font-family:"Space Mono",monospace;font-size:11.5px;margin-left:8px}
 .b-pct{flex:none;min-width:32px;text-align:right;font:700 11px/1 "Space Mono",monospace;color:#d97757}
@@ -640,10 +662,11 @@ html.bld .b-rise{animation:b-rise .4s ease both}
 @media (max-width:560px){
   .b-ask-t{font-size:15.5px}
   .b-cur b{font-size:10.5px;padding:3px 7px 4px}
+  .b-cur.aid b{font-size:10px}
+  .b-txt{max-width:42vw}
   .b-txt span{display:block;margin:2px 0 0}
-  .b-hud{left:12px;right:12px;transform:translateY(14px);border-radius:18px}
+  .b-hud{left:auto;right:12px;transform:translateY(14px);border-radius:18px}
   .b-hud.on{transform:none}
-  .b-txt{flex:1}
 }
 @media print{
   html.bld .header,html.bld main>section,html.bld .footer,html.bld .bu,.b-hid{opacity:1!important}
@@ -3457,10 +3480,11 @@ const triggerOfficeWorkflow = (function () {
 <!-- bld:js:start -->
 <script>
 /* ═══ ÉPÍTÉS-ANIMÁCIÓ: a motor ═══
-   A valódi oldalon dolgozik, nem felvétel: minden elem a helyén van, csak rejtve, és a kurzor
-   sorban „megépíti" őket. Mindig addig épít, ameddig a látogató legörgetett: ami a képernyőn van,
-   az teljesen elkészül, aztán megáll, és a következő görgetésre megy tovább. A még meg nem épült
-   elemek helyén drótváz látszik. A végén nyom nélkül eltűnik, és a kész oldal marad.
+   A valódi oldalon dolgozik, nem felvétel: minden elem a helyén van, csak rejtve, és több „Claude"
+   kurzor egyszerre építi meg őket a drótváz helyére, miközben a többi elem magától áll össze körülöttük.
+   Mindig addig épít, ameddig a látogató legörgetett. Ha megáll, a képernyőn lévő rész rövid idő alatt
+   teljesen elkészül, a kurzorok félrehúzódnak, és nyugodtan lehet olvasni; a következő görgetésre megy tovább.
+   A végén nyom nélkül eltűnik, és a kész oldal marad.
    Új szekció vagy kártya magától bekerül a sorba; külön beállítani nem kell. */
 (function(){
   'use strict';
@@ -3473,49 +3497,49 @@ const triggerOfficeWorkflow = (function () {
   /* ── feliratok hat nyelven ── */
   var T={
     hu:{ask:'Építs egy portfóliót Nemes Péternek: weboldal, webalkalmazás és lokális AI, működő demókkal.',
-        skip:'Kihagyom',done:'Kész, ez a kész oldal',idle:'Görgess, építem tovább',plan:'drótvázat rajzol',
-        k:{type:'címsort ír',stream:'szöveget ír',frame:'elemet helyez el',pop:'gombokat tesz ki'},
+        skip:'Kihagyom',done:'Kész, ez a kész oldal',idle:'Görgess, építem tovább',plan:'drótvázat rajzol',el:'elem',
         s:{header:'Fejléc',mast:'Nyitó',szolgaltatasok:'Szolgáltatások',munkak:'Munkák','lokalis-ai':'Lokális AI',amivel:'Eszköztár',oktatas:'Oktatás',rolam:'Rólam',folyamat:'Folyamat',gyik:'GYIK',kapcsolat:'Kapcsolat',footer:'Lábléc'}},
     en:{ask:'Build a portfolio for Péter Nemes: websites, web apps and local AI, with working demos.',
-        skip:'Skip',done:'Done, this is the finished site',idle:'Scroll and I keep building',plan:'sketching the wireframe',
-        k:{type:'writing a heading',stream:'writing copy',frame:'placing an element',pop:'adding buttons'},
+        skip:'Skip',done:'Done, this is the finished site',idle:'Scroll and I keep building',plan:'sketching the wireframe',el:'elements',
         s:{header:'Header',mast:'Hero',szolgaltatasok:'Services',munkak:'Work','lokalis-ai':'Local AI',amivel:'Toolkit',oktatas:'Training',rolam:'About',folyamat:'Process',gyik:'FAQ',kapcsolat:'Contact',footer:'Footer'}},
     es:{ask:'Crea un portfolio para Péter Nemes: sitios web, aplicaciones web e IA local, con demos que funcionan.',
-        skip:'Saltar',done:'Listo, este es el sitio terminado',idle:'Desplázate y sigo construyendo',plan:'dibuja el esquema',
-        k:{type:'escribe un título',stream:'escribe el texto',frame:'coloca un elemento',pop:'añade botones'},
+        skip:'Saltar',done:'Listo, este es el sitio terminado',idle:'Desplázate y sigo construyendo',plan:'dibuja el esquema',el:'elementos',
         s:{header:'Cabecera',mast:'Portada',szolgaltatasok:'Servicios',munkak:'Trabajos','lokalis-ai':'IA local',amivel:'Herramientas',oktatas:'Formación',rolam:'Sobre mí',folyamat:'Proceso',gyik:'FAQ',kapcsolat:'Contacto',footer:'Pie'}},
     zh:{ask:'为 Nemes Péter 做一个作品集：网站、Web 应用和本地 AI，都带可运行的演示。',
-        skip:'跳过',done:'完成，这就是成品网站',idle:'继续滚动，我接着搭',plan:'正在画线框图',
-        k:{type:'正在写标题',stream:'正在写文案',frame:'正在放置元素',pop:'正在添加按钮'},
+        skip:'跳过',done:'完成，这就是成品网站',idle:'继续滚动，我接着搭',plan:'正在画线框图',el:'个元素',
         s:{header:'页眉',mast:'首屏',szolgaltatasok:'服务',munkak:'作品','lokalis-ai':'本地 AI',amivel:'工具',oktatas:'培训',rolam:'关于',folyamat:'流程',gyik:'常见问题',kapcsolat:'联系',footer:'页脚'}},
     de:{ask:'Bau ein Portfolio für Péter Nemes: Websites, Web-Apps und lokale KI, mit funktionierenden Demos.',
-        skip:'Überspringen',done:'Fertig, das ist die fertige Seite',idle:'Scroll weiter, ich baue weiter',plan:'skizziert das Wireframe',
-        k:{type:'schreibt eine Überschrift',stream:'schreibt Text',frame:'platziert ein Element',pop:'setzt Buttons'},
+        skip:'Überspringen',done:'Fertig, das ist die fertige Seite',idle:'Scroll weiter, ich baue weiter',plan:'skizziert das Wireframe',el:'Elemente',
         s:{header:'Kopfzeile',mast:'Einstieg',szolgaltatasok:'Leistungen',munkak:'Arbeiten','lokalis-ai':'Lokale KI',amivel:'Werkzeuge',oktatas:'Schulung',rolam:'Über mich',folyamat:'Ablauf',gyik:'FAQ',kapcsolat:'Kontakt',footer:'Fußzeile'}},
     fr:{ask:'Crée un portfolio pour Péter Nemes : sites web, applications web et IA locale, avec des démos qui fonctionnent.',
-        skip:'Passer',done:'Terminé, voici le site fini',idle:'Fais défiler, je continue',plan:'esquisse la maquette',
-        k:{type:'écrit un titre',stream:'écrit le texte',frame:'place un élément',pop:'ajoute des boutons'},
+        skip:'Passer',done:'Terminé, voici le site fini',idle:'Fais défiler, je continue',plan:'esquisse la maquette',el:'éléments',
         s:{header:'En-tête',mast:'Accueil',szolgaltatasok:'Services',munkak:'Réalisations','lokalis-ai':'IA locale',amivel:'Outils',oktatas:'Formation',rolam:'À propos',folyamat:'Méthode',gyik:'FAQ',kapcsolat:'Contact',footer:'Pied de page'}}
   };
   function L(){ return T[(root.lang||'hu').slice(0,2)]||T.hu; }
 
   /* ── a felület elemei ── */
+  var small=innerWidth<=560;
   var SPARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg>';
   skl=document.createElement('div'); skl.className='b-skl'; skl.setAttribute('aria-hidden','true');
   ui=document.createElement('div'); ui.className='b-ui'; ui.setAttribute('aria-hidden','true');
-  ui.innerHTML='<div class="b-art"></div><div class="b-sel"><i></i><i></i><i></i><i></i><em></em></div>'
+  ui.innerHTML='<div class="b-art"></div>'
     +'<div class="b-ask"><div class="b-ask-h">'+SPARK+'Claude</div><div class="b-ask-t"><span></span><i class="b-caret"></i></div>'
-    +'<div class="b-ask-f"><span class="b-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></span></div></div>'
-    +'<div class="b-cur off"><span class="b-ring"></span><svg viewBox="0 0 24 24"><path d="M4 3l.2 15.6 4.3-4 3 6.9 2.9-1.3-3-6.8 5.9-.3z" fill="#d97757" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg><b>Claude</b></div>';
+    +'<div class="b-ask-f"><span class="b-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></span></div></div>';
   hud=document.createElement('div'); hud.className='b-hud';
-  hud.innerHTML='<span class="b-spark">'+SPARK+'</span><span class="b-txt"><b>Claude</b><span></span></span><span class="b-pct">0%</span>'
+  hud.innerHTML='<span class="b-spark">'+SPARK+'</span><span class="b-txt"><b>Claude</b><span></span></span><span class="b-dn">↓</span><span class="b-pct">0%</span>'
     +'<button type="button" class="b-skip"></button><span class="b-bar"><i></i></span>';
   body.appendChild(skl); body.appendChild(ui); body.appendChild(hud);
   var $=function(s,p){ return (p||ui).querySelector(s); };
-  var curEl=$('.b-cur'), ring=$('.b-ring'), selEl=$('.b-sel'), selTxt=$('.b-sel em'), artEl=$('.b-art'),
-      ask=$('.b-ask'), askTxt=$('.b-ask-t span'), askCaret=$('.b-ask-t .b-caret'), send=$('.b-send'),
+  var artEl=$('.b-art'), ask=$('.b-ask'), askTxt=$('.b-ask-t span'), askCaret=$('.b-ask-t .b-caret'), send=$('.b-send'),
       hudTxt=$('.b-txt span',hud), hudPct=$('.b-pct',hud), hudBar=$('.b-bar i',hud), skipBtn=$('.b-skip',hud);
   skipBtn.textContent=L().skip;
+  /* a kurzorok: egy vezető és a segítői, mindegyik saját kijelölő kerettel; mellettük kurzor nélküli szálak is építenek */
+  var NC=small?2:3, NA=small?2:3, CUR=[], chips=[], chipI=0, n0;
+  for(n0=0;n0<NC;n0++){ var se=document.createElement('div'); se.className='b-sel'; se.innerHTML='<i></i><i></i><i></i><i></i><em></em>'; ui.appendChild(se); CUR.push({x:innerWidth*.74,y:innerHeight+30,fn:null,flip:false,sel:{el:se,txt:se.lastChild,u:null,t:1}}); }
+  for(n0=0;n0<6;n0++){ var che=document.createElement('div'); che.className='b-chip'; skl.appendChild(che); chips.push(che); }
+  for(n0=0;n0<NC;n0++){ var ce=document.createElement('div'); ce.className='b-cur off'+(n0?' aid':'');
+    ce.innerHTML='<span class="b-ring"></span><svg viewBox="0 0 24 24"><path d="M4 3l.2 15.6 4.3-4 3 6.9 2.9-1.3-3-6.8 5.9-.3z"/></svg><b>Claude</b>';
+    ui.appendChild(ce); CUR[n0].el=ce; CUR[n0].ring=ce.firstChild; }
 
   /* ── mit építünk: a szekciók elemei oldal-sorrendben ── */
   var SKIP='.readbar,.skip,script,style,template,noscript';
@@ -3547,16 +3571,16 @@ const triggerOfficeWorkflow = (function () {
       var k=kindOf(c), it=item||(clip&&clip.el===el?c:null);
       if(!k){
         if(c.firstElementChild){
-          var sh=null, t=tone(cs), cl=clips(c,cs)?{el:c,up:clip}:clip, n0=units.length;
+          var sh=null, t=tone(cs), cl=clips(c,cs)?{el:c,up:clip}:clip, n=units.length;
           if(painted(cs)){ sh={el:c,sec:s,clip:clip,bg:bg,item:it,on:false,pass:0}; c.classList.add('bu','bt'); }
           walk(c,s,cl,t===null?bg:{el:c,dk:t<.4},sh?encl.concat(sh):encl,cl!==clip?null:it);
-          if(sh&&units.length===n0) c.classList.remove('bu','bt');      /* üres héj ne maradjon rejtve */
+          if(sh&&units.length===n) c.classList.remove('bu','bt');      /* üres héj ne maradjon rejtve */
           continue;
         }
         if(!/\S/.test(c.textContent)) continue; k='stream';
       }
-      if(k==='frame'){ var bb=c.getBoundingClientRect(); if(bb.width<60&&bb.height<60) k='pop'; else c.classList.add('bt'); }   /* apró ikon: felpattan, nem keretezzük */
-      c.classList.add('bu'); units.push({el:c,kind:k,sec:s,clip:clip,bg:bg,encl:encl,item:it,on:false});
+      if(k==='frame'){ var bb=c.getBoundingClientRect(); if(bb.width<60&&bb.height<60) k='pop'; }   /* apró ikon: felpattan, nem keretezzük */
+      c.classList.add('bu'); units.push({el:c,kind:k,sec:s,clip:clip,bg:bg,encl:encl,item:it,on:false,busy:false});
     }
   }
   function addSec(el,id){
@@ -3569,15 +3593,18 @@ const triggerOfficeWorkflow = (function () {
   addSec(document.querySelector('.footer'),'footer');
 
   /* ── idő és mozgás: egyetlen képkocka-hurok hajt mindent ── */
-  var cur={x:innerWidth*.74,y:innerHeight+30,fn:null,flip:false}, sel={u:null,t:1}, art=null;
-  var waits=[], conds=[], anims=[], speed=1, flush=false, running=true, last=0, frame=0, lo=0, built=0, curU=null, resting=false, moved=false, inIntro=false;
+  var art=null, waits=[], conds=[], anims=[], speed=1, flush=false, running=true, last=0, frame=0, lo=0, built=0;
+  var moved=false, dirty=false, inIntro=false, started=false, calm=false, clock=0, progAt=0;
   function wait(ms){ return flush?Promise.resolve():new Promise(function(res){ waits.push({left:ms,res:res}); }); }
   function until(cond,max){ return flush?Promise.resolve():new Promise(function(res){ conds.push({cond:cond,left:max==null?1e12:max,res:res}); }); }
   function animate(fn){ if(flush){ try{fn(1e9);}catch(e){} return Promise.resolve(); } return new Promise(function(res){ anims.push({fn:fn,e:0,res:res}); }); }
   function clampP(x,y){ return {x:Math.max(4,Math.min(innerWidth-18,x)),y:Math.max(4,Math.min(innerHeight-22,y))}; }
   function at(el,fx,fy,dx,dy){ return function(){ var r=el.getBoundingClientRect(); return clampP(r.left+r.width*fx+(dx||0),r.top+r.height*fy+(dy||0)); }; }
-  function go(fn,max,tol){ cur.fn=fn; return until(function(){ var p=fn(); return Math.abs(p.x-cur.x)+Math.abs(p.y-cur.y)<(tol||12); },max||400); }
-  function click(){ ring.classList.remove('go'); void ring.offsetWidth; ring.classList.add('go'); curEl.classList.add('hit'); setTimeout(function(){ curEl.classList.remove('hit'); },150); }
+  /* c = a kurzor; a kurzor nélküli szálaknál (c nincs) a mozdulat kimarad */
+  function go(c,fn,max,tol){ if(!c) return Promise.resolve(); c.fn=fn; return until(function(){ var p=fn(); return Math.abs(p.x-c.x)+Math.abs(p.y-c.y)<(tol||12); },max||400); }
+  function click(c){ if(!c||flush) return; c.ring.classList.remove('go'); void c.ring.offsetWidth; c.ring.classList.add('go'); c.el.classList.add('hit'); setTimeout(function(){ c.el.classList.remove('hit'); },150); }
+  /* rövid belépő mozgás; a végén nem marad osztály az elemen */
+  function anim(el,cls){ if(flush) return; el.classList.add(cls); el.addEventListener('animationend',function f(){ el.classList.remove(cls); el.removeEventListener('animationend',f); }); }
   var headEl=document.getElementById('header');
   function topEdge(){ return headEl?headEl.offsetHeight:0; }
   function atEnd(){ return window.scrollY+innerHeight>=root.scrollHeight-24; }
@@ -3597,10 +3624,9 @@ const triggerOfficeWorkflow = (function () {
     if(o.item&&o.clip){ var ir=o.item.getBoundingClientRect(); return Math.min(ir.right,q.cr)-Math.max(ir.left,q.cl)<ir.width*.5; }
     return false;
   }
-  /* a képernyő alja: eddig épít. Telefonon az állapotsáv fölött húzódik, hogy ne a sáv mögött dolgozzon. */
-  var LN=innerHeight-6, Q=null;
-  function line(){ LN=innerWidth<=560?innerHeight-hud.offsetHeight-22:innerHeight-6; }
+  var LN=innerHeight-6, Q=null;                                            /* a képernyő alja: eddig épít */
   function gone(u,q){ return u.sec.id!=='header'&&q.b<=topEdge()+2; }      /* a ragadós fejléc alá csúszott */
+  function past(u){ var q=box(u); return !q||off(q)||gone(u,q); }           /* már nem látszik: nincs mit mutatni rajta */
   /* 'in' = a képernyőn van (vagy az oldal végén vagyunk): ez épül. 'below' = még nem görgettek odáig: vár. */
   function where(u){
     var q=Q=box(u);
@@ -3609,53 +3635,83 @@ const triggerOfficeWorkflow = (function () {
     if(gone(u,q)) return 'passed';
     return (q.t<LN||atEnd())?'in':'below';
   }
-  /* a következő megépíthető elem: oldal-sorrendben az első, ami már nem a képernyő alatt vár
-     (így az egymás melletti hasábok és kártyák mind megépülnek addig, ameddig a látogató legörgetett) */
+  /* a következő megépíthető elem: oldal-sorrendben az első szabad, ami már a képernyőn van. Amin a látogató
+     túlgörgetett (vagy ami oldalt, a lapozóban nem látszik), az itt azonnal a helyére kerül. */
   function pick(){
     while(lo<units.length&&units[lo].on) lo++;
-    for(var j=lo,far=0,u,st;j<units.length&&far<14;j++){
-      u=units[j]; if(u.on) continue;
+    for(var j=lo,far=0,u,st,k,v,p;j<units.length&&far<24;j++){
+      u=units[j]; if(u.on||u.busy) continue;
       st=where(u);
-      if(st!=='below') return {u:u,i:j,st:st};
-      far=Q.t>LN+innerHeight?far+1:0;
+      if(st==='below'){ far=Q.t>innerHeight*2.2?far+1:0; continue; }
+      if(st!=='in'){ if(st==='passed'){ open(u.sec); reach(u); } show(u); continue; }
+      p={u:u,g:null};
+      if(u.kind==='pop'){ p.g=[u]; for(k=j+1;k<units.length&&p.g.length<6&&(v=units[k]).kind==='pop'&&!v.on&&!v.busy&&v.sec===u.sec&&where(v)==='in';k++) p.g.push(v); }
+      return p;
     }
     return null;
   }
-  /* a tempó: a nyitó képernyő nyugodtan épül. Görgetés után annyit gyorsít, hogy ami a képernyőre
-     került, az nagyjából HORIZON idő alatt elkészüljön, de mindig követhető maradjon (legfeljebb SMAX-szoros).
-     Amin a látogató már túlgörgetett, az azonnal a helyére kerül. */
-  var EST={frame:720,type:800,label:480,stream:420,pop:70}, HORIZON=2600, SMAX=4, needMs=0;
-  function pace(){
-    var u=curU, s=1, q;
-    if(inIntro) s=moved?7:1;
-    else if(u&&!flush){
-      q=resting?null:box(u);
-      if(q&&!off(q)&&gone(u,q)) s=40;
-      else if(moved) s=Math.max(1,Math.min(SMAX,needMs/HORIZON));
+
+  /* ── a szálak: NC kurzor és NA kurzor nélküli szál dolgozik egyszerre ── */
+  var LANES=[], waiting=[];
+  var PREF=small?[['frame','pop'],['type','label','stream']]:[['frame'],['type','label','stream'],['pop']];
+  for(n0=0;n0<NC+NA;n0++) LANES.push({cur:n0<NC?CUR[n0]:null,pref:n0<NC?PREF[n0]:[],res:null,since:0,docked:false});
+  function next(Ln){ return new Promise(function(res){ Ln.res=res; Ln.since=last; waiting.push(Ln); }); }
+  /* munkát ad a szabad szálaknak: előbb annak a kurzornak, akinek ez a dolga, aztán bármelyik kurzornak,
+     és ha mind foglalt, az elem kurzor nélkül, magától áll össze */
+  function feed(){
+    var p, k, i, bi, Ln;
+    while(waiting.length){
+      if(flush||B.done){ while(waiting.length) waiting.shift().res(null); return; }
+      p=pick();
+      if(!p){ if(lo>=units.length&&waiting.length===LANES.length){ while(waiting.length) waiting.shift().res(null); } return; }
+      k=p.u.kind; bi=-1;
+      for(i=0;i<waiting.length;i++) if(waiting[i].cur&&waiting[i].pref.indexOf(k)>=0){ bi=i; break; }
+      if(bi<0) for(i=0;i<waiting.length;i++) if(waiting[i].cur){ bi=i; break; }
+      if(bi<0) bi=0;
+      Ln=waiting.splice(bi,1)[0];
+      p.u.busy=true; if(p.g) for(i=0;i<p.g.length;i++) p.g[i].busy=true;
+      if(Ln.docked){ Ln.docked=false; Ln.cur.el.classList.remove('dock'); }
+      Ln.res(p);
     }
-    if(s<=SMAX&&speed>SMAX) speed=SMAX;
+  }
+  /* a tempó: a nyitó képernyő a saját ütemében épül. Görgetés után annyit gyorsít, hogy ami a képernyőre került,
+     az a megállás után nagyjából BUDGET idő alatt elkészüljön: utána nyugalom van, lehet olvasni. */
+  var EST={frame:860,type:980,label:600,stream:560,pop:80}, BUDGET=1400, SMAX=3.4, needMs=0;
+  function pace(){
+    var s=1;
+    if(inIntro) s=moved?7:1;
+    else if(moved&&!flush) s=Math.max(1,Math.min(SMAX,needMs/(LANES.length*BUDGET)));
     speed+=(s-speed)*(s>speed?.35:.12);
   }
+  function dockPt(){ var r=hud.getBoundingClientRect(); return {x:r.left+16,y:r.top+r.height*.5-8}; }
   function fail(e){ B.err=String(e&&e.stack||e); flush=true; try{ finish(); }catch(x){ root.classList.remove('bld'); } }
   function tick(now){
     if(!running) return;
     try{
-      var dt=Math.min(64,now-(last||now)), i, r; last=now; frame++;
+      var dt=Math.min(64,now-(last||now)), i, r, c, p, k, fl, sl, Ln; last=now; frame++; clock+=dt;
       pace();
       var sdt=dt*speed;
       for(i=waits.length-1;i>=0;i--){ var w=waits[i]; w.left-=sdt; if(w.left<=0||flush){ waits.splice(i,1); w.res(); } }
-      for(i=conds.length-1;i>=0;i--){ var c=conds[i], ok=flush; c.left-=sdt; if(!ok){ try{ok=c.cond();}catch(e){ok=true;} } if(ok||c.left<=0){ conds.splice(i,1); c.res(); } }
+      for(i=conds.length-1;i>=0;i--){ var cd=conds[i], ok=flush; cd.left-=sdt; if(!ok){ try{ok=cd.cond();}catch(e){ok=true;} } if(ok||cd.left<=0){ conds.splice(i,1); cd.res(); } }
       for(i=anims.length-1;i>=0;i--){ var a=anims[i], fin; a.e+=sdt; try{fin=a.fn(flush?1e9:a.e);}catch(e){fin=true;} if(fin||flush){ anims.splice(i,1); a.res(); } }
-      var p=cur.fn&&cur.fn();
-      if(p){ var k=Math.min(1,1-Math.pow(.74,sdt/16.7)); cur.x+=(p.x-cur.x)*k; cur.y+=(p.y-cur.y)*k; }
-      curEl.style.transform='translate3d('+cur.x.toFixed(1)+'px,'+cur.y.toFixed(1)+'px,0)';
-      var fl=cur.x>innerWidth-92; if(fl!==cur.flip){ cur.flip=fl; curEl.classList.toggle('flip',fl); }
-      if(sel.u){
-        r=box(sel.u);
-        if(r){
-          selEl.style.transform='translate3d('+r.l.toFixed(1)+'px,'+r.t.toFixed(1)+'px,0)';
-          selEl.style.width=(r.w*sel.t).toFixed(1)+'px'; selEl.style.height=(r.h*sel.t).toFixed(1)+'px';
-          selTxt.textContent=Math.round(r.fw*sel.t)+' × '+Math.round(r.fh*sel.t);
+      /* a szabad szálak munkát kapnak; ha mind pihen, elég ritkábban (vagy görgetéskor) körülnézni */
+      if(started&&waiting.length&&(dirty||!calm||flush||frame%3===0)) feed();
+      if(started&&!B.done){
+        k=waiting.length===LANES.length;
+        if(k!==calm){ calm=k; if(k) rest(); else wake(); }
+        /* aki egy ideje nem kapott munkát, behúzódik az állapotsávba, hogy ne takarjon semmit */
+        for(i=0;i<waiting.length;i++){ Ln=waiting[i]; if(Ln.cur&&!Ln.docked&&now-Ln.since>420){ Ln.docked=true; Ln.cur.fn=dockPt; Ln.cur.el.classList.add('dock'); } }
+      }
+      for(i=0;i<CUR.length;i++){
+        c=CUR[i]; p=c.fn&&c.fn();
+        if(p){ k=Math.min(1,1-Math.pow(.74,sdt/16.7)); c.x+=(p.x-c.x)*k; c.y+=(p.y-c.y)*k; }
+        c.el.style.transform='translate3d('+c.x.toFixed(1)+'px,'+c.y.toFixed(1)+'px,0)';
+        fl=c.x>innerWidth-92; if(fl!==c.flip){ c.flip=fl; c.el.classList.toggle('flip',fl); }
+        sl=c.sel;
+        if(sl.u&&(r=box(sl.u))){
+          sl.el.style.transform='translate3d('+r.l.toFixed(1)+'px,'+r.t.toFixed(1)+'px,0)';
+          sl.el.style.width=(r.w*sl.t).toFixed(1)+'px'; sl.el.style.height=(r.h*sl.t).toFixed(1)+'px';
+          sl.txt.textContent=Math.round(r.fw*sl.t)+' × '+Math.round(r.fh*sl.t);
         }
       }
       if(art){
@@ -3664,7 +3720,10 @@ const triggerOfficeWorkflow = (function () {
         artEl.classList.toggle('on',art.id!=='header'&&r.top+10>=topEdge()+4&&r.top<innerHeight-40);
       }
       if(fresh.length){ for(i=0;i<fresh.length;i++) fresh[i].classList.add('on'); fresh.length=0; }
-      if(frame%5===0) scan();
+      if(dirty||frame%(calm?12:5)===0) scan();
+      dirty=false;
+      /* őr: ha a képernyőn munka vár, de sokáig semmi nem készül el, inkább azonnal a kész oldalt adjuk */
+      if(started&&!flush&&!B.done&&needMs>0&&clock-progAt>7000){ fail('stall'); return; }
     }catch(e){ fail(e); return; }
     requestAnimationFrame(tick);
   }
@@ -3727,7 +3786,7 @@ const triggerOfficeWorkflow = (function () {
   var pass=0;
   function scan(){
     if(flush||B.done) return;
-    line(); pass++;
+    LN=innerHeight-6; pass++;
     var vh=innerHeight, far=0, need=0, todo=[], j, k, u, e, a;
     function see(o){
       var q=box(o);
@@ -3769,46 +3828,61 @@ const triggerOfficeWorkflow = (function () {
     stagger=false;
   }
 
-  /* ── állapotsáv ── */
-  var front=0;
-  function prog(){ var pr=Math.min(.99,front/Math.max(1,root.scrollHeight)); hudPct.textContent=Math.round(pr*100)+'%'; hudBar.style.transform='scaleX('+pr.toFixed(3)+')'; }
-  function say(sec,kind){
-    var t=L(), k=kind==='label'?'type':kind;
-    hudTxt.textContent=(t.s[sec.id]||sec.id)+(k?' · '+t.k[k]:''); prog();
+  /* ── állapotsáv: munka közben a szekciót és az elkészült elemek számát mutatja; pihenőben összehúzódik ── */
+  var front=0, hudSec=null, hint=false, restT=0, miniT=0, rests=0;
+  function draw(){
+    var t=L(), pr=Math.min(.99,front/Math.max(1,root.scrollHeight));
+    hudPct.textContent=Math.round(pr*100)+'%'; hudBar.style.transform='scaleX('+pr.toFixed(3)+')';
+    if(!hint) hudTxt.textContent=(hudSec?(t.s[hudSec.id]||hudSec.id)+' · ':'')+built+' '+t.el;
     if(skipBtn.textContent!==t.skip) skipBtn.textContent=t.skip;      /* ha közben nyelvet váltottak */
   }
-  var idleT=0;
-  function idle(on){
-    clearTimeout(idleT); hud.classList.toggle('is-idle',!!on);
-    if(!on) return;
-    prog();
-    /* a kurzor lent vár, és lefelé biccent: görgess tovább */
-    cur.fn=function(){ var n=performance.now(); return {x:innerWidth/2-12,y:innerHeight-132+Math.abs(Math.sin(n/430))*13}; };
-    idleT=setTimeout(function(){ if(!B.done) hudTxt.textContent=L().idle+' ↓'; },500);
+  /* minden elkészült, ami a képernyőn van: a sáv előbb szól, hogy görgetni kell, aztán kicsire húzódik, hogy ne takarjon */
+  function rest(){
+    hud.classList.add('is-idle');
+    restT=setTimeout(function(){
+      if(!calm||B.done) return;
+      hint=true; hudTxt.textContent=L().idle; hud.classList.add('hint'); draw();
+      miniT=setTimeout(function(){ if(calm&&!B.done) hud.classList.add('mini'); },rests++<2?2600:1100);
+    },380);
+  }
+  function wake(){
+    clearTimeout(restT); clearTimeout(miniT); hint=false;
+    hud.classList.remove('is-idle','hint','mini'); draw();
   }
   function open(sec){
     if(sec.open) return; sec.open=true;
     sec.el.classList.add('b-live');
     art={el:sec.el,id:sec.id,wrap:sec.el.matches('.wrap')?sec.el:sec.el.querySelector('.wrap')||sec.el}; artEl.textContent='▸ '+(L().s[sec.id]||sec.id);
   }
+  /* kis kódcímke röppen fel ott, ahol épp elem készül (az oldallal együtt görög) */
+  function emit(u,n){
+    if(flush||u.kind==='label'||u.kind==='stream') return;
+    var q=box(u); if(!q||off(q)) return;
+    var el=chips[chipI++%chips.length], c=u.el.classList&&u.el.classList[0], gut=u.kind==='type'&&q.l>=100&&q.l<260;
+    el.textContent='<'+u.el.tagName.toLowerCase()+(c&&!/^(bu|bt|b-)/.test(c)?'.'+c:'')+'>'+(n>1?' ×'+n:'');
+    el.style.transform='translate('+((gut?q.l-10:Math.max(6,Math.min(innerWidth-150,q.l)))+(window.scrollX||0)).toFixed(0)+'px,'+(q.t+(gut?8:-22)+(window.scrollY||0)).toFixed(0)+'px)'+(gut?' translateX(-100%)':'');
+    el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+  }
 
-  /* ── a négy mozdulat ── */
-  function reveal(o){ if(o.on) return; o.on=true; o.el.classList.remove('bu'); if(o.kind) built++; if(o.sk) drop(o); }
+  /* ── a mozdulatok ── */
+  function reveal(o){ if(o.on) return; o.on=true; o.el.classList.remove('bu'); if(o.kind){ built++; progAt=clock; } if(o.sk) drop(o); }
   function reach(u){ var q=box(u); if(q&&u.sec.id!=='header'&&!side(u,q)) front=Math.max(front,q.b+(window.scrollY||0)); }
   function unshell(u){ for(var k=0;k<u.encl.length;k++) reveal(u.encl[k]); }
   function show(u){ unshell(u); reveal(u); }
   function textNodes(el){ var w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT,null), a=[], n; while((n=w.nextNode())){ if(/\S/.test(n.nodeValue)) a.push(n); } return a; }
   /* gépelés és folyó szöveg: a még meg nem írt rész rejtett burokban vár, így a sortörés végig a végleges */
-  async function write(u,o){
+  async function write(c,u,o){
     var el=u.el, total=0, pi=0, done=0, caret=null;
     var parts=textNodes(el).map(function(n){ var s=document.createElement('span'); s.className='b-hid'; n.parentNode.insertBefore(s,n); s.appendChild(n); total+=n.nodeValue.length; return {hid:s,src:n,vis:null}; });
     reveal(u);
     if(!parts.length) return;
     if(o.caret){ caret=document.createElement('i'); caret.className='b-caret'; parts[0].hid.parentNode.insertBefore(caret,parts[0].hid); }
     var edge=function(){ var a=caret||parts[Math.min(pi,parts.length-1)].hid, r=a.getClientRects()[0]||el.getBoundingClientRect(); return clampP(r.left+7,r.bottom+1); };
-    await go(edge,o.caret?380:260,o.caret?14:60);
+    if(c&&past(u)) c=null;
+    await go(c,edge,o.caret?440:320,o.caret?14:60);
     var dur=Math.max(o.min,Math.min(o.max,total*o.per));
     await animate(function(e){
+      if((frame&3)===0&&past(u)){ e=1e9; if(c){ c.fn=null; c=null; } }      /* túlgörgettek rajta: azonnal kész */
       var want=Math.min(total,Math.ceil(total*e/dur));
       while(done<want&&pi<parts.length){
         var p=parts[pi], s=p.src.nodeValue, take=Math.min(s.length,want-done);
@@ -3818,84 +3892,86 @@ const triggerOfficeWorkflow = (function () {
       }
       return done>=total;
     });
-    if(o.caret) await wait(90);
+    if(o.caret&&c) await wait(80);
+    if(c) c.fn=null;
     if(caret&&caret.parentNode) caret.parentNode.removeChild(caret);
     parts.forEach(function(p){ if(p.hid.parentNode){ p.hid.parentNode.insertBefore(p.src,p.hid); p.hid.parentNode.removeChild(p.hid); } });
     el.normalize();
   }
-  /* elem lerakása: a kurzor kihúzza a keretet, aztán megjelenik benne a tartalom */
-  async function place(u){
-    var q0=box(u); if(!q0){ show(u); return; }
-    var bx=function(){ return box(u)||q0; };
-    await go(function(){ var b=bx(); return clampP(b.l-2,b.t-2); },380,14);
-    sel.u=u; sel.t=0; selEl.classList.add('on');
-    cur.fn=function(){ var b=bx(); return clampP(b.l+b.w*sel.t,b.t+b.h*sel.t); };
-    var D=Math.max(150,Math.min(330,(q0.w+q0.h)*.22));
-    await animate(function(e){ var t=Math.min(1,e/D); sel.t=1-Math.pow(1-t,3); return t>=1; });
-    sel.t=1; if(!flush) click();
-    reveal(u);
-    await wait(120);
-    selEl.classList.remove('on'); sel.u=null;
+  /* elem lerakása: a kurzor kihúzza a keretet, aztán megjelenik benne a tartalom; kurzor nélkül felvillanó kerettel érkezik */
+  async function place(c,u){
+    var q0=box(u); if(!q0||past(u)){ show(u); return; }
+    if(!c){ reveal(u); anim(u.el,'b-in'); await wait(340); return; }
+    var bx=function(){ return box(u)||q0; }, sl=c.sel;
+    await go(c,function(){ var b=bx(); return clampP(b.l-2,b.t-2); },460,14);
+    sl.u=u; sl.t=0; sl.el.classList.add('on');
+    c.fn=function(){ var b=bx(); return clampP(b.l+b.w*sl.t,b.t+b.h*sl.t); };
+    var D=Math.max(220,Math.min(460,(q0.w+q0.h)*.3));
+    var gonePast=false;
+    await animate(function(e){ var t=Math.min(1,e/D); if((frame&3)===0&&past(u)){ gonePast=true; t=1; } sl.t=1-Math.pow(1-t,3); return t>=1; });
+    sl.t=1; if(!gonePast) click(c);
+    reveal(u); anim(u.el,'b-up');
+    if(!gonePast) await wait(170);
+    sl.el.classList.remove('on'); sl.u=null; c.fn=null;
   }
   /* apró elemek sorban felpattannak, a kurzor végigszalad rajtuk */
-  async function pops(g){
-    await go(at(g[0].el,.5,.55),340,16);
-    var gap=g.length>10?24:g.length>4?40:70;
+  async function pops(c,g){
+    await go(c,at(g[0].el,.5,.55),340,16);
+    var gap=g.length>4?48:80;
     for(var i=0;i<g.length;i++){
-      var el=g[i].el; cur.fn=at(el,.62,.62); reveal(g[i]);
-      if(!flush) (function(el,c){ el.classList.add(c); el.addEventListener('animationend',function f(){ el.classList.remove(c); el.removeEventListener('animationend',f); }); })(el,el.offsetWidth>240?'b-rise':'b-pop');
+      var el=g[i].el; if(past(g[i])){ reveal(g[i]); continue; }
+      if(c) c.fn=at(el,.62,.62); reveal(g[i]); anim(el,el.offsetWidth>240?'b-rise':'b-pop');
       await wait(gap);
     }
-    await wait(110);
+    await wait(80);
+    if(c) c.fn=null;
+  }
+  var OPT={h1:{caret:true,per:20,min:420,max:1000},type:{caret:true,per:15,min:320,max:720},label:{caret:true,per:10,min:200,max:440},stream:{caret:false,per:3,min:240,max:640}};
+  /* egy szál: munkát kér, megépíti, és kezdi elölről, amíg el nem fogy */
+  async function lane(Ln){
+    for(;;){
+      var p=await next(Ln);
+      if(!p) return;
+      var u=p.u, c=Ln.cur, g=p.g, i;
+      open(u.sec); hudSec=u.sec;
+      if(g){ for(i=0;i<g.length;i++) unshell(g[i]); if(c) emit(u,g.length); await pops(c,g); for(i=0;i<g.length;i++) g[i].busy=false; reach(g[g.length-1]); }
+      else {
+        unshell(u); if(c) emit(u,1);
+        if(u.kind==='frame') await place(c,u);
+        else await write(c,u,u.kind==='type'?(u.el.tagName==='H1'?OPT.h1:OPT.type):u.kind==='label'?OPT.label:OPT.stream);
+        u.busy=false; reach(u);
+      }
+      draw();
+    }
   }
 
   /* ── bevezető: a kérés, amiből az oldal „készül" ── */
   async function intro(){
+    var c=CUR[0];
     inIntro=true;
-    ask.classList.add('on'); curEl.classList.remove('off');
-    await wait(340);
+    ask.classList.add('on'); c.el.classList.remove('off');
+    await wait(280);
     var txt=L().ask, n=0;
-    cur.fn=function(){ var r=askCaret.getBoundingClientRect(); return clampP(r.left+8,r.top+r.height*.75); };
-    await animate(function(e){ var w=Math.min(txt.length,Math.ceil(e/10)); if(w!==n){ n=w; askTxt.textContent=txt.slice(0,n); } return n>=txt.length; });
-    await wait(240);
-    await go(at(send,.5,.5),480,8); send.classList.add('hit'); if(!flush) click();
-    await wait(170);
+    c.fn=function(){ var r=askCaret.getBoundingClientRect(); return clampP(r.left+8,r.top+r.height*.75); };
+    await animate(function(e){ var w=Math.min(txt.length,Math.ceil(e/8)); if(w!==n){ n=w; askTxt.textContent=txt.slice(0,n); } return n>=txt.length; });
+    await wait(200);
+    await go(c,at(send,.5,.5),420,8); send.classList.add('hit'); click(c);
+    await wait(150);
     ask.classList.add('sent'); hudTxt.textContent=L().plan;
     stagger=true; skOn=true;                    /* a kérés elment: előbb a drótváz jelenik meg, arra épül a kész oldal */
-    await wait(640);
+    await wait(560);
     inIntro=false;
   }
 
-  /* ── a futás: elemről elemre, mindig csak addig, ameddig a látogató legörgetett ── */
+  /* ── a futás: a szálak együtt építenek, mindig csak addig, ameddig a látogató legörgetett ── */
   async function run(){
     hud.classList.add('on');
     if((window.scrollY||0)<40) await intro();
-    else curEl.classList.remove('off');
     skOn=true;
-    for(;;){
-      if(flush) break;
-      var p=pick();
-      if(!p){
-        if(lo>=units.length) break;                                   /* minden elkészült */
-        var nx=null; resting=true; idle(true);                        /* ami a képernyőn van, kész: a görgetésre várunk */
-        await until(function(){ return frame%2===0&&!!(nx=pick()); });
-        idle(false); resting=false; if(flush) break;
-        if(!(p=nx)) continue;
-      }
-      var u=p.u; curU=u;
-      if(p.st!=='in'){ if(p.st==='passed'){ open(u.sec); reach(u); } show(u); continue; }
-      open(u.sec); unshell(u); say(u.sec,u.kind);
-      if(u.kind==='pop'){
-        var g=[u], j=p.i+1, v;
-        while(j<units.length&&g.length<40&&(v=units[j]).kind==='pop'&&!v.on&&v.sec===u.sec&&where(v)==='in'){ g.push(v); unshell(v); j++; }
-        await pops(g); reach(g[g.length-1]);
-      }
-      else if(u.kind==='frame') await place(u);
-      else if(u.kind==='type') await write(u,u.el.tagName==='H1'?{caret:true,per:15,min:320,max:800}:{caret:true,per:11,min:240,max:520});
-      else if(u.kind==='label') await write(u,{caret:true,per:7,min:140,max:300});
-      else await write(u,{caret:false,per:1.6,min:120,max:380});
-      reach(u); prog();
-    }
+    /* a segítők a vezető kurzor mellől indulnak */
+    CUR.forEach(function(c,i){ if(i){ c.x=CUR[0].x; c.y=CUR[0].y; } c.fn=null; c.el.classList.remove('off'); });
+    started=true; progAt=clock;
+    await Promise.all(LANES.map(lane));
     finish();
   }
   /* bármi történt útközben, a végén az oldal a saját, érintetlen állapotában marad */
@@ -3905,10 +3981,13 @@ const triggerOfficeWorkflow = (function () {
     [].forEach.call(document.querySelectorAll('.bu'),function(x){ x.classList.remove('bu'); });
   }
   function finish(){
-    if(B.done) return; B.done=true; idle(false);
+    if(B.done) return; B.done=true;
+    clearTimeout(restT); clearTimeout(miniT); hint=true;
+    hud.classList.remove('is-idle','hint','mini');
     hudPct.textContent='100%'; hudBar.style.transform='scaleX(1)';
     hudTxt.textContent=L().done; hud.classList.add('is-done'); skipBtn.style.display='none';
-    curEl.classList.add('off'); selEl.classList.remove('on'); sel.u=null; art=null; artEl.classList.remove('on'); ask.classList.add('sent');
+    CUR.forEach(function(c){ c.el.classList.add('off'); c.sel.el.classList.remove('on'); c.sel.u=null; });
+    art=null; artEl.classList.remove('on'); ask.classList.add('sent');
     secs.forEach(function(s){ s.open=true; s.el.classList.add('b-live'); });
     units.forEach(show); scrub();
     if(skl.parentNode) body.removeChild(skl);
@@ -3916,16 +3995,17 @@ const triggerOfficeWorkflow = (function () {
     [].forEach.call(document.querySelectorAll('[data-reveal]'),function(el){ var r=el.getBoundingClientRect(); if(r.top<innerHeight&&r.bottom>0) el.classList.add('in'); });
     setTimeout(function(){
       root.classList.remove('bld');
-      [].forEach.call(document.querySelectorAll('.bt,.b-live,.b-pop,.b-rise'),function(x){ x.classList.remove('bt','b-live','b-pop','b-rise'); });
+      [].forEach.call(document.querySelectorAll('.bt,.b-live,.b-pop,.b-rise,.b-up,.b-in'),function(x){ x.classList.remove('bt','b-live','b-pop','b-rise','b-up','b-in'); });
     },500);
-    setTimeout(function(){ hud.classList.remove('on'); setTimeout(function(){ running=false; if(ui.parentNode) body.removeChild(ui); if(hud.parentNode) body.removeChild(hud); },450); },flush?1300:3600);
+    setTimeout(function(){ hud.classList.remove('on'); setTimeout(function(){ running=false; if(ui.parentNode) body.removeChild(ui); if(hud.parentNode) body.removeChild(hud); },450); },flush?1300:3200);
   }
   function skip(){ if(B.done) return; flush=true; speed=99; }
   skipBtn.addEventListener('click',skip);
   /* billentyűzetről érkezőt nem tartunk fel: az első Tab azonnal a kész oldalt adja */
   document.addEventListener('keydown',function(e){ if(e.key==='Tab'||e.key==='Escape') skip(); });
-  window.addEventListener('scroll',function(){ if((window.scrollY||0)>30) moved=true; },{passive:true});
-  B.info=function(){ var u=curU, q=u&&box(u); return {i:built,n:units.length,speed:+speed.toFixed(2),lag:q?+((LN-q.t)/LN).toFixed(2):null,need:Math.round(needMs),st:B.done?'end':resting?'below':'in',sk:skl.childNodes.length}; };
+  window.addEventListener('scroll',function(){ dirty=true; if((window.scrollY||0)>30) moved=true; },{passive:true});
+  window.addEventListener('resize',function(){ dirty=true; });
+  B.info=function(){ return {i:built,n:units.length,speed:+speed.toFixed(2),need:Math.round(needMs),busy:LANES.length-waiting.length,st:B.done?'end':calm?'below':'in',sk:skl.querySelectorAll('.b-sk').length}; };
 
   B.alive=true;                               /* jelzés a védőhálónak: innen már a motor felel a befejezésért */
   requestAnimationFrame(tick);

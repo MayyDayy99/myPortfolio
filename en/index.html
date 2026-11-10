@@ -663,8 +663,10 @@ html.bld .b-in{outline:1.5px solid rgba(217,119,87,0);outline-offset:2px;animati
   .b-ask-t{font-size:15.5px}
   .b-cur b{font-size:10.5px;padding:3px 7px 4px}
   .b-cur.aid b{font-size:10px}
-  .b-txt{max-width:42vw}
-  .b-txt span{display:block;margin:2px 0 0}
+  .b-txt{max-width:70vw}
+  .b-txt span{display:block;margin:2px 0 0;overflow:hidden;text-overflow:ellipsis}
+  .b-hud.hint .b-pct{display:none}
+  .b-hud.hint .b-txt span{font-size:11px}
   .b-hud{left:auto;right:12px;transform:translateY(14px);border-radius:18px}
   .b-hud.on{transform:none}
 }
@@ -3509,7 +3511,7 @@ const triggerOfficeWorkflow = (function () {
         skip:'跳过',done:'完成，这就是成品网站',idle:'继续滚动，我接着搭',plan:'正在画线框图',el:'个元素',
         s:{header:'页眉',mast:'首屏',szolgaltatasok:'服务',munkak:'作品','lokalis-ai':'本地 AI',amivel:'工具',oktatas:'培训',rolam:'关于',folyamat:'流程',gyik:'常见问题',kapcsolat:'联系',footer:'页脚'}},
     de:{ask:'Bau ein Portfolio für Péter Nemes: Websites, Web-Apps und lokale KI, mit funktionierenden Demos.',
-        skip:'Überspringen',done:'Fertig, das ist die fertige Seite',idle:'Scroll weiter, ich baue weiter',plan:'skizziert das Wireframe',el:'Elemente',
+        skip:'Überspringen',done:'Fertig, das ist die fertige Seite',idle:'Scrollen, ich baue weiter',plan:'skizziert das Wireframe',el:'Elemente',
         s:{header:'Kopfzeile',mast:'Einstieg',szolgaltatasok:'Leistungen',munkak:'Arbeiten','lokalis-ai':'Lokale KI',amivel:'Werkzeuge',oktatas:'Schulung',rolam:'Über mich',folyamat:'Ablauf',gyik:'FAQ',kapcsolat:'Kontakt',footer:'Fußzeile'}},
     fr:{ask:'Crée un portfolio pour Péter Nemes : sites web, applications web et IA locale, avec des démos qui fonctionnent.',
         skip:'Passer',done:'Terminé, voici le site fini',idle:'Fais défiler, je continue',plan:'esquisse la maquette',el:'éléments',

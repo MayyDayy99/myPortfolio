@@ -124,14 +124,14 @@ Privát/megbízói munkánál link helyett: `<span class="priv">megbízói proje
   `prefers-reduced-motion` esetén minden látható marad (nem tűnik el tartalom).
 - **Akadálymentesség:** skip-link, `aria` a füleken/gombokon, `:focus-visible`
   kontúr, reduced-motion tisztelet.
-- **Építés-animáció (első látogatáskor):** az oldal üres vászonként indul, és
-  görgetés közben több „Claude" kurzor építi fel egyszerre a drótváz helyére
-  (asztali gépen hat kurzor és három kurzor nélküli szál, telefonon négy és kettő).
-  Mindig addig épít, ameddig a látogató legörgetett. Ha megáll, a képernyőn lévő
-  rész rövid idő alatt (legfeljebb kb. másfél másodperc) teljesen elkészül, a
-  kurzorok félrehúzódnak, az állapotsáv kicsire zsugorodik, és nyugodtan lehet
-  olvasni; a következő görgetésre megy tovább. A végén nyom nélkül eltűnik:
-  a kész DOM bájtra azonos a sima oldaléval.
+- **Építés-animáció (első látogatáskor):** az oldal üres vászonként indul, a
+  drótváza kb. másfél másodpercig villog, aztán több „Claude" kurzor építi fel
+  egyszerre a drótváz helyére, nyugodt, nézhető tempóban (asztali gépen hat
+  kurzor és három kurzor nélküli szál, telefonon négy és kettő). Mindig addig
+  épít, ameddig a látogató legörgetett. Ha megáll, a képernyőn lévő rész pár
+  másodperc alatt teljesen elkészül, a kurzorok félrehúzódnak, az állapotsáv
+  kicsire zsugorodik, és nyugodtan lehet olvasni; a következő görgetésre megy
+  tovább. A végén nyom nélkül eltűnik: a kész DOM bájtra azonos a sima oldaléval.
   - **A lapozó („Mutasd") kártyái egyesével épülnek**, mindhárom kategóriában:
     egy kártya akkor épül meg, amikor a látogató odalapoz (a nagyobb része
     látszik), vagy átvált a kategóriájára. Ha az oldal többi része már kész,
@@ -157,11 +157,15 @@ Privát/megbízói munkánál link helyett: `<span class="priv">megbízói proje
     kártya is, bármelyik kategóriában). Hogy egy elem hogyan épül (keretként,
     gépelve, felpattanva, folyó szövegként), azt a motor elején a `FRAME` /
     `TYPE` / `LABEL` / `POP` / `STREAM` választó-listák adják.
-  - **Hangolás:** a motorban `NC` / `NA` a kurzorok és a kurzor nélküli szálak
-    száma (`COL` a kurzorok színe), `BUDGET` az az idő, amennyi alatt megállás
-    után a képernyőnek össze kell állnia, `SMAX` a legnagyobb gyorsítás, `OPT`
-    az írás-mozdulatok hossza. A lapozóban a `cardSee()` dönti el, mikor számít
-    egy kártya „odalapozottnak" (most: ha a 60%-a látszik).
+  - **Hangolás:** a motorban `TEMPO` az alaptempó (0.5 = a mozdulatok a névleges
+    hosszuk kétszeresét kapják; nagyobb szám = gyorsabb építés), `GAP` az egymás
+    után induló munkák közti szünet, `BUDGET` az az idő, amennyi alatt megállás
+    után a képernyőnek legkésőbb össze kell állnia, `SMAX` a legnagyobb gyorsítás
+    (ha valaki nagyon gyorsan görget), `OPT` az írás-mozdulatok hossza, `NC` /
+    `NA` a kurzorok és a kurzor nélküli szálak száma, `COL` a kurzorok színe.
+    A nyitó villogás hossza az `intro()`-ban van (1500 ms). A lapozóban a
+    `cardSee()` dönti el, mikor számít egy kártya „odalapozottnak" (most: ha a
+    60%-a látszik, és a lapozó megállt).
   - **Biztonság:** ha a motor hibára fut, vagy 7 mp-ig nem halad, magától
     befejezi, és a kész oldal marad.
   - **Kikapcsolás:** a `<head>`-beli szkriptben az `auto` értékét írd `false`-ra

@@ -562,7 +562,7 @@ html.bld .mast.b-live::before{content:"";position:absolute;z-index:-1;top:0;bott
 /* az oldal saját belépő-animációja építés közben pihen, itt a kurzor az úr */
 html.bld body.reveal-ready [data-reveal],html.bld body.reveal-ready .svc-grid[data-reveal]>.svc{opacity:1;transform:none;transition:none}
 html.bldu .bu{opacity:0!important;pointer-events:none}
-html.bldu .bt{transition:opacity .34s ease!important}
+html.bldu .bt{transition:opacity .55s ease!important}
 html.bldu .b-hid{opacity:0}
 .b-caret{border-left:2px solid #d97757;margin:0 -1px}
 /* ── drótváz: a még meg nem épült elemek helye. Az oldallal együtt görög, a fejléc alatt marad ── */
@@ -578,8 +578,13 @@ html.bldu .b-hid{opacity:0}
 .b-sk .x{background-image:linear-gradient(to top right,transparent calc(50% - .6px),rgba(var(--k),.15) calc(50% - .6px),rgba(var(--k),.15) calc(50% + .6px),transparent calc(50% + .6px)),linear-gradient(to bottom right,transparent calc(50% - .6px),rgba(var(--k),.15) calc(50% - .6px),rgba(var(--k),.15) calc(50% + .6px),transparent calc(50% + .6px))}
 .b-sk .l{background:rgba(var(--k),.11);border-radius:99px}
 .b-sk .h{background:rgba(var(--k),.17);border-radius:5px}
+/* a bevezető villogása alatt a drótváz erősebb, utána visszahalványul */
+.b-sk i{transition:background-color .5s ease,border-color .5s ease}
+.b-hot .b-sk .f,.b-hot .b-sk .p,.b-hot .b-sk .m{border-color:rgba(var(--k),.55);background-color:rgba(var(--k),.07)}
+.b-hot .b-sk .l{background-color:rgba(var(--k),.24)}
+.b-hot .b-sk .h{background-color:rgba(var(--k),.34)}
 
-/* ── a „szerszámok": kurzor, kijelölő keret, réteg-címke, kérés-kártya ── */
+/* ── a „szerszámok": kurzor, kijelölő keret, réteg-címke ── */
 .b-ui{position:fixed;top:0;right:0;bottom:0;left:0;z-index:9000;pointer-events:none;overflow:hidden;font-family:"Hanken Grotesk",system-ui,sans-serif}
 .b-cur{position:absolute;left:0;top:0;will-change:transform;transition:opacity .35s;--c:#d97757}
 .b-cur.off{opacity:0}
@@ -602,7 +607,7 @@ html.bldu .b-hid{opacity:0}
 /* akinek épp nincs dolga, behúzódik, és nem takar semmit */
 .b-cur.dock{opacity:0;transition:opacity .28s ease .1s}
 .b-chip{position:absolute;left:0;top:0;z-index:1;opacity:0;font:700 10px/1 "Space Mono",monospace;color:#f6f1e7;background:#1c1b19;border:1px solid rgba(255,255,255,.18);border-radius:5px;padding:4px 6px 5px;white-space:nowrap}
-.b-chip.go{animation:b-chip .9s ease-out both}
+.b-chip.go{animation:b-chip 1.5s ease-out both}
 @keyframes b-chip{0%{opacity:0;translate:0 6px}15%{opacity:.96;translate:0 0}65%{opacity:.96;translate:0 -6px}100%{opacity:0;translate:0 -16px}}
 .b-ring{position:absolute;left:0;top:0;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:2px solid var(--c);opacity:0}
 .b-ring.go{animation:b-ring .5s ease-out}
@@ -623,17 +628,6 @@ html.bldu .b-hid{opacity:0}
 .b-sel.gd em{background:#e5399b}
 .b-art{position:absolute;left:0;top:0;font:700 10.5px/1 "Space Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#d97757;white-space:nowrap;opacity:0;transition:opacity .25s}
 .b-art.on{opacity:1}
-.b-ask{position:absolute;left:50%;top:40%;width:min(560px,calc(100vw - 32px));transform:translate(-50%,-50%) scale(.95);opacity:0;background:#fff;color:#1c1b19;
-  border:1px solid rgba(18,35,31,.12);border-radius:20px;box-shadow:0 18px 50px rgba(18,35,31,.2);padding:16px 16px 14px 18px;transition:opacity .35s,transform .5s cubic-bezier(.3,.7,.2,1)}
-.b-ask.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.b-ask.sent{opacity:0;transform:translate(-50%,42vh) scale(.45)}
-.b-ask-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:#d97757;margin-bottom:8px}
-.b-ask-h svg{width:16px;height:16px}
-.b-ask-t{font-size:17px;line-height:1.45;min-height:4.35em}
-.b-ask-f{display:flex;justify-content:flex-end;margin-top:8px}
-.b-send{width:34px;height:34px;border-radius:50%;background:#d97757;color:#fff;display:grid;place-items:center;transition:transform .14s}
-.b-send.hit{transform:scale(.86)}
-.b-send svg{width:16px;height:16px}
 
 /* ── állapotsáv: min dolgozik éppen, és a Kihagyom gomb ── */
 .b-hud{position:fixed;z-index:9001;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,14px);opacity:0;visibility:hidden;
@@ -665,7 +659,6 @@ html.bldu .b-hid{opacity:0}
 .footer-small .b-replay{display:inline-block;margin-left:10px;padding:6px 0;color:inherit;text-decoration:underline;text-underline-offset:3px}
 .footer-small .b-replay:hover,.footer-small .b-replay:focus-visible{color:var(--paper)}
 @media (max-width:560px){
-  .b-ask-t{font-size:15.5px}
   .b-cur b{font-size:10.5px;padding:3px 7px 4px}
   .b-cur.aid b{font-size:9.5px}
   .b-txt{max-width:70vw}
@@ -3487,6 +3480,7 @@ const triggerOfficeWorkflow = (function () {
 <!-- bld:js:start -->
 <script>
 /* ═══ ÉPÍTÉS-ANIMÁCIÓ: a motor ═══
+   Az elején az oldal drótváza néhányszor felvillan, aztán indul az építés, nyugodt, nézhető tempóban.
    A valódi oldalon dolgozik, nem felvétel: minden elem a helyén van, csak rejtve, és több „Claude"
    kurzor egyszerre építi meg őket a drótváz helyére, sokféle szerkesztő-mozdulattal: keretet húz, behúz,
    másol, átméretez, segédvonalhoz igazít, képet vág és kirajzol, gépel, beilleszt, soronként ír, stílust ad,
@@ -3507,23 +3501,17 @@ const triggerOfficeWorkflow = (function () {
 
   /* ── feliratok hat nyelven ── */
   var T={
-    hu:{ask:'Építs egy portfóliót Nemes Péternek: weboldal, webalkalmazás és lokális AI, működő demókkal.',
-        skip:'Kihagyom',done:'Kész, ez a kész oldal',idle:'Görgess, építem tovább',plan:'drótvázat rajzol',el:'elem',
+    hu:{skip:'Kihagyom',done:'Kész, ez a kész oldal',idle:'Görgess, építem tovább',plan:'drótvázat rajzol',el:'elem',
         s:{header:'Fejléc',mast:'Nyitó',szolgaltatasok:'Szolgáltatások',munkak:'Munkák','lokalis-ai':'Lokális AI',amivel:'Eszköztár',oktatas:'Oktatás',rolam:'Rólam',folyamat:'Folyamat',gyik:'GYIK',kapcsolat:'Kapcsolat',footer:'Lábléc'}},
-    en:{ask:'Build a portfolio for Péter Nemes: websites, web apps and local AI, with working demos.',
-        skip:'Skip',done:'Done, this is the finished site',idle:'Scroll and I keep building',plan:'sketching the wireframe',el:'elements',
+    en:{skip:'Skip',done:'Done, this is the finished site',idle:'Scroll and I keep building',plan:'sketching the wireframe',el:'elements',
         s:{header:'Header',mast:'Hero',szolgaltatasok:'Services',munkak:'Work','lokalis-ai':'Local AI',amivel:'Toolkit',oktatas:'Training',rolam:'About',folyamat:'Process',gyik:'FAQ',kapcsolat:'Contact',footer:'Footer'}},
-    es:{ask:'Crea un portfolio para Péter Nemes: sitios web, aplicaciones web e IA local, con demos que funcionan.',
-        skip:'Saltar',done:'Listo, este es el sitio terminado',idle:'Desplázate y sigo construyendo',plan:'dibuja el esquema',el:'elementos',
+    es:{skip:'Saltar',done:'Listo, este es el sitio terminado',idle:'Desplázate y sigo construyendo',plan:'dibuja el esquema',el:'elementos',
         s:{header:'Cabecera',mast:'Portada',szolgaltatasok:'Servicios',munkak:'Trabajos','lokalis-ai':'IA local',amivel:'Herramientas',oktatas:'Formación',rolam:'Sobre mí',folyamat:'Proceso',gyik:'FAQ',kapcsolat:'Contacto',footer:'Pie'}},
-    zh:{ask:'为 Nemes Péter 做一个作品集：网站、Web 应用和本地 AI，都带可运行的演示。',
-        skip:'跳过',done:'完成，这就是成品网站',idle:'继续滚动，我接着搭',plan:'正在画线框图',el:'个元素',
+    zh:{skip:'跳过',done:'完成，这就是成品网站',idle:'继续滚动，我接着搭',plan:'正在画线框图',el:'个元素',
         s:{header:'页眉',mast:'首屏',szolgaltatasok:'服务',munkak:'作品','lokalis-ai':'本地 AI',amivel:'工具',oktatas:'培训',rolam:'关于',folyamat:'流程',gyik:'常见问题',kapcsolat:'联系',footer:'页脚'}},
-    de:{ask:'Bau ein Portfolio für Péter Nemes: Websites, Web-Apps und lokale KI, mit funktionierenden Demos.',
-        skip:'Überspringen',done:'Fertig, das ist die fertige Seite',idle:'Scrollen, ich baue weiter',plan:'skizziert das Wireframe',el:'Elemente',
+    de:{skip:'Überspringen',done:'Fertig, das ist die fertige Seite',idle:'Scrollen, ich baue weiter',plan:'skizziert das Wireframe',el:'Elemente',
         s:{header:'Kopfzeile',mast:'Einstieg',szolgaltatasok:'Leistungen',munkak:'Arbeiten','lokalis-ai':'Lokale KI',amivel:'Werkzeuge',oktatas:'Schulung',rolam:'Über mich',folyamat:'Ablauf',gyik:'FAQ',kapcsolat:'Kontakt',footer:'Fußzeile'}},
-    fr:{ask:'Crée un portfolio pour Péter Nemes : sites web, applications web et IA locale, avec des démos qui fonctionnent.',
-        skip:'Passer',done:'Terminé, voici le site fini',idle:'Fais défiler, je continue',plan:'esquisse la maquette',el:'éléments',
+    fr:{skip:'Passer',done:'Terminé, voici le site fini',idle:'Fais défiler, je continue',plan:'esquisse la maquette',el:'éléments',
         s:{header:'En-tête',mast:'Accueil',szolgaltatasok:'Services',munkak:'Réalisations','lokalis-ai':'IA locale',amivel:'Outils',oktatas:'Formation',rolam:'À propos',folyamat:'Méthode',gyik:'FAQ',kapcsolat:'Contact',footer:'Pied de page'}}
   };
   function L(){ return T[(root.lang||'hu').slice(0,2)]||T.hu; }
@@ -3532,15 +3520,13 @@ const triggerOfficeWorkflow = (function () {
   var SPARK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg>';
   skl=document.createElement('div'); skl.className='b-skl'; skl.setAttribute('aria-hidden','true');
   ui=document.createElement('div'); ui.className='b-ui'; ui.setAttribute('aria-hidden','true');
-  ui.innerHTML='<div class="b-art"></div>'
-    +'<div class="b-ask"><div class="b-ask-h">'+SPARK+'Claude</div><div class="b-ask-t"><span></span><i class="b-caret"></i></div>'
-    +'<div class="b-ask-f"><span class="b-send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></span></div></div>';
+  ui.innerHTML='<div class="b-art"></div>';
   hud=document.createElement('div'); hud.className='b-hud';
   hud.innerHTML='<span class="b-spark">'+SPARK+'</span><span class="b-txt"><b>Claude</b><span></span></span><span class="b-dn">↓</span><span class="b-pct">0%</span>'
     +'<button type="button" class="b-skip"></button><span class="b-bar"><i></i></span>';
   body.appendChild(skl); body.appendChild(ui); body.appendChild(hud);
   var $=function(s,p){ return (p||ui).querySelector(s); };
-  var artEl=$('.b-art'), ask=$('.b-ask'), askTxt=$('.b-ask-t span'), askCaret=$('.b-ask-t .b-caret'), send=$('.b-send'),
+  var artEl=$('.b-art'),
       hudTxt=$('.b-txt span',hud), hudPct=$('.b-pct',hud), hudBar=$('.b-bar i',hud), skipBtn=$('.b-skip',hud);
   skipBtn.textContent=L().skip;
   /* a kurzorok: egy vezető és a segítői, mindegyik saját színnel és kijelölő kerettel; mellettük kurzor nélküli szálak is építenek.
@@ -3718,10 +3704,13 @@ const triggerOfficeWorkflow = (function () {
   function release(){ while(waiting.length) waiting.shift().res(null); }
   /* munkát ad a szabad szálaknak: előbb annak a kurzornak, akinek ez a szakterülete, aztán bármelyik kurzornak,
      és ha mind foglalt, az elem kurzor nélkül, magától áll össze */
+  var sclock=0, feedAt=0;
   function feed(){
     var p, i, bi, Ln;
     while(waiting.length){
       if(flush||over){ release(); return; }
+      /* lépcsőzés: az új munkák nem egyszerre, hanem kis közökkel indulnak egymás után, így a szem követni tudja őket */
+      if(sclock<feedAt&&waiting.length<LANES.length) return;
       p=pick();
       if(!p){
         if(P.end&&!P.below&&waiting.length===LANES.length){
@@ -3738,15 +3727,22 @@ const triggerOfficeWorkflow = (function () {
       p.u.busy=true; if(p.g) for(i=0;i<p.g.length;i++) p.g[i].busy=true;
       if(Ln.docked){ Ln.docked=false; Ln.cur.el.classList.remove('dock'); }
       Ln.res(p);
+      feedAt=sclock+GAP;
     }
   }
-  /* a tempó: a nyitó képernyő a saját ütemében épül. Görgetés után annyit gyorsít, hogy ami a képernyőre került,
-     az a megállás után nagyjából BUDGET idő alatt elkészüljön: utána nyugalom van, lehet olvasni. */
-  var EST={frame:950,type:950,label:620,stream:640,pop:90}, BUDGET=1400, SMAX=3.4, needMs=0;
-  function pace(){
-    var s=1;
-    if(inIntro) s=moved?7:1;
-    else if(moved&&!flush) s=Math.max(1,Math.min(SMAX,needMs/(LANES.length*BUDGET)));
+  /* a tempó: alapból nyugodt, nézhető ütem (TEMPO: a mozdulatok névleges hosszához képest). Megállás után a képernyőn
+     lévő rész legfeljebb nagyjából BUDGET idő alatt elkészül. Tartós görgetésnél annyit gyorsít, hogy ami beúszik, az kb.
+     a képernyő közepéig megépüljön; egy-egy rövid pöccintés ettől még nem gyorsít, mert a görgetés sebességét lassan simítjuk. */
+  var EST={frame:950,type:950,label:620,stream:640,pop:90}, TEMPO=.5, BUDGET=3400, SMAX=3.4, GAP=100, needMs=0, vel=0, lastY=window.scrollY||0;
+  function pace(dt){
+    var y=window.scrollY||0, s=TEMPO, b;
+    if(dt>0) vel+=(Math.min(2500,Math.abs(y-lastY)/dt*1000)-vel)*Math.min(1,dt/1500);
+    lastY=y;
+    if(inIntro) s=1;
+    else if(moved&&!flush){
+      b=Math.max(650,Math.min(BUDGET,innerHeight*500/Math.max(1,vel)));
+      s=Math.max(TEMPO,Math.min(SMAX,needMs/(LANES.length*.7*b)));
+    }
     speed+=(s-speed)*(s>speed?.35:.12);
   }
   function dockPt(){ var r=hud.getBoundingClientRect(); return {x:r.left+16,y:r.top+r.height*.5-8}; }
@@ -3755,8 +3751,8 @@ const triggerOfficeWorkflow = (function () {
     if(!running) return;
     try{
       var dt=Math.min(64,now-(last||now)), i, r, c, p, k, fl, sl, Ln; last=now; frame++; clock+=dt;
-      pace();
-      var sdt=dt*speed;
+      pace(dt);
+      var sdt=dt*speed; sclock+=sdt;
       for(i=waits.length-1;i>=0;i--){ var w=waits[i]; w.left-=sdt; if(w.left<=0||flush){ waits.splice(i,1); w.res(); } }
       for(i=conds.length-1;i>=0;i--){ var cd=conds[i], ok=flush; cd.left-=sdt; if(!ok){ try{ok=cd.cond();}catch(e){ok=true;} } if(ok||cd.left<=0){ conds.splice(i,1); cd.res(); } }
       for(i=anims.length-1;i>=0;i--){ var a=anims[i], fin; a.e+=sdt; try{fin=a.fn(flush?1e9:a.e);}catch(e){fin=true;} if(fin||flush){ anims.splice(i,1); a.res(); } }
@@ -3767,7 +3763,7 @@ const triggerOfficeWorkflow = (function () {
         k=waiting.length===LANES.length;
         if(k!==calm){ calm=k; calmAt=now; if(k) rest(); else wake(); }
         /* aki egy ideje nem kapott munkát, behúzódik (az állapotsávba, amíg az megvan), hogy ne takarjon semmit */
-        for(i=0;i<waiting.length;i++){ Ln=waiting[i]; if(Ln.cur&&!Ln.docked&&now-Ln.since>420){ Ln.docked=true; Ln.cur.fn=lazy?null:dockPt; Ln.cur.el.classList.add('dock'); tool(Ln.cur,'a'); } }
+        for(i=0;i<waiting.length;i++){ Ln=waiting[i]; if(Ln.cur&&!Ln.docked&&now-Ln.since>(k?420:950)){ Ln.docked=true; Ln.cur.fn=lazy?null:dockPt; Ln.cur.el.classList.add('dock'); tool(Ln.cur,'a'); } }
       }
       for(i=0;i<CUR.length;i++){
         c=CUR[i]; p=c.fn&&c.fn();
@@ -3801,7 +3797,7 @@ const triggerOfficeWorkflow = (function () {
   /* ── drótváz: a még meg nem épült elemek helye a vásznon ──
      Külön rétegben él, az oldal koordinátáiban, így a görgetést a böngésző viszi, nem a szkript.
      (A ragadós fejlécé a rögzített rétegbe kerül; a lapozóban oldalra mozgó kártyáké képkockánként igazodik.) */
-  var skOn=false, stagger=false, fresh=[];
+  var skOn=false, fresh=[];
   function ghost(p,stop){
     for(var k=0;p&&p!==stop&&k<3;p=p.parentNode,k++){ var cs=getComputedStyle(p); if(cs.visibility==='hidden'||(cs.opacity==='0'&&!p.classList.contains('bu'))) return true; }
     return false;
@@ -3889,9 +3885,8 @@ const triggerOfficeWorkflow = (function () {
       a=todo[j]; var o=a[0], q=a[1], sk=o.sk, fx0=o.sec.id==='header', x=q.l+(fx0?0:sx), y=q.t+(fx0?0:sy), dk;
       if(!sk){
         sk=o.sk={el:document.createElement('div'),sig:'',x:-1e9,y:-1e9,dk:false}; sk.el.className='b-sk';
-        if(stagger) sk.el.style.transitionDelay=Math.round(Math.max(0,Math.min(1,q.t/vh))*340)+'ms';
         if(fx0) ui.insertBefore(sk.el,ui.firstChild); else skl.appendChild(sk.el);
-        fresh.push(sk.el);
+        if(inIntro) sk.el.classList.add('on'); else fresh.push(sk.el);
       }
       if(a[2]){
         sk.sig=a[3]; sk.el.style.width=q.w.toFixed(1)+'px'; sk.el.style.height=q.h.toFixed(1)+'px';
@@ -3903,7 +3898,6 @@ const triggerOfficeWorkflow = (function () {
       dk=!!(o.bg&&o.bg.dk&&o.sec.open&&!o.bg.el.classList.contains('bu'));
       if(dk!==sk.dk){ sk.dk=dk; sk.el.classList.toggle('dk',dk); }
     }
-    stagger=false;
   }
 
   /* ── állapotsáv: munka közben a szekciót és az elkészült elemek számát mutatja; pihenőben összehúzódik ── */
@@ -3952,7 +3946,7 @@ const triggerOfficeWorkflow = (function () {
 
   /* ── a mozdulatok ── */
   /* a héj beúszása után a segédosztály is lekerül róla, hogy az elem saját átmeneteit (pl. rámutatás) ne írja felül */
-  function unbt(el){ setTimeout(function(){ el.classList.remove('bt'); },flush?0:420); }
+  function unbt(el){ setTimeout(function(){ el.classList.remove('bt'); },flush?0:640); }
   function reveal(o){ if(o.on) return; o.on=true; o.el.classList.remove('bu'); if(o.kind){ built++; progAt=clock; } else unbt(o.el); if(o.sk) drop(o); }
   function reach(u){ var q=box(u); if(q&&u.sec.id!=='header'&&!u.card&&!off(q)) front=Math.max(front,q.b+(window.scrollY||0)); }
   function unshell(u){ for(var k=0;k<u.encl.length;k++) reveal(u.encl[k]); }
@@ -4229,7 +4223,7 @@ const triggerOfficeWorkflow = (function () {
       var p=await next(Ln);
       if(!p) return;
       var u=p.u, c=Ln.cur, g=p.g, i;
-      open(u.sec,u); hudSec=u.sec;
+      open(u.sec,u); if(hudSec!==u.sec){ hudSec=u.sec; if(!hint) draw(); }
       if(g){ for(i=0;i<g.length;i++) unshell(g[i]); if(c) emit(u,g.length); await pops(c,g); for(i=0;i<g.length;i++) g[i].busy=false; reach(g[g.length-1]); }
       else { unshell(u); await build(c,u); u.busy=false; reach(u); }
       if(c){ c.fn=null; selOff(c); tool(c,'a'); }
@@ -4237,33 +4231,27 @@ const triggerOfficeWorkflow = (function () {
     }
   }
 
-  /* ── bevezető: a kérés, amiből az oldal „készül" ── */
+  /* ── bevezető: az oldal drótváza néhányszor felvillan (kb. másfél másodperc), utána indul az építés ── */
+  var BLINK=[{opacity:0,easing:'ease-out'},{opacity:1,offset:.09},{opacity:1,offset:.25,easing:'ease-in-out'},{opacity:.1,offset:.33,easing:'ease-in-out'},{opacity:1,offset:.41},
+             {opacity:1,offset:.57,easing:'ease-in-out'},{opacity:.1,offset:.65,easing:'ease-in-out'},{opacity:1,offset:.73},{opacity:1}];
   async function intro(){
-    var c=CUR[0];
-    inIntro=true;
-    ask.classList.add('on'); c.el.classList.remove('off');
-    await wait(280);
-    var txt=L().ask, n=0;
-    tool(c,'i');
-    c.fn=function(){ var r=askCaret.getBoundingClientRect(); return clampP(r.left+8,r.top+r.height*.75); };
-    await animate(function(e){ var w=Math.min(txt.length,Math.ceil(e/8)); if(w!==n){ n=w; askTxt.textContent=txt.slice(0,n); } return n>=txt.length; });
-    await wait(200);
-    tool(c,'a');
-    await go(c,at(send,.5,.5),420,8); send.classList.add('hit'); click(c);
-    await wait(150);
-    ask.classList.add('sent'); hudTxt.textContent=L().plan;
-    stagger=true; skOn=true;                    /* a kérés elment: előbb a drótváz jelenik meg, arra épül a kész oldal */
-    await wait(560);
+    inIntro=true; skOn=true; dirty=true;
+    hudTxt.textContent=L().plan;
+    skl.classList.add('b-hot'); ui.classList.add('b-hot');      /* villogás közben a drótváz erősebb, utána visszahalványul */
+    fx(skl,BLINK,1500,'linear'); fx(ui,BLINK,1500,'linear');
+    await wait(1500);
+    skl.classList.remove('b-hot'); ui.classList.remove('b-hot');
     inIntro=false;
   }
 
   /* ── a futás: a szálak együtt építenek, mindig csak addig, ameddig a látogató legörgetett (vagy lapozott) ── */
   async function run(){
     hud.classList.add('on');
-    if((window.scrollY||0)<40) await intro();
-    skOn=true;
-    /* a segítők a vezető kurzor mellől indulnak */
-    CUR.forEach(function(c,i){ if(i){ c.x=CUR[0].x; c.y=CUR[0].y; } c.fn=null; c.el.classList.remove('off'); });
+    await intro();
+    /* a kurzorok az állapotsávból bújnak elő, egymás után, ahogy munkát kapnak */
+    var d=dockPt();
+    CUR.forEach(function(c){ c.x=d.x; c.y=d.y; c.fn=null; c.el.classList.add('dock'); c.el.classList.remove('off'); });
+    LANES.forEach(function(Ln){ Ln.docked=!!Ln.cur; });
     started=true; progAt=clock;
     await Promise.all(LANES.map(lane));
     finish();
@@ -4291,14 +4279,14 @@ const triggerOfficeWorkflow = (function () {
      minden a végleges állapotába kerül, a kurzorok pedig akkor jönnek elő újra, amikor a látogató odalapoz */
   function mainDone(){
     lazy=true; B.done=true;
-    art=null; artEl.classList.remove('on'); ask.classList.add('sent');
+    art=null; artEl.classList.remove('on');
     CUR.forEach(function(c){ c.fn=null; });
     hudOut(3200); settle();
   }
   function finish(){
     if(over) return; over=true; B.done=true; B.all=true; if(mo) mo.disconnect();
     CUR.forEach(function(c){ c.el.classList.add('off'); selOff(c); });
-    art=null; artEl.classList.remove('on'); ask.classList.add('sent');
+    art=null; artEl.classList.remove('on');
     secs.forEach(function(s){ s.open=true; if(!lazy) s.el.classList.add('b-live'); });
     units.forEach(show); scrub();
     if(skl.parentNode) body.removeChild(skl);

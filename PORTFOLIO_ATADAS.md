@@ -120,6 +120,12 @@ Privát/megbízói munkánál link helyett: `<span class="priv">megbízói proje
     Hugging Face Spaces, Vercel/Netlify/GitHub Pages, StackBlitz/CodeSandbox.
   - **Buktató:** `X-Frame-Options`/`CSP frame-ancestors` egyes oldalakon tiltja a
     beágyazást; a saját hosztolt demók működnek.
+- **Loricatus ERP kiemelt kártya – a demó-gomb le van véve:** a kártyán a teaser
+  videó és a forráskód-ikon maradt, a szövegéből is kikerült a gombra utaló mondat
+  (mind a hat nyelven). A gombhoz tartozó figyelmeztető ablak (`#demoModal` és a
+  szkriptje) a kódban maradt, de gomb nélkül nem nyílik meg. Visszatételhez a
+  kártya `.feat-links` sorába kell egy `erp-demo-link` osztályú „Élő demó" link
+  (lásd a kártyák fölötti megjegyzést az `index.html`-ben).
 - **Reveal-on-scroll:** `[data-reveal]` + IntersectionObserver; JS nélkül és
   `prefers-reduced-motion` esetén minden látható marad (nem tűnik el tartalom).
 - **Akadálymentesség:** skip-link, `aria` a füleken/gombokon, `:focus-visible`

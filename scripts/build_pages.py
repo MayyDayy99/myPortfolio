@@ -304,8 +304,13 @@ def write_crawler_files(dic, hu):
     for e in extra:
         sm += ['  <url>', '    <loc>%s%s</loc>' % (SITE, e),
                '    <lastmod>%s</lastmod>' % today, '    <priority>0.5</priority>', '  </url>']
+    # a blog bejegyzéseit a build_blog.py írja: a meglévő /blog/ sorok változatlanul maradnak
+    sm_path = os.path.join(ROOT, 'sitemap.xml')
+    if os.path.exists(sm_path):
+        old = open(sm_path, encoding='utf-8').read()
+        sm += re.findall(r'  <url>\s*<loc>[^<]*/blog/[^<]*</loc>.*?</url>', old, flags=re.S)
     sm.append('</urlset>')
-    open(os.path.join(ROOT, 'sitemap.xml'), 'w', encoding='utf-8').write('\n'.join(sm) + '\n')
+    open(sm_path, 'w', encoding='utf-8').write('\n'.join(sm) + '\n')
 
     def tx(k, lang='hu'):
         return text_of(t(dic, lang, k, hu))

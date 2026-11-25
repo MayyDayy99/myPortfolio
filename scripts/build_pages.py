@@ -22,6 +22,10 @@ LANGS = ['hu', 'en', 'es', 'zh', 'de', 'fr']
 GEN = ['en', 'es', 'zh', 'de', 'fr']
 LOCALE = {'hu': 'hu_HU', 'en': 'en_US', 'es': 'es_ES', 'zh': 'zh_CN', 'de': 'de_DE', 'fr': 'fr_FR'}
 PATH = {'hu': '/', 'en': '/en/', 'es': '/es/', 'zh': '/zh/', 'de': '/de/', 'fr': '/fr/'}
+# a kapcsolati e-mail nem a kódban él: a futtató adja meg, pl.  CONTACT_EMAIL=valaki@pelda.hu python3 scripts/build_pages.py
+EMAIL = os.environ.get('CONTACT_EMAIL', '').strip()
+if not EMAIL or '@' not in EMAIL:
+    raise SystemExit('Hiányzik a CONTACT_EMAIL környezeti változó (a JSON-LD-be és az llms.txt-be kerülő kapcsolati e-mail).')
 
 JOB = {'hu': 'AI-fejlesztő', 'en': 'AI developer', 'es': 'Desarrollador de IA',
        'zh': 'AI 开发者', 'de': 'KI-Entwickler', 'fr': 'Développeur IA'}
@@ -121,7 +125,7 @@ def build_jsonld(lang, dic, hu):
         "name": "Nemes Péter", "url": SITE + PATH[lang],
         "jobTitle": JOB[lang],
         "description": tx('_desc') or tx('hero_sub'),
-        "email": "mailto:pr.nemes@gmail.com",
+        "email": "mailto:" + EMAIL,
         "telephone": "+36205493710",
         "image": SITE + "/images/profil.jpg",
         "sameAs": ["https://github.com/MayyDayy99",
@@ -136,7 +140,7 @@ def build_jsonld(lang, dic, hu):
         "description": tx('_desc') or tx('hero_sub'),
         "provider": {"@id": SITE + "/#person"},
         "image": SITE + "/images/og.jpg",
-        "email": "mailto:pr.nemes@gmail.com",
+        "email": "mailto:" + EMAIL,
         "telephone": "+36205493710",
         "areaServed": [{"@type": "Country", "name": "Hungary"},
                        {"@type": "Place", "name": REMOTE[lang]}],
@@ -310,7 +314,7 @@ def write_crawler_files(dic, hu):
          '> %s' % tx('_desc'), '',
          'Egyéni vállalkozó Magyarországról, magánszemélyeknek és kisvállalkozásoknak dolgozom, '
          'távmunkában világszerte. Az első, 30 perces egyeztetés díjmentes.', '',
-         '- Kapcsolat: pr.nemes@gmail.com · +36 20 549 3710',
+         '- Kapcsolat: %s · +36 20 549 3710' % EMAIL,
          '- Honlap: %s/' % SITE,
          '- GitHub: https://github.com/MayyDayy99',
          '- LinkedIn: https://www.linkedin.com/in/p%C3%A9ter-nemes-260191237/',

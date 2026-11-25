@@ -3313,19 +3313,23 @@ const triggerOfficeWorkflow = (function () {
       var src='images/'+el.getAttribute('data-pl')+sfx+'.jpg';
       if(el.tagName==='IMG') el.src=src; else { el.setAttribute('data-poster',src); if(el.hasAttribute('poster')) el.setAttribute('poster',src); }
     });
-    try{ localStorage.setItem('site_lang',lang); }catch(e){}
   }
 
+  /* Kezdő nyelv: 1) a látogató saját, kézzel választott nyelve; 2) a böngésző nyelve, ha támogatjuk;
+     3) különben a hely: magyar időzónában magyar, máshol angol. Keresőrobotok mindig a magyar alapot kapják,
+     a többi nyelvet a saját aloldalukon (/en/, /de/ …) indexelik. Csak a kézi választás mentődik el. */
   function detect(){
-    try{ var saved=localStorage.getItem('site_lang'); if(saved && SUP.indexOf(saved)>=0) return saved; }catch(e){}
-    var navs=(navigator.languages&&navigator.languages.length)?navigator.languages:[navigator.language||'hu'];
+    if(/bot|crawl|spider|slurp|google|bing|yandex|baidu|duckduck|lighthouse/i.test(navigator.userAgent||'')) return 'hu';
+    try{ var saved=localStorage.getItem('site_lang_pick'); if(saved && SUP.indexOf(saved)>=0) return saved; }catch(e){}
+    var navs=(navigator.languages&&navigator.languages.length)?navigator.languages:[navigator.language||''];
     for(var i=0;i<navs.length;i++){ var c=(navs[i]||'').toLowerCase().slice(0,2); if(SUP.indexOf(c)>=0) return c; }
-    return 'hu';
+    var tz=''; try{ tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''; }catch(e){}
+    return tz==='Europe/Budapest' ? 'hu' : 'en';
   }
 
   if(btn && box && menu){
     btn.addEventListener('click',function(e){ e.stopPropagation(); var o=box.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false'); });
-    menu.addEventListener('click',function(e){ var b=e.target.closest('button[data-lang]'); if(!b) return; apply(b.getAttribute('data-lang')); box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
+    menu.addEventListener('click',function(e){ var b=e.target.closest('button[data-lang]'); if(!b) return; apply(b.getAttribute('data-lang')); try{ localStorage.setItem('site_lang_pick',b.getAttribute('data-lang')); }catch(e){} box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); });
     document.addEventListener('click',function(e){ if(!box.contains(e.target)){ box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
     document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ box.classList.remove('open'); btn.setAttribute('aria-expanded','false'); } });
   }

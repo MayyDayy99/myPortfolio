@@ -3266,7 +3266,7 @@ const triggerOfficeWorkflow = (function () {
 /* Nyelvváltás a statikus aloldalakon: minden nyelvnek saját címe van */
 (function(){
   var URLS={hu:'/',en:'/en/',es:'/es/',zh:'/zh/',de:'/de/',fr:'/fr/'};
-  function go(l){ try{localStorage.setItem('site_lang',l);}catch(e){} location.href=URLS[l]||'/'; }
+  function go(l){ try{localStorage.setItem('site_lang_pick',l);}catch(e){} location.href=URLS[l]||'/'; }
   var btn=document.getElementById('langBtn'), box=document.getElementById('lang'), menu=document.getElementById('langMenu');
   if(btn&&box&&menu){
     btn.addEventListener('click',function(e){ e.stopPropagation(); var o=box.classList.toggle('open'); btn.setAttribute('aria-expanded',o?'true':'false'); });

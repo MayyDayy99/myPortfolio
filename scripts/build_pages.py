@@ -202,6 +202,18 @@ def build_lang_page(src, lang, dic, hu):
         if v is not None:
             h = set_inner(h, key, v)
 
+    # 1b) fordítandó attribútumok (alt, aria-label, title): data-i18n-a="attr:kulcs,attr:kulcs"
+    def attrs(m):
+        tag = m.group(0)
+        for pair in re.search(r'\bdata-i18n-a="([^"]+)"', tag).group(1).split(','):
+            a, k = pair.split(':')
+            v = dic[lang].get(k)
+            if v is not None:
+                tag = re.sub(r'(\s%s=")[^"]*(")' % re.escape(a),
+                             lambda mm: mm.group(1) + htmllib.escape(v, quote=True) + mm.group(2), tag, count=1)
+        return tag
+    h = re.sub(r'<[a-z]+\b[^>]*\bdata-i18n-a="[^"]+"[^>]*>', attrs, h)
+
     # 2) fej: nyelv, meta, canonical
     h = h.replace('<html lang="hu">', '<html lang="%s">' % lang, 1)
     g = dic[lang].get

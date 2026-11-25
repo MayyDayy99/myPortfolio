@@ -126,11 +126,11 @@ BLOG_CSS = """
 .bl-list{display:flex;flex-direction:column;gap:var(--gap-list);padding-bottom:clamp(56px,8vw,104px)}
 .bl-card{display:block;border:1px solid var(--paper-3);border-radius:var(--r-md);background:#fff;padding:var(--pad-card);color:var(--text);transition:transform .2s var(--ease),box-shadow .2s var(--ease),border-color .2s}
 .bl-card:hover{transform:translateY(-2px);box-shadow:var(--e-2);border-color:var(--ink-line)}
-.bl-meta{font-family:"Space Mono",monospace;font-size:var(--fs-2xs);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--amber-text);margin-bottom:9px}
+.bl-meta{font-size:var(--fs-xs);color:var(--muted);margin-bottom:9px}
 .bl-card h2{font-size:var(--fs-lg);margin:0 0 8px;letter-spacing:-.01em}
 .bl-card p{color:var(--muted);font-size:var(--fs-sm);margin:0}
 .bl-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
-.bl-tags span{font-family:"Space Mono",monospace;font-size:var(--fs-2xs);color:var(--muted);border:1px solid var(--paper-3);border-radius:var(--r-sm);padding:4px 9px}
+.bl-tags span{font-size:var(--fs-xs);color:var(--muted);border:1px solid var(--paper-3);border-radius:var(--r-full);padding:3px 10px}
 .bl-empty{border:1px dashed var(--paper-3);border-radius:var(--r-md);padding:var(--sp-6);text-align:center;color:var(--muted)}
 .bl-article{padding-bottom:clamp(56px,8vw,104px)}
 .bl-article h1{font-size:var(--fs-xl);letter-spacing:-.02em;margin:0 0 14px}
@@ -142,8 +142,8 @@ BLOG_CSS = """
 .bl-body ul{margin:0 0 1.05em;padding-left:1.2em}
 .bl-body li{margin-bottom:.4em}
 .bl-body a{color:var(--amber-text);text-decoration:underline;text-underline-offset:3px}
-.bl-body code{font-family:"Space Mono",monospace;font-size:.9em;background:var(--paper-2);border-radius:4px;padding:2px 6px}
-.bl-back{display:inline-flex;align-items:center;gap:8px;font-family:"Space Mono",monospace;font-size:var(--fs-xs);letter-spacing:var(--track-mono);color:var(--muted);margin-bottom:22px}
+.bl-body code{font-family:var(--mono);font-size:.9em;background:var(--paper-2);border-radius:4px;padding:2px 6px}
+.bl-back{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--muted);margin-bottom:22px}
 .bl-back:hover{color:var(--amber-text)}
 .bl-foot{border-top:1px solid var(--paper-3);margin-top:clamp(36px,5vw,54px);padding-top:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
 """
